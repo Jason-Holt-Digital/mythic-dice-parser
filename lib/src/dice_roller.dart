@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-import 'enums.dart';
-import 'roll_result.dart';
-import 'rolled_die.dart';
-import 'utils.dart';
+import 'package:mythic_dice_parser/src/enums.dart';
+import 'package:mythic_dice_parser/src/roll_result.dart';
+import 'package:mythic_dice_parser/src/rolled_die.dart';
+import 'package:mythic_dice_parser/src/utils.dart';
 
 abstract class DiceRoller {
   /// minimum dice to roll (0)
@@ -270,7 +270,7 @@ class DiceResultRoller with LoggingMixin {
         return rollD66(1, msg);
       case DieType.nvals:
         return rollVals(1, rolledDie.potentialValues, msg);
-      default:
+      case DieType.singleVal:
         return RollResult(
           expression: rolledDie.result.toString(),
           opType: OpType.value,

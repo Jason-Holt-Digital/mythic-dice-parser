@@ -1,25 +1,24 @@
 import 'package:logging/logging.dart';
+import 'package:mythic_dice_parser/src/dice_roller.dart';
+import 'package:mythic_dice_parser/src/enums.dart';
+import 'package:mythic_dice_parser/src/parser.dart';
+import 'package:mythic_dice_parser/src/roll_result.dart';
+import 'package:mythic_dice_parser/src/roll_summary.dart';
+import 'package:mythic_dice_parser/src/stats.dart';
 import 'package:petitparser/petitparser.dart';
-
-import 'dice_roller.dart';
-import 'enums.dart';
-import 'parser.dart';
-import 'roll_result.dart';
-import 'roll_summary.dart';
-import 'stats.dart';
 
 /// An abstract expression that can be evaluated.
 abstract class DiceExpression {
   static final exprLogger = Logger('DiceExpression');
-  static List<Function(RollResult)> listeners = [defaultListener];
-  static List<Function(RollSummary)> summaryListeners = [];
+  static List<void Function(RollResult)> listeners = [defaultListener];
+  static List<void Function(RollSummary)> summaryListeners = [];
 
-  static void registerListener(Function(RollResult rollResult) callback) {
+  static void registerListener(void Function(RollResult rollResult) callback) {
     listeners.add(callback);
   }
 
   static void registerSummaryListener(
-    Function(RollSummary rollSummary) callback,
+    void Function(RollSummary rollSummary) callback,
   ) {
     summaryListeners.add(callback);
   }
@@ -34,7 +33,7 @@ abstract class DiceExpression {
 
   static void callListeners(
     RollResult? rr, {
-    Function(RollResult rr) onRoll = noopListener,
+    void Function(RollResult rr) onRoll = noopListener,
   }) {
     if (rr == null || rr.opType == OpType.value) return;
     callListeners(rr.left, onRoll: onRoll);
@@ -122,8 +121,8 @@ abstract class DiceExpression {
   ///
   /// Throws [FormatException]
   Future<RollSummary> roll({
-    Function(RollResult rollResult) onRoll = noopListener,
-    Function(RollSummary rollSummary) onSummary = noopSummaryListener,
+    void Function(RollResult rollResult) onRoll = noopListener,
+    void Function(RollSummary rollSummary) onSummary = noopSummaryListener,
   }) async {
     final rollResult = await this();
 

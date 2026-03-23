@@ -1,22 +1,21 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:mythic_dice_parser/src/ast_core.dart';
+import 'package:mythic_dice_parser/src/ast_dice.dart';
+import 'package:mythic_dice_parser/src/ast_ops.dart';
+import 'package:mythic_dice_parser/src/dice_expression.dart';
+import 'package:mythic_dice_parser/src/dice_roller.dart';
 import 'package:petitparser/petitparser.dart';
 
-import 'ast_core.dart';
-import 'ast_dice.dart';
-import 'ast_ops.dart';
-import 'dice_expression.dart';
-import 'dice_roller.dart';
-
 Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
-  final builder = ExpressionBuilder<DiceExpression>();
-  // numbers
-  builder.primitive(
-    digit()
-        .star()
-        .flatten(message: 'integer expected')
-        .trim()
-        .map(SimpleValue.new),
-  );
+  final builder = ExpressionBuilder<DiceExpression>()
+    // numbers
+    ..primitive(
+      digit()
+          .star()
+          .flatten(message: 'integer expected')
+          .trim()
+          .map(SimpleValue.new),
+    );
   // parens & curlies
   builder.group()
     ..wrapper(char('(').trim(), char(')').trim(), (left, value, right) => value)

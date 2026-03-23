@@ -1,11 +1,10 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:mythic_dice_parser/src/ast_core.dart';
+import 'package:mythic_dice_parser/src/dice_roller.dart';
+import 'package:mythic_dice_parser/src/enums.dart';
+import 'package:mythic_dice_parser/src/roll_result.dart';
+import 'package:mythic_dice_parser/src/rolled_die.dart';
 import 'package:petitparser/parser.dart';
-
-import 'ast_core.dart';
-import 'dice_roller.dart';
-import 'enums.dart';
-import 'roll_result.dart';
-import 'rolled_die.dart';
 
 /// roll fudge dice
 class FudgeDice extends UnaryDice {
@@ -35,7 +34,7 @@ class FudgeDice extends UnaryDice {
 }
 
 class CSVDice extends UnaryDice {
-  CSVDice(super.op, super.left, super.roller, this.vals);
+  CSVDice(super.name, super.left, super.roller, this.vals);
 
   final SeparatedList<String, String> vals;
 
@@ -63,7 +62,7 @@ class CSVDice extends UnaryDice {
 
 class PenetratingDice extends UnaryDice {
   PenetratingDice(
-    super.op,
+    super.name,
     super.left,
     super.roller, {
     required String nsides,
@@ -75,7 +74,7 @@ class PenetratingDice extends UnaryDice {
 
   final int nsides;
   final int nsidesPenetration;
-  final limit = DiceRoller.defaultRerollLimit;
+  final int limit = DiceRoller.defaultRerollLimit;
 
   @override
   String toString() => '(${left}d${nsides}p$nsidesPenetration)';
@@ -180,7 +179,7 @@ class D66Dice extends UnaryDice {
 /// the `UnaryDice` constructor signature. The parser passes its `roller`
 /// variable which is already a `DiceResultRoller`.
 class NamedDice extends UnaryDice {
-  NamedDice(super.op, super.left, super.roller, this.dieName, this.faces);
+  NamedDice(super.name, super.left, super.roller, this.dieName, this.faces);
 
   final String dieName;
   final IList<int> faces;

@@ -1,8 +1,8 @@
-import 'dice_roller.dart';
-import 'enums.dart';
-import 'roll_result.dart';
-import 'roll_summary.dart';
-import 'rolled_die.dart';
+import 'package:mythic_dice_parser/src/dice_roller.dart';
+import 'package:mythic_dice_parser/src/enums.dart';
+import 'package:mythic_dice_parser/src/roll_result.dart';
+import 'package:mythic_dice_parser/src/roll_summary.dart';
+import 'package:mythic_dice_parser/src/rolled_die.dart';
 
 /// Re-roll unlocked dice from a previous [RollSummary].
 ///

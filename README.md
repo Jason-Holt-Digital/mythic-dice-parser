@@ -14,7 +14,7 @@ exploding, compounding, and other variations.
 
 ```dart
 
-import 'package:dart_dice_parser/dart_dice_parser.dart';
+import 'package:mythic_dice_parser/mythic_dice_parser.dart';
 
 void main() {
   // Create a roller for D20 advantage (roll 2d20, keep highest).
@@ -556,7 +556,7 @@ The push mechanic (Year Zero Engine, etc.) allows locking certain dice and re-ro
 This operates on a `RollSummary` result, not as grammar syntax.
 
 ```dart
-import 'package:dart_dice_parser/dart_dice_parser.dart';
+import 'package:mythic_dice_parser/mythic_dice_parser.dart';
 
 void main() async {
   final dice = DiceExpression.create('"Attack": 4d6');

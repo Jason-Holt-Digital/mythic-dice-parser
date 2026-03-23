@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-import 'extensions.dart';
-import 'rolled_die.dart';
+import 'package:mythic_dice_parser/src/extensions.dart';
+import 'package:mythic_dice_parser/src/rolled_die.dart';
 
 /// Result for a single labeled group within a comma-separated expression.
 ///

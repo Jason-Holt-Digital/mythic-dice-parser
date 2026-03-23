@@ -4,7 +4,7 @@
 
 ```dart
 import 'dart:io';
-import 'package:dart_dice_parser/dart_dice_parser.dart';
+import 'package:mythic_dice_parser/mythic_dice_parser.dart';
 
 
 Future<void> main() async {

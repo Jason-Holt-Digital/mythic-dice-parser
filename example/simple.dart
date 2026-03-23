@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:dart_dice_parser/dart_dice_parser.dart';
+import 'package:mythic_dice_parser/mythic_dice_parser.dart';
 import 'package:logging/logging.dart';
 
 final listEquals = const ListEquality().equals;

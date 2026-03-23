@@ -21,8 +21,8 @@ class StatsCollector {
   int _maxVal = 0;
   int _count = 0;
   bool _initialized = false;
-  double _mean = 0.0;
-  double _sq = 0.0;
+  double _mean = 0;
+  double _sq = 0;
 
   final _histogram = SplayTreeMap<int, int>();
 

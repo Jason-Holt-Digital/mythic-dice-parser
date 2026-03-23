@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:dart_dice_parser/dart_dice_parser.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:mythic_dice_parser/mythic_dice_parser.dart';
 import 'package:test/test.dart';
 
 class MockRandom extends Mock implements Random {}
@@ -353,12 +353,8 @@ void main() {
       final results = <RollResult>[];
       final summaries = <RollSummary>[];
       await dice.roll(
-        onRoll: (rr) {
-          results.add(rr);
-        },
-        onSummary: (rs) {
-          summaries.add(rs);
-        },
+        onRoll: results.add,
+        onSummary: summaries.add,
       );
       final rrRoll = RollResult(
         expression: '(2d6)',
@@ -1145,10 +1141,10 @@ void main() {
         roller: CallbackDiceRoller(
           rollCallback:
               ({
-                required int ndice,
-                required int nsides,
-                required int min,
-                required DieType dieType,
+                required ndice,
+                required nsides,
+                required min,
+                required dieType,
               }) async {
                 calls.add((
                   ndice: ndice,
@@ -1158,9 +1154,8 @@ void main() {
                 ));
                 return List<int>.filled(ndice, min);
               },
-          rollValsCallback:
-              <T>(int ndice, List<T> vals, {required DieType dieType}) async =>
-                  List<T>.filled(ndice, vals.first),
+          rollValsCallback: <T>(ndice, vals, {required dieType}) async =>
+              List<T>.filled(ndice, vals.first),
         ),
       );
 

@@ -1,6 +1,6 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-import 'rolled_die.dart';
+import 'package:mythic_dice_parser/src/rolled_die.dart';
 
 extension RolledDieIListExtensions on IList<RolledDie> {
   int get sum => map((d) => d.result).fold(0, (sum, i) => sum + i);

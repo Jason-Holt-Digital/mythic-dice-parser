@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-import 'extensions.dart';
-import 'group_result.dart';
-import 'roll_result.dart';
-import 'rolled_die.dart';
+import 'package:mythic_dice_parser/src/extensions.dart';
+import 'package:mythic_dice_parser/src/group_result.dart';
+import 'package:mythic_dice_parser/src/roll_result.dart';
+import 'package:mythic_dice_parser/src/rolled_die.dart';
 
 /// [RollSummary] is the final result of rolling a dice expression.
 /// It rolls up the metadata of sub-expressions, and includes a `detailResults`
@@ -81,11 +81,12 @@ class RollSummary extends Equatable {
     }..removeWhere((k, v) => v == 0);
 
     if (params.isNotEmpty) {
-      buffer.write(', ');
-      buffer.writeAll(
-        params.entries.map((entry) => '${entry.key}: ${entry.value}'),
-        ', ',
-      );
+      buffer
+        ..write(', ')
+        ..writeAll(
+          params.entries.map((entry) => '${entry.key}: ${entry.value}'),
+          ', ',
+        );
     }
 
     buffer.write(')');
@@ -114,8 +115,7 @@ class RollSummary extends Equatable {
       );
 
   String toStringPretty() {
-    final buffer = StringBuffer();
-    buffer
+    final buffer = StringBuffer()
       ..write(toString())
       ..write('\n')
       ..write(detailedResults.toStringPretty(indent: '  '));

@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-import 'enums.dart';
-import 'extensions.dart';
-import 'rolled_die.dart';
+import 'package:mythic_dice_parser/src/enums.dart';
+import 'package:mythic_dice_parser/src/extensions.dart';
+import 'package:mythic_dice_parser/src/rolled_die.dart';
 
 /// [RollResult] represents the result of evaluating a particular node of the AST.
 ///
@@ -143,10 +143,11 @@ class RollResult extends Equatable {
 
   @override
   String toString() {
-    final buffer = StringBuffer();
-    buffer.write(
-      '$expression =${opType.name}=> RollResult(${opType == OpType.value ? 'value' : 'total'}: $total',
-    );
+    final buffer = StringBuffer()
+      ..write(
+        '$expression =${opType.name}=> RollResult('
+        '${opType == OpType.value ? 'value' : 'total'}: $total',
+      );
     if (opType != OpType.value) {
       if (results.isNotEmpty) {
         buffer.write(', results: ${results.toString(false)}');
@@ -192,8 +193,7 @@ String pprint(RollResult? rr, {String indent = ''}) {
   if (rr == null) {
     return '';
   }
-  final buffer = StringBuffer(indent);
-  buffer.write(rr.toString());
+  final buffer = StringBuffer(indent)..write(rr.toString());
   if (rr.left != null && rr.left?.opType != OpType.value) {
     buffer
       ..write('\n')

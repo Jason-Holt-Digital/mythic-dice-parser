@@ -1,10 +1,10 @@
-import 'dice_expression.dart';
-import 'dice_roller.dart';
-import 'enums.dart';
-import 'extensions.dart';
-import 'roll_result.dart';
-import 'rolled_die.dart';
-import 'utils.dart';
+import 'package:mythic_dice_parser/src/dice_expression.dart';
+import 'package:mythic_dice_parser/src/dice_roller.dart';
+import 'package:mythic_dice_parser/src/enums.dart';
+import 'package:mythic_dice_parser/src/extensions.dart';
+import 'package:mythic_dice_parser/src/roll_result.dart';
+import 'package:mythic_dice_parser/src/rolled_die.dart';
+import 'package:mythic_dice_parser/src/utils.dart';
 
 /// All our operations will inherit from this class.
 /// The `call()` method will be called by the parent node.
@@ -86,10 +86,10 @@ class CommaOp extends Binary {
   /// Existing behavior: collapse each sub-expression to a singleVal total.
   RollResult _evalTotalized(RollResult lhs, RollResult rhs) {
     final results = <RolledDie>[];
-    final discarded = <RolledDie>[];
-
-    discarded.addAll(lhs.discarded);
-    discarded.addAll(rhs.discarded);
+    final discarded = <RolledDie>[
+      ...lhs.discarded,
+      ...rhs.discarded,
+    ];
 
     if (lhs.opType == OpType.comma) {
       results.addAll(lhs.results);

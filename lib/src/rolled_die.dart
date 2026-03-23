@@ -2,8 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-import 'dice_roller.dart';
-import 'enums.dart';
+import 'package:mythic_dice_parser/src/dice_roller.dart';
+import 'package:mythic_dice_parser/src/enums.dart';
 
 /// representation of a single dice roll result.
 class RolledDie extends Equatable implements Comparable<RolledDie> {
@@ -311,7 +311,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
         return 'D66';
       case DieType.singleVal:
         return 'val';
-      default:
+      case DieType.nvals:
         return 'd?';
     }
   }
@@ -375,12 +375,12 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
 
   @override
   String toString() {
-    final buffer = StringBuffer();
-    buffer.write(result);
-    buffer.write('(');
-    buffer.write(getDieGlyph());
-    buffer.write(getDieStateGlyphs());
-    buffer.write(')');
+    final buffer = StringBuffer()
+      ..write(result)
+      ..write('(')
+      ..write(getDieGlyph())
+      ..write(getDieStateGlyphs())
+      ..write(')');
     return buffer.toString();
   }
 

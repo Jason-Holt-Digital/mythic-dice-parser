@@ -1,8 +1,8 @@
-import 'ast_core.dart';
-import 'dice_roller.dart';
-import 'enums.dart';
-import 'roll_result.dart';
-import 'rolled_die.dart';
+import 'package:mythic_dice_parser/src/ast_core.dart';
+import 'package:mythic_dice_parser/src/dice_roller.dart';
+import 'package:mythic_dice_parser/src/enums.dart';
+import 'package:mythic_dice_parser/src/roll_result.dart';
+import 'package:mythic_dice_parser/src/rolled_die.dart';
 
 class SortOp extends Unary {
   SortOp(super.name, super.left);
@@ -274,7 +274,7 @@ class ClampOp extends Binary {
     final newResults = <RolledDie>[];
     final discarded = <RolledDie>[];
     for (final d in lhs.results) {
-      // TODO: add clamped flag?
+      // TODO(mythic): add clamped flag?
       if (name == 'c>' && d.result > target) {
         discarded.add(RolledDie.copyWith(d, discarded: true, clampHigh: true));
         newResults.add(RolledDie.copyWith(d, result: target, clampHigh: true));
