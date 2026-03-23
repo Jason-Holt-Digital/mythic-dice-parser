@@ -4,7 +4,9 @@ import 'package:mythic_dice_parser/src/enums.dart';
 import 'package:mythic_dice_parser/src/roll_result.dart';
 import 'package:mythic_dice_parser/src/rolled_die.dart';
 
+/// Sort operation (ascending or descending).
 class SortOp extends Unary {
+  /// Creates a sort op.
   SortOp(super.name, super.left);
 
   @override
@@ -25,6 +27,7 @@ class SortOp extends Unary {
 
 /// variation on count -- count how many results from lhs are =,<,> rhs.
 class CountOp extends Binary {
+  /// Creates a count op.
   CountOp(
     super.name,
     super.left,
@@ -44,6 +47,7 @@ class CountOp extends Binary {
     }
   }
 
+  /// The type of count being performed.
   CountType countType;
 
   @override
@@ -56,10 +60,12 @@ class CountOp extends Binary {
       var calculatedDefault = false;
       final target = rhs.totalOrDefault(() {
         calculatedDefault = true;
-        // if missing RHS, we can make assumptions depending on operator and the dietype
+        // if missing RHS, we can make assumptions depending
+        // on operator and the dietype
         switch (name) {
           case '#':
-            // example: '3d6#' should be 3. target is ignored in case statement below.
+            // example: '3d6#' should be 3. target is ignored
+            // in case statement below.
             rhsEmptyAndSimpleCount = true;
             return 0;
           case '#s' || '#cs':
@@ -157,6 +163,7 @@ class CountOp extends Binary {
 
 /// drop operations -- drop high/low, or drop <,>,= rhs
 class DropOp extends Binary {
+  /// Creates a drop op.
   DropOp(super.name, super.left, super.right);
 
   @override
@@ -211,6 +218,7 @@ class DropOp extends Binary {
 
 /// drop operations -- drop high/low, or drop <,>,= rhs
 class DropHighLowOp extends Binary {
+  /// Creates a drop-high/low op.
   DropHighLowOp(super.name, super.left, super.right);
 
   @override
@@ -257,6 +265,7 @@ class DropHighLowOp extends Binary {
 
 /// clamp results of lhs to >,< rhs.
 class ClampOp extends Binary {
+  /// Creates a clamp op.
   ClampOp(super.name, super.left, super.right);
 
   @override
@@ -296,7 +305,9 @@ class ClampOp extends Binary {
   }
 }
 
+/// Reroll operation (r, ro).
 class RerollDice extends BinaryDice {
+  /// Creates a reroll op.
   RerollDice(
     super.name,
     super.left,
@@ -309,6 +320,7 @@ class RerollDice extends BinaryDice {
     }
   }
 
+  /// Maximum number of rerolls before stopping.
   int limit;
 
   @override
@@ -379,7 +391,9 @@ class RerollDice extends BinaryDice {
   }
 }
 
+/// Compounding dice operation (!!, !!o).
 class CompoundingDice extends BinaryDice {
+  /// Creates a compounding dice op.
   CompoundingDice(
     super.name,
     super.left,
@@ -392,6 +406,7 @@ class CompoundingDice extends BinaryDice {
     }
   }
 
+  /// Maximum number of compound iterations.
   int limit;
 
   @override
@@ -466,7 +481,9 @@ class CompoundingDice extends BinaryDice {
   }
 }
 
+/// Exploding dice operation (!, !o).
 class ExplodingDice extends BinaryDice {
+  /// Creates an exploding dice op.
   ExplodingDice(
     super.name,
     super.left,
@@ -479,6 +496,7 @@ class ExplodingDice extends BinaryDice {
     }
   }
 
+  /// Maximum number of explosions.
   int limit;
 
   @override

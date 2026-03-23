@@ -7,6 +7,7 @@ import 'package:mythic_dice_parser/src/enums.dart';
 
 /// representation of a single dice roll result.
 class RolledDie extends Equatable implements Comparable<RolledDie> {
+  /// Creates a rolled die with the given [result] and [dieType].
   RolledDie({
     required this.result,
     required this.dieType,
@@ -57,6 +58,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     }
   }
 
+  /// Creates a standard polyhedral die result.
   factory RolledDie.polyhedral({
     required int result,
     required int nsides,
@@ -68,6 +70,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     discarded: discarded,
   );
 
+  /// Creates a fudge die result (-1, 0, or +1).
   factory RolledDie.fudge({required int result}) => RolledDie(
     result: result,
     nsides: DiceRoller.defaultFudgeVals.length,
@@ -75,6 +78,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     potentialValues: DiceRoller.defaultFudgeVals,
   );
 
+  /// Creates a synthetic single-value result (e.g. a sum).
   factory RolledDie.singleVal({
     required int result,
     bool discarded = false,
@@ -92,11 +96,13 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     from: IList(from),
   );
 
+  /// Creates a D66 die result.
   factory RolledDie.d66({
     required int result,
     Iterable<RolledDie>? from = const IList.empty(),
   }) => RolledDie(result: result, dieType: DieType.d66, from: IList(from));
 
+  /// Creates a copy of [other] with overridden fields.
   factory RolledDie.copyWith(
     RolledDie other, {
     int? result,
@@ -145,9 +151,11 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     locked: locked ?? other.locked,
   );
 
+  /// Creates a discarded copy of [other].
   factory RolledDie.discard(RolledDie other) =>
       RolledDie.copyWith(other, discarded: true);
 
+  /// Marks [other] with the appropriate count flag.
   factory RolledDie.scoreForCountType(
     RolledDie other, {
     required CountType countType,
@@ -162,7 +170,9 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
   /// the rolled result
   final int result;
 
-  /// the number of sides on the die. Generally only set if dieType == polyhedral
+  /// The number of sides on the die.
+  ///
+  /// Generally only set if dieType == polyhedral.
   final int nsides;
 
   /// the maximum possible result of this die
@@ -171,8 +181,10 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
   /// the minimum possible result of this die
   late final int minPotentialValue;
 
-  /// the die faces (potential values).
-  /// this will be empty for polyhedral roles -- values of a polyhederal die will be range of [1,nsides]
+  /// The die faces (potential values).
+  ///
+  /// Empty for polyhedral rolls — values of a polyhedral
+  /// die will be in the range of [1, nsides].
   final IList<int> potentialValues;
 
   /// true if the result has been discarded
@@ -236,8 +248,10 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
   /// Whether this die is locked (will not be re-rolled during a push).
   final bool locked;
 
+  /// Whether this die rolled its maximum possible value.
   bool get isMaxResult => result == maxPotentialValue;
 
+  /// Whether this die has a range of possible values.
   bool get isCountable => minPotentialValue != maxPotentialValue;
 
   @override
@@ -268,6 +282,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     locked,
   ];
 
+  /// Serializes this die to a JSON-compatible map.
   Map<String, dynamic> toJson() =>
       {
         'result': result,
@@ -301,6 +316,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
             (v is bool && !v),
       );
 
+  /// Returns a compact label for this die type (e.g. "d6", "dF").
   String getDieGlyph() {
     switch (dieType) {
       case DieType.polyhedral:
@@ -316,6 +332,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     }
   }
 
+  /// Returns emoji glyphs representing this die's state flags.
   String getDieStateGlyphs() {
     final buffer = StringBuffer();
 

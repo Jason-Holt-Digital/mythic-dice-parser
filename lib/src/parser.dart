@@ -6,6 +6,7 @@ import 'package:mythic_dice_parser/src/dice_expression.dart';
 import 'package:mythic_dice_parser/src/dice_roller.dart';
 import 'package:petitparser/petitparser.dart';
 
+/// Builds the PetitParser grammar for dice expressions.
 Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
   final builder = ExpressionBuilder<DiceExpression>()
     // numbers

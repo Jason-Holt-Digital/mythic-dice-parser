@@ -8,6 +8,7 @@ import 'package:mythic_dice_parser/src/roll_result.dart';
 import 'package:mythic_dice_parser/src/rolled_die.dart';
 import 'package:mythic_dice_parser/src/utils.dart';
 
+/// Abstract interface for producing random die values.
 abstract class DiceRoller {
   /// minimum dice to roll (0)
   static const minDice = 0;
@@ -24,6 +25,7 @@ abstract class DiceRoller {
   /// default limit for rerolls/exploding/compounding to avoid getting stuck in loop
   static const defaultRerollLimit = 1000;
 
+  /// Default fudge die face values.
   static const defaultFudgeVals = [-1, -1, 0, 0, 1, 1];
 
   /// return an Stream of ints. length == ndice, range: [min,nsides]
@@ -55,15 +57,19 @@ abstract class DiceRoller {
 /// requests more values than are available, a
 /// [PreRolledDiceRollerExhaustedException] is thrown.
 final class PreRolledDiceRollerExhaustedException implements Exception {
+  /// Creates the exception with a descriptive [message].
   const PreRolledDiceRollerExhaustedException(this.message);
 
+  /// The error message.
   final String message;
 
   @override
   String toString() => message;
 }
 
+/// A [DiceRoller] that consumes pre-rolled values in order.
 final class PreRolledDiceRoller extends DiceRoller {
+  /// Creates a roller that yields [values] in sequence.
   PreRolledDiceRoller(Iterable<int> values) : _values = Queue<int>.of(values);
 
   final Queue<int> _values;
@@ -145,11 +151,13 @@ final class PreRolledDiceRoller extends DiceRoller {
 /// This is intended for advanced use cases like interactive dice prompts or
 /// integrations with 3D dice engines that can produce results on demand.
 final class CallbackDiceRoller extends DiceRoller {
+  /// Creates a roller that delegates to the provided callbacks.
   CallbackDiceRoller({
     required this.rollCallback,
     required this.rollValsCallback,
   });
 
+  /// Callback invoked for standard die rolls.
   final Future<List<int>> Function({
     required int ndice,
     required int nsides,
@@ -158,6 +166,7 @@ final class CallbackDiceRoller extends DiceRoller {
   })
   rollCallback;
 
+  /// Callback invoked for custom-values rolls.
   final Future<List<T>> Function<T>(
     int ndice,
     List<T> vals, {
@@ -192,8 +201,9 @@ final class CallbackDiceRoller extends DiceRoller {
   }
 }
 
-/// a dice roller that uses an RNG
+/// A [DiceRoller] backed by a [Random] number generator.
 class RNGRoller extends DiceRoller {
+  /// Creates a roller using [random], defaulting to [Random.secure].
   RNGRoller([Random? random]) : _random = random ?? Random.secure();
 
   final Random _random;
@@ -260,6 +270,7 @@ class DiceResultRoller with LoggingMixin {
 
   final DiceRoller _diceRoller;
 
+  /// Re-rolls a single [rolledDie] using the same die type.
   Future<RollResult> reroll(RolledDie rolledDie, [String msg = '']) async {
     switch (rolledDie.dieType) {
       case DieType.polyhedral:
@@ -279,6 +290,7 @@ class DiceResultRoller with LoggingMixin {
     }
   }
 
+  /// Rolls [ndice] D66 dice (two d6, read as tens+ones).
   Future<RollResult> rollD66(int ndice, [String msg = '']) async {
     final results = <RolledDie>[];
     final discarded = <RolledDie>[];
@@ -340,7 +352,7 @@ class DiceResultRoller with LoggingMixin {
     );
   }
 
-  /// Roll N fudge dice, return results
+  /// Roll [ndice] with the given custom [sideVals].
   Future<RollResult> rollVals(
     int ndice,
     IList<int> sideVals, [

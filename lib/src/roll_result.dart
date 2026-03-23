@@ -5,9 +5,10 @@ import 'package:mythic_dice_parser/src/enums.dart';
 import 'package:mythic_dice_parser/src/extensions.dart';
 import 'package:mythic_dice_parser/src/rolled_die.dart';
 
-/// [RollResult] represents the result of evaluating a particular node of the AST.
+/// Represents the result of evaluating a particular node of the AST.
 ///
 class RollResult extends Equatable {
+  /// Creates a roll result for the given expression and dice.
   RollResult({
     required this.expression,
     required this.opType,
@@ -45,7 +46,8 @@ class RollResult extends Equatable {
   ///
   /// in the returned results, nsides will be max(nsides, other.nsides).
   /// this is so we can explode a dice expr like `(2d6 + 1)!`.
-  /// NOTE: A side-effect of this decision is `(2d6 + 2d10)!` will explode with 10s, not 6s.
+  /// NOTE: A side-effect of this decision is `(2d6 + 2d10)!`
+  /// will explode with 10s, not 6s.
   RollResult operator +(RollResult other) => RollResult.fromRollResult(
     other,
     expression: '($expression + ${other.expression})',
@@ -58,7 +60,8 @@ class RollResult extends Equatable {
 
   /// multiplication operator for [RollResult].
   ///
-  /// Results are collapsed into a single value (the result of multiplication), all other rolled die are discarded.
+  /// Results are collapsed into a single value (the product),
+  /// all other rolled die are discarded.
   ///
   RollResult operator *(RollResult other) => RollResult.fromRollResult(
     other,
@@ -101,11 +104,17 @@ class RollResult extends Equatable {
 
   /// the results of the evaluating the expression
   final IList<RolledDie> results;
+
+  /// Dice discarded during evaluation.
   final IList<RolledDie> discarded;
 
+  /// Left child in the AST result tree.
   final RollResult? left;
+
+  /// Right child in the AST result tree.
   final RollResult? right;
 
+  /// The operation that produced this result.
   final OpType opType;
 
   /// Client-defined tags from @key=value syntax. Set by TagOp.
@@ -114,12 +123,16 @@ class RollResult extends Equatable {
   /// sum of [results]
   int get total => totalOrDefault(() => 0);
 
+  /// Count of dice marked as successes.
   int get successCount => results.successCount;
 
+  /// Count of dice marked as failures.
   int get failureCount => results.failureCount;
 
+  /// Count of dice marked as critical successes.
   int get critSuccessCount => results.critSuccessCount;
 
+  /// Count of dice marked as critical failures.
   int get critFailureCount => results.critFailureCount;
 
   @override
@@ -133,7 +146,8 @@ class RollResult extends Equatable {
     //right,
   ];
 
-  /// Get the total, or if results are empty return result of calling [defaultCb].
+  /// Gets the total, or if results are empty returns the
+  /// result of calling [defaultCb].
   int totalOrDefault(int Function() defaultCb) {
     if (results.isEmpty) {
       return defaultCb();
@@ -160,8 +174,10 @@ class RollResult extends Equatable {
     return buffer.toString();
   }
 
+  /// Indented multi-line representation of the result tree.
   String toStringPretty({String indent = ''}) => pprint(this, indent: indent);
 
+  /// Serializes this result to a JSON-compatible map.
   Map<String, dynamic> toJson() =>
       {
         'expression': expression,
@@ -189,6 +205,7 @@ class RollResult extends Equatable {
       );
 }
 
+/// Pretty-prints a [RollResult] tree with indentation.
 String pprint(RollResult? rr, {String indent = ''}) {
   if (rr == null) {
     return '';

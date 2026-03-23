@@ -9,28 +9,38 @@ import 'package:petitparser/petitparser.dart';
 
 /// An abstract expression that can be evaluated.
 abstract class DiceExpression {
+  /// Logger for dice expression evaluation.
   static final exprLogger = Logger('DiceExpression');
+
+  /// Callbacks invoked for each [RollResult] during evaluation.
   static List<void Function(RollResult)> listeners = [defaultListener];
+
+  /// Callbacks invoked for each [RollSummary] after evaluation.
   static List<void Function(RollSummary)> summaryListeners = [];
 
+  /// Registers a listener for individual roll results.
   static void registerListener(void Function(RollResult rollResult) callback) {
     listeners.add(callback);
   }
 
+  /// Registers a listener for roll summaries.
   static void registerSummaryListener(
     void Function(RollSummary rollSummary) callback,
   ) {
     summaryListeners.add(callback);
   }
 
+  /// Removes all roll-result listeners.
   static void clearListeners() {
     listeners.clear();
   }
 
+  /// Removes all summary listeners.
   static void clearSummaryListeners() {
     summaryListeners.clear();
   }
 
+  /// Recursively walks the result tree and fires listeners.
   static void callListeners(
     RollResult? rr, {
     void Function(RollResult rr) onRoll = noopListener,
@@ -44,10 +54,13 @@ abstract class DiceExpression {
     onRoll(rr);
   }
 
+  /// No-op roll-result listener used as default.
   static void noopListener(RollResult rollResult) {}
 
+  /// No-op summary listener used as default.
   static void noopSummaryListener(RollSummary rollResult) {}
 
+  /// Default listener that logs the result at `fine` level.
   static void defaultListener(RollResult rollResult) {
     exprLogger.fine(() => '$rollResult');
   }
@@ -114,7 +127,9 @@ abstract class DiceExpression {
     return result.value;
   }
 
-  /// each DiceExpression operation is callable (when we call the parsed string, this is the method that'll be used)
+  /// Each DiceExpression operation is callable.
+  ///
+  /// When the parsed string is invoked, this is the method used.
   Future<RollResult> call();
 
   /// Rolls the dice expression

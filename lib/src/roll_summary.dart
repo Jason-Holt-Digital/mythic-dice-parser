@@ -19,6 +19,7 @@ import 'package:mythic_dice_parser/src/rolled_die.dart';
 /// you may need to traverse the tree to inspect all the events.
 
 class RollSummary extends Equatable {
+  /// Creates a summary from the given [detailedResults] tree.
   RollSummary({required this.detailedResults})
     : total = detailedResults.results.sum,
       results = IList(detailedResults.results),
@@ -30,13 +31,22 @@ class RollSummary extends Equatable {
       critFailureCount = detailedResults.results.critFailureCount,
       groups = _unmodifiable(_buildGroups(detailedResults));
 
+  /// The full AST result tree for detailed inspection.
   final RollResult detailedResults;
 
-  /// sum of [results]
+  /// Sum of [results].
   late final int total;
+
+  /// Count of dice marked as successes.
   late final int successCount;
+
+  /// Count of dice marked as failures.
   late final int failureCount;
+
+  /// Count of dice marked as critical successes.
   late final int critSuccessCount;
+
+  /// Count of dice marked as critical failures.
   late final int critFailureCount;
 
   /// the parsed expression
@@ -68,7 +78,8 @@ class RollSummary extends Equatable {
   @override
   String toString() {
     final buffer = StringBuffer(
-      '$expression ===> RollSummary(total: $total, results: ${results.toString(false)}',
+      '$expression ===> RollSummary(total: $total, '
+      'results: ${results.toString(false)}',
     );
     if (discarded.isNotEmpty) {
       buffer.write(', discarded: ${discarded.toString(false)}');
@@ -93,6 +104,7 @@ class RollSummary extends Equatable {
     return buffer.toString();
   }
 
+  /// Serializes this summary to a JSON-compatible map.
   Map<String, dynamic> toJson() =>
       {
         'expression': expression,
@@ -114,6 +126,7 @@ class RollSummary extends Equatable {
             (v is bool && !v),
       );
 
+  /// Indented multi-line representation with the full result tree.
   String toStringPretty() {
     final buffer = StringBuffer()
       ..write(toString())

@@ -8,6 +8,7 @@ import 'package:petitparser/parser.dart';
 
 /// roll fudge dice
 class FudgeDice extends UnaryDice {
+  /// Creates a fudge dice op.
   FudgeDice(super.name, super.left, super.roller);
 
   @override
@@ -33,9 +34,12 @@ class FudgeDice extends UnaryDice {
   }
 }
 
+/// Custom-values dice (e.g. `1d[1,3,5,7,9]`).
 class CSVDice extends UnaryDice {
+  /// Creates a CSV dice op.
   CSVDice(super.name, super.left, super.roller, this.vals);
 
+  /// The comma-separated face values.
   final SeparatedList<String, String> vals;
 
   @override
@@ -60,7 +64,9 @@ class CSVDice extends UnaryDice {
   }
 }
 
+/// Penetrating dice (NdMpX).
 class PenetratingDice extends UnaryDice {
+  /// Creates a penetrating dice op.
   PenetratingDice(
     super.name,
     super.left,
@@ -72,8 +78,13 @@ class PenetratingDice extends UnaryDice {
            ? int.parse(nsides)
            : int.parse(nsidesPenetration);
 
+  /// Number of sides on the main die.
   final int nsides;
+
+  /// Number of sides on the penetration re-roll die.
   final int nsidesPenetration;
+
+  /// Maximum number of penetrations before stopping.
   final int limit = DiceRoller.defaultRerollLimit;
 
   @override
@@ -140,6 +151,7 @@ class PenetratingDice extends UnaryDice {
 
 /// roll n % dice
 class PercentDice extends UnaryDice {
+  /// Creates a percent dice op.
   PercentDice(super.name, super.left, super.roller);
 
   @override
@@ -158,6 +170,7 @@ class PercentDice extends UnaryDice {
 
 /// roll n D66
 class D66Dice extends UnaryDice {
+  /// Creates a D66 dice op.
   D66Dice(super.name, super.left, super.roller);
 
   @override
@@ -179,9 +192,13 @@ class D66Dice extends UnaryDice {
 /// the `UnaryDice` constructor signature. The parser passes its `roller`
 /// variable which is already a `DiceResultRoller`.
 class NamedDice extends UnaryDice {
+  /// Creates a named dice op for the registered die type [dieName].
   NamedDice(super.name, super.left, super.roller, this.dieName, this.faces);
 
+  /// The registered die type name (lowercase).
   final String dieName;
+
+  /// The face values for this die type.
   final IList<int> faces;
 
   @override
@@ -205,6 +222,7 @@ class NamedDice extends UnaryDice {
 
 /// roll N dice of Y sides.
 class StdDice extends BinaryDice {
+  /// Creates a standard dice op (NdM).
   StdDice(super.name, super.left, super.right, super.roller);
 
   @override

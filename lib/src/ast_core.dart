@@ -10,7 +10,7 @@ import 'package:mythic_dice_parser/src/utils.dart';
 /// The `call()` method will be called by the parent node.
 /// The `eval()` method is called from the node
 abstract class DiceOp extends DiceExpression with LoggingMixin {
-  // each child class should override this to implement their operation
+  /// Subclasses override this to implement their operation.
   Future<RollResult> eval();
 
   // all children can share this call operator -- and it'll let us be consistent w/ regard to logging
@@ -22,30 +22,42 @@ abstract class DiceOp extends DiceExpression with LoggingMixin {
   }
 }
 
-/// base class for unary operations
+/// Base class for unary operations.
 abstract class Unary extends DiceOp {
+  /// Creates a unary op with the given [name] and operand [left].
   Unary(this.name, this.left);
 
+  /// The operator name.
   final String name;
+
+  /// The operand expression.
   final DiceExpression left;
 
   @override
   String toString() => '($left)$name';
 }
 
-/// base class for binary operations
+/// Base class for binary operations.
 abstract class Binary extends DiceOp {
+  /// Creates a binary op with [name], [left], and [right] operands.
   Binary(this.name, this.left, this.right);
 
+  /// The operator name.
   final String name;
+
+  /// The left operand.
   final DiceExpression left;
+
+  /// The right operand.
   final DiceExpression right;
 
   @override
   String toString() => '($left $name $right)';
 }
 
+/// Comma operator that joins sub-expressions.
 class CommaOp extends Binary {
+  /// Creates a comma op.
   CommaOp(super.name, super.left, super.right);
 
   @override
@@ -127,50 +139,58 @@ class CommaOp extends Binary {
   }
 }
 
-/// multiply operation (flattens results)
+/// Multiply operation (flattens results into a single value).
 class MultiplyOp extends Binary {
+  /// Creates a multiply op.
   MultiplyOp(super.name, super.left, super.right);
 
   @override
   Future<RollResult> eval() async => await left() * await right();
 }
 
-/// add operation
+/// Addition operation.
 class AddOp extends Binary {
+  /// Creates an add op.
   AddOp(super.name, super.left, super.right);
 
   @override
   Future<RollResult> eval() async => await left() + await right();
 }
 
-/// subtraction operation
+/// Subtraction operation.
 class SubOp extends Binary {
+  /// Creates a subtract op.
   SubOp(super.name, super.left, super.right);
 
   @override
   Future<RollResult> eval() async => await left() - await right();
 }
 
-/// base class for unary dice operations
+/// Base class for unary dice operations.
 abstract class UnaryDice extends Unary {
+  /// Creates a unary dice op with the given [roller].
   UnaryDice(super.name, super.left, this.roller);
 
+  /// The dice roller used for this operation.
   final DiceResultRoller roller;
 
   @override
   String toString() => '($left$name)';
 }
 
-/// base class for binary dice expressions
+/// Base class for binary dice expressions.
 abstract class BinaryDice extends Binary {
+  /// Creates a binary dice op with the given [roller].
   BinaryDice(super.name, super.left, super.right, this.roller);
 
+  /// The dice roller used for this operation.
   final DiceResultRoller roller;
 }
 
 /// A value expression. The token we read from input will be a String,
 /// it must parse as an int, and an empty string will return empty set.
 class SimpleValue extends DiceExpression {
+  /// Parses [value] as an integer literal.
   SimpleValue(this.value)
     : _results = RollResult(
         expression: value,
@@ -180,6 +200,7 @@ class SimpleValue extends DiceExpression {
             : [RolledDie.singleVal(result: int.parse(value))],
       );
 
+  /// The raw string value from the expression.
   final String value;
   final RollResult _results;
 
@@ -194,8 +215,10 @@ class SimpleValue extends DiceExpression {
 /// In the expression `"Attack:" 2d6!`, the label is "Attack" and the
 /// sub-expression is `2d6!`.
 class LabelOp extends Unary {
+  /// Creates a label op wrapping [child] with [label].
   LabelOp(this.label, DiceExpression child) : super('label', child);
 
+  /// The group label text.
   final String label;
 
   @override
@@ -224,8 +247,10 @@ class LabelOp extends Unary {
 /// Tags are stored on the RollResult node, NOT on individual RolledDie objects.
 /// GroupResult picks them up when building groups from the result tree.
 class TagOp extends Unary {
+  /// Creates a tag op attaching [tags] to the result of [child].
   TagOp(DiceExpression child, this.tags) : super('tag', child);
 
+  /// Key-value metadata tags.
   final Map<String, String> tags;
 
   @override
@@ -248,9 +273,12 @@ class TagOp extends Unary {
   }
 }
 
+/// Aggregate `{expr}` operator that collapses results to a total.
 class AggregateOp extends DiceOp {
+  /// Creates an aggregate op wrapping [subexpression].
   AggregateOp(this.subexpression);
 
+  /// The inner expression to aggregate.
   final DiceExpression subexpression;
 
   @override

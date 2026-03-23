@@ -12,7 +12,8 @@ void main() {
 
   setUp(() {
     // first 100 seeded rolls for d6
-    // [6, 2, 1, 5, 3, 5, 1, 4, 6, 5, 6, 4, 2, 4, 2, 3, 5, 1, 1, 2, 4, 1, 6, 2, 2, 5, 6, 3, 1, 3, 6, 1, 2, 3, 6, 2, 1, 1, 1, 3, 1, 2, 3, 3, 6, 2, 5, 4, 3, 4, 1, 5, 4, 4, 2, 6, 5, 4, 6, 2, 3, 1, 4, 5, 3, 2, 2, 6, 6, 4, 4, 2, 6, 2, 5, 3, 3, 4, 4, 2, 2, 4, 3, 2, 6, 6, 4, 6, 4, 4, 3, 1, 4, 2, 2, 4, 3, 3, 1, 3]
+    // first 100 seeded d6 rolls: 6,2,1,5,3,5,1,4,6,5,
+    // 6,4,2,4,2,3,5,1,1,2,4,1,6,2,2,5,6,3,1,3,...
     seededRandom = Random(1234);
     staticMockRandom = MockRandom();
     // NOTE: this mocks the random number generator to always return '1'
@@ -605,7 +606,7 @@ void main() {
     test('create dice with real random', () {
       final dice = DiceExpression.create('10d100');
       final result1 = dice.roll();
-      // result will never be zero -- this test is verifying creating the expr & doing roll
+      // result will never be zero — verifying expr & roll
       expect(result1, isNot(0));
     });
 
@@ -655,7 +656,14 @@ void main() {
       expect(
         out,
         equalsIgnoringWhitespace(
-          '(((((((4d(3 + 3)) ! ) + ((2 + 2)d6)) #cs ) #cf ) #s ) #f ) ===> RollSummary(total: 33, results: [1(d6✗❌), 1(d6✗❌), 6(d6💣✓✅), 6(d6✓✅), 3(d6🔥), 2(d6), 5(d6), 5(d6), 4(d6)], successCount: 2, failureCount: 2, critSuccessCount: 2, critFailureCount: 2)',
+          '(((((((4d(3 + 3)) ! ) + ((2 + 2)d6)) '
+          '#cs ) #cf ) #s ) #f ) ===> '
+          'RollSummary(total: 33, results: '
+          '[1(d6✗❌), 1(d6✗❌), 6(d6💣✓✅), '
+          '6(d6✓✅), 3(d6🔥), 2(d6), 5(d6), '
+          '5(d6), 4(d6)], successCount: 2, '
+          'failureCount: 2, critSuccessCount: 2, '
+          'critFailureCount: 2)',
         ),
       );
     });
@@ -1691,7 +1699,8 @@ void main() {
             summary.groups!['A']!.tags,
             isNotNull,
             reason:
-                '_harvestTags should find labels in discarded when results is empty',
+                '_harvestTags should find labels in '
+                'discarded when results is empty',
           );
           expect(summary.groups!['A']!.tags!['type'], equals('fire'));
         },

@@ -9,6 +9,7 @@ import 'package:mythic_dice_parser/src/rolled_die.dart';
 /// When the expression `"Attack:" 2d6!, "Damage:" 1d8` is rolled,
 /// two [GroupResult]s are produced: one for "Attack" and one for "Damage".
 class GroupResult extends Equatable {
+  /// Creates a [GroupResult] for the given label and dice.
   GroupResult({
     required this.label,
     required Iterable<RolledDie> results,
@@ -27,11 +28,19 @@ class GroupResult extends Equatable {
   /// Dice discarded during evaluation of this group.
   final IList<RolledDie> discarded;
 
-  /// Computed from results — matches the pattern used by RollResult.
+  /// Sum of active die results.
   int get total => results.sum;
+
+  /// Count of dice marked as successes.
   int get successCount => results.successCount;
+
+  /// Count of dice marked as failures.
   int get failureCount => results.failureCount;
+
+  /// Count of dice marked as critical successes.
   int get critSuccessCount => results.critSuccessCount;
+
+  /// Count of dice marked as critical failures.
   int get critFailureCount => results.critFailureCount;
 
   /// Client-defined tags from @key=value syntax.
@@ -40,6 +49,7 @@ class GroupResult extends Equatable {
   @override
   List<Object?> get props => [label, results, discarded, tags];
 
+  /// Serializes this group to a JSON-compatible map.
   Map<String, dynamic> toJson() =>
       {
         'label': label,
