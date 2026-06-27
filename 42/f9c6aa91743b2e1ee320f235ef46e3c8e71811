@@ -1,0 +1,19 @@
+.conductor/settings.toml
+  s_ec89c2006f0e53::t_05f7bc4dd5d80f 1-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "42f9c6aa91743b2e1ee320f235ef46e3c8e71811",
+  "prompts": {},
+  "sessions": {
+    "s_ec89c2006f0e53": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f0ad1-63e7-7a73-98aa-f2896389f99a",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Jason Holt <jason@jasonholtdigital.com>"
+    }
+  }
+}
