@@ -548,10 +548,10 @@ class DiceOverlayController {
     final completer = Completer<void>();
 
     _entry = OverlayEntry(
-      builder: (context) {
+      builder: (_) {
         return Positioned.fill(
-      child: AbsorbPointer(
-        absorbing: true,
+          child: AbsorbPointer(
+            absorbing: true,
             child: DiceOverlay(
               world: world,
               onCompleted: completer.complete,
@@ -830,11 +830,14 @@ class _RollDemoScreenState extends State<RollDemoScreen> {
   String? _error;
 
   late final DiceOverlayController _overlayController;
+  var _overlayControllerInitialized = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (_overlayControllerInitialized) return;
     _overlayController = DiceOverlayController(context);
+    _overlayControllerInitialized = true;
   }
 
   Future<void> _roll({int? seed}) async {
