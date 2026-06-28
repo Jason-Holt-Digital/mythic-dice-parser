@@ -569,12 +569,17 @@ class SceneOverlayDiceRoller implements DiceRoller {
       dieType: dieType,
     );
 
-    final world = await SceneDiceWorldFactory.createD6World(
-      values: values,
-      dieType: dieType,
-    );
-
-    await overlayController.show(world);
+    // Phase 1: only standard d6 rolls get a scene overlay.
+    // Non-d6 rolls (1d8, 1d20, fudge, etc.) yield their values directly
+    // without animation. Attempting to pass non-d6 values to createD6World
+    // would produce invalid face mappings for values above 6.
+    if (nsides == 6 && dieType == DieType.polyhedral) {
+      final world = await SceneDiceWorldFactory.createD6World(
+        values: values,
+        dieType: dieType,
+      );
+      await overlayController.show(world);
+    }
 
     for (final value in values) {
       yield value;
@@ -611,6 +616,14 @@ class SceneOverlayDiceRoller implements DiceRoller {
 ```
 
 Important: for `rollVals<T>`, the visual d6 value and the semantic value may diverge for custom dice. That is acceptable in the first d6-only spike, but the README must call it out. Later, named die types need proper geometry/value labels rather than pretending every named die is a d6.
+
+> **Metadata lifecycle:** `roll()` receives only `ndice`, `nsides`, `min`, and `dieType`.
+> Group labels, tags, `discarded`/`exploded`/`rerolled` flags, and all other `RolledDie`
+> metadata are attached by the parser after the yielded values are consumed and the
+> `RollSummary` is assembled. Phase 6 metadata visual hooks (tag glows, group label chips,
+> explosion spawn markers) cannot be populated at `createD6World` time. They must be driven
+> by a separate post-roll callback that receives the completed `RollSummary` and applies
+> visual state to the already-rendered dice bodies.
 
 ---
 

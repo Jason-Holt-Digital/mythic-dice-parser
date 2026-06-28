@@ -156,9 +156,14 @@ Acceptance gate:
 - Phase 1 visual support is d6-only. Fudge, D66, percentile, named dice, and
   `d[...]` custom faces remain parser-supported but require later visual
   mappings.
-- Tags are group-level metadata in the current parser; visual tag styling
-  should be derived from `RollSummary.groups[label].tags`, not from individual
-  `RolledDie` objects.
+- Tags are attached to `RollResult` nodes by `TagOp`, not to individual
+  `RolledDie` objects. How to read them depends on whether the expression uses
+  label syntax:
+  - **Labeled expressions** (`"Attack": 2d6 @type=fire`): `RollSummary.groups`
+    is populated and `groups[label].tags` carries the harvested tags.
+  - **Unlabeled tagged expressions** (`2d6 @type=fire`): `groups` is `null`
+    because no `groupLabel` is set on any die. Read tags from
+    `summary.detailedResults.tags` instead.
 
 Secondary path:
 
