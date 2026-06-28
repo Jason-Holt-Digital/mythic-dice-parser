@@ -492,6 +492,7 @@ class SceneDiceOverlay extends StatefulWidget {
 }
 
 class _SceneDiceOverlayState extends State<SceneDiceOverlay> {
+  final _simulator = SceneKinematicDiceSimulator();
   Duration _elapsed = Duration.zero;
   bool _completed = false;
 

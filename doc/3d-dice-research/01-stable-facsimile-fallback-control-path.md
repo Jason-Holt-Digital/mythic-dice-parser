@@ -539,6 +539,9 @@ Use `OverlayEntry`.
 
 ```dart
 class DiceOverlayController {
+  DiceOverlayController(this.context);
+
+  final BuildContext context;
   OverlayEntry? _entry;
 
   Future<void> showRoll(DiceWorld world) async {
@@ -1241,7 +1244,7 @@ The conceptual `CallbackDiceRoller` integration should look like this:
 
 ```dart
 final roller = CallbackDiceRoller(
-  onRoll: ({
+  rollCallback: ({
     required ndice,
     required nsides,
     required min,
@@ -1258,6 +1261,12 @@ final roller = CallbackDiceRoller(
     await overlayController.roll(world);
 
     return values;
+  },
+  rollValsCallback: <T>(ndice, vals, {required dieType}) async {
+    // Custom-vals rolls are not expected in this integration;
+    // delegate to a simple random selection.
+    final random = Random();
+    return List<T>.generate(ndice, (_) => vals[random.nextInt(vals.length)]);
   },
 );
 ```
