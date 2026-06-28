@@ -795,9 +795,9 @@ This tests the toolchain and Flutter Scene viability before any Mythic Dice Pars
 Create:
 
 ```text
-lib/lifecycle/roll_authority.dart
-lib/lifecycle/scene_overlay_dice_roller.dart
-lib/overlay/scene_dice_overlay_controller.dart
+example/dice_scene_experiment/lib/lifecycle/roll_authority.dart
+example/dice_scene_experiment/lib/lifecycle/scene_overlay_dice_roller.dart
+example/dice_scene_experiment/lib/overlay/scene_dice_overlay_controller.dart
 ```
 
 Acceptance:
@@ -816,8 +816,8 @@ The overlay must appear before values are yielded and disappear before the UI di
 Create:
 
 ```text
-lib/mapping/d6_face_mapping.dart
-test/d6_face_mapping_test.dart
+example/dice_scene_experiment/lib/mapping/d6_face_mapping.dart
+example/dice_scene_experiment/test/d6_face_mapping_test.dart
 ```
 
 Acceptance:
@@ -835,8 +835,8 @@ This is the most important correctness test in the whole experiment.
 Add:
 
 ```text
-assets_src/dice/d6_authority.glb
-hook/build.dart
+example/dice_scene_experiment/assets_src/dice/d6_authority.glb
+example/dice_scene_experiment/hook/build.dart
 ```
 
 Acceptance:
@@ -855,9 +855,9 @@ This is the point where the spike starts answering the actual product question.
 Implement:
 
 ```text
-lib/scene/scene_dice_world.dart
-lib/scene/scene_dice_body.dart
-lib/simulation/scene_kinematic_dice_simulator.dart
+example/dice_scene_experiment/lib/scene/scene_dice_world.dart
+example/dice_scene_experiment/lib/scene/scene_dice_body.dart
+example/dice_scene_experiment/lib/simulation/scene_kinematic_dice_simulator.dart
 ```
 
 Acceptance:
@@ -876,7 +876,7 @@ Acceptance:
 Add visual mapping:
 
 ```text
-lib/mapping/roll_visual_mapping.dart
+example/dice_scene_experiment/lib/mapping/roll_visual_mapping.dart
 ```
 
 Initial mapping:
@@ -901,7 +901,7 @@ Do not implement every effect. Prove the mapping pipeline exists.
 Create:
 
 ```text
-lib/simulation/scene_physics_dice_simulator.dart
+example/dice_scene_experiment/lib/simulation/scene_physics_dice_simulator.dart
 ```
 
 Acceptance:

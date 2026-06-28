@@ -1068,9 +1068,11 @@ class DiceOverlayController {
   OverlayEntry? _entry;
 
   Future<void> roll(DiceWorld world) async {
+    if (_entry != null) return;
+
     final completer = Completer<void>();
 
-    _entry = OverlayEntry(
+    final entry = OverlayEntry(
       builder: (_) {
         return Positioned.fill(
           child: DiceOverlay(
@@ -1085,12 +1087,17 @@ class DiceOverlayController {
       },
     );
 
-    Overlay.of(context).insert(_entry!);
+    _entry = entry;
+    Overlay.of(context).insert(entry);
 
-    await completer.future;
-
-    _entry?.remove();
-    _entry = null;
+    try {
+      await completer.future;
+    } finally {
+      entry.remove();
+      if (identical(_entry, entry)) {
+        _entry = null;
+      }
+    }
   }
 }
 ```
@@ -1701,10 +1708,10 @@ Decision after prototype:
 
 The implementation should stop there. This experiment is not the final dice roller; it is the smallest useful proof that Mythic Dice Parser can own the **roll lifecycle**, visible **overlay roll**, and authoritative `RollSummary` together.
 
-[1]: https://api.flutter.dev/flutter/widgets/Overlay-class.html?utm_source=chatgpt.com "Overlay class - widgets library - Dart API"
+[1]: https://api.flutter.dev/flutter/widgets/Overlay-class.html "Overlay class - widgets library - Dart API"
 [2]: https://pub.dev/packages/flame_3d "flame_3d | Flutter package"
 [3]: https://pub.dev/packages/flutter_scene "flutter_scene | Flutter package"
-[4]: https://pub.dev/packages/vector_math?utm_source=chatgpt.com "vector_math | Dart package"
+[4]: https://pub.dev/packages/vector_math "vector_math | Dart package"
 [5]: https://pub.dev/packages/flutter_shaders "flutter_shaders | Flutter package"
 [6]: https://docs.flutter.dev/ui/design/graphics/fragment-shaders "Writing and using fragment shaders"
 [7]: https://pub.dev/packages/flame "flame | Flutter package"
@@ -1716,5 +1723,5 @@ The implementation should stop there. This experiment is not the final dice roll
 [13]: https://rapier.rs/ "Rapier physics engine | Rapier"
 [14]: https://github.com/bulletphysics/bullet3 "GitHub - bulletphysics/bullet3: Bullet Physics SDK: real-time collision detection and multi-physics simulation for VR, games, visual effects, robotics, machine learning etc. · GitHub"
 [15]: https://pub.dev/packages/jolt_physics "jolt_physics | Dart package"
-[16]: https://pub.dev/packages/model_viewer_plus?utm_source=chatgpt.com "model_viewer_plus | Flutter package"
-[17]: https://pub.dev/packages/vector_math/changelog?utm_source=chatgpt.com "vector_math changelog | Dart package"
+[16]: https://pub.dev/packages/model_viewer_plus "model_viewer_plus | Flutter package"
+[17]: https://pub.dev/packages/vector_math/changelog "vector_math changelog | Dart package"
