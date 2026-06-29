@@ -1,0 +1,59 @@
+.agents/skills/dart-add-unit-test/SKILL.md
+  s_2f16e0e318343c::t_c86ff3900d58fd 1-122
+.agents/skills/dart-build-cli-app/SKILL.md
+  s_2f16e0e318343c::t_e709004f35b988 1-185
+.agents/skills/dart-collect-coverage/SKILL.md
+  s_2f16e0e318343c::t_8c1b9b3bf2355f 1-141
+.agents/skills/dart-fix-runtime-errors/SKILL.md
+  s_2f16e0e318343c::t_ac7714b96a1786 1-166
+.agents/skills/dart-generate-test-mocks/SKILL.md
+  s_2f16e0e318343c::t_2eb29e5f8aa355 1-155
+.agents/skills/dart-migrate-to-checks-package/SKILL.md
+  s_2f16e0e318343c::t_64ff40ad417d46 1-528
+.agents/skills/dart-resolve-package-conflicts/SKILL.md
+  s_2f16e0e318343c::t_103f9945507a46 1-116
+.agents/skills/dart-run-static-analysis/SKILL.md
+  s_2f16e0e318343c::t_15e86cf72223d6 1-104
+.agents/skills/dart-setup-ffi-assets/SKILL.md
+  s_2f16e0e318343c::t_13aa9a76c27a02 1-419
+.agents/skills/dart-use-ffigen/SKILL.md
+  s_2f16e0e318343c::t_057f6f65b0f1fc 1-218
+.agents/skills/dart-use-pattern-matching/SKILL.md
+  s_2f16e0e318343c::t_c73edd8135e288 1-146
+.agents/skills/flutter-add-integration-test/SKILL.md
+  s_2f16e0e318343c::t_dd80aacd3a9f16 1-163
+.agents/skills/flutter-add-widget-preview/SKILL.md
+  s_2f16e0e318343c::t_0a10c93c303010 1-145
+.agents/skills/flutter-add-widget-test/SKILL.md
+  s_2f16e0e318343c::t_50b7f45f1f767d 1-154
+.agents/skills/flutter-apply-architecture-best-practices/SKILL.md
+  s_2f16e0e318343c::t_764ce66307f435 1-162
+.agents/skills/flutter-build-responsive-layout/SKILL.md
+  s_2f16e0e318343c::t_edca932bc7d9c9 1-139
+.agents/skills/flutter-fix-layout-issues/SKILL.md
+  s_2f16e0e318343c::t_215eedfd33b428 1-130
+.agents/skills/flutter-implement-json-serialization/SKILL.md
+  s_2f16e0e318343c::t_4fa0bc68cf8ebd 1-153
+.agents/skills/flutter-setup-declarative-routing/SKILL.md
+  s_2f16e0e318343c::t_dd18742c91a264 1-255
+.agents/skills/flutter-setup-localization/SKILL.md
+  s_2f16e0e318343c::t_017cade62cb999 1-210
+.agents/skills/flutter-use-http-package/SKILL.md
+  s_2f16e0e318343c::t_828215cede88e3 1-174
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "f88d9de8665d1688355e1da6c3019b2ecc673310",
+  "prompts": {},
+  "sessions": {
+    "s_2f16e0e318343c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1210-c2ff-7ab2-af9f-692b82c013b5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Jason Holt <jason@jasonholtdigital.com>"
+    }
+  }
+}
