@@ -1,0 +1,21 @@
+.agents/skills/vgv-pr-roundtrip/SKILL.md
+  s_2f16e0e318343c::t_6b4a281c87da36 1-130
+.factory/skills/vgv-pr-roundtrip/SKILL.md
+  s_2f16e0e318343c::t_662432ef5e5062 1-130
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "1bde99b77953bce751bb7f42554888fcff8dc2a3",
+  "prompts": {},
+  "sessions": {
+    "s_2f16e0e318343c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1210-c2ff-7ab2-af9f-692b82c013b5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Jason Holt <jason@jasonholtdigital.com>"
+    }
+  }
+}
