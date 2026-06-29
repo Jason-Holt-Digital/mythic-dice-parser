@@ -1,0 +1,15 @@
+{
+  "enabledPlugins": {
+    "agentic-coding-toolkit@plugins": true,
+    "vgv-wingspan@vgv-factory-plugins": true,
+    "vgv-ai-flutter-plugin@vgv-factory-plugins": true
+  },
+  "extraKnownMarketplaces": {
+    "plugins": {
+      "source": {
+        "path": "./plugins",
+        "source": "local"
+      }
+    }
+  }
+}
