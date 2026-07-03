@@ -1,0 +1,605 @@
+.agents/act-settings.json
+  s_ef7175e1e25d41::t_748baf0c8a0e78 1-4
+.agents/plugins/marketplace.json
+  s_2f16e0e318343c::t_5f43707bed1580 1-20
+.agents/skills/act-config
+  s_ef7175e1e25d41::t_c556d80c256821 1
+.agents/skills/act-create-issues
+  s_ef7175e1e25d41::t_42f3b9e6139421 1
+.agents/skills/act-create-issues-flutter
+  s_ef7175e1e25d41::t_e01d6e9c3c99db 1
+.agents/skills/act-create-spec
+  s_ef7175e1e25d41::t_604a54b0593713 1
+.agents/skills/act-create-spec-flutter
+  s_ef7175e1e25d41::t_bb0d3db54e9209 1
+.agents/skills/act-dart-create
+  s_ef7175e1e25d41::t_ac5c217b5af5ed 1
+.agents/skills/act-dart-migrate-dot-shorthand
+  s_ef7175e1e25d41::t_6b3edc821b6d73 1
+.agents/skills/act-dart-migrate-primary-constructors
+  s_ef7175e1e25d41::t_6cf5fd0712b35a 1
+.agents/skills/act-download-flutter-rules
+  s_ef7175e1e25d41::t_80ec087c6559e4 1
+.agents/skills/act-figma-to-flutter
+  s_ef7175e1e25d41::t_3e1d6da4dbe0ba 1
+.agents/skills/act-flutter-create
+  s_ef7175e1e25d41::t_86d2b3aa7f6834 1
+.agents/skills/act-flutter-development
+  s_ef7175e1e25d41::t_3b0ae74b6f41f9 1
+.agents/skills/act-flutter-drift-setup
+  s_ef7175e1e25d41::t_c9dfaf202f5865 1
+.agents/skills/act-flutter-driver-mcp
+  s_ef7175e1e25d41::t_dbbae17207b09c 1
+.agents/skills/act-flutter-pub-upgrade-major
+  s_ef7175e1e25d41::t_7c3bc49e8353d2 1
+.agents/skills/act-flutter-robot-testing
+  s_ef7175e1e25d41::t_2d5fd80071897a 1
+.agents/skills/act-flutter-screenshot
+  s_ef7175e1e25d41::t_bc3ae2be506180 1
+.agents/skills/act-flutter-sentry-init
+  s_ef7175e1e25d41::t_26990c12f2eef0 1
+.agents/skills/act-flutter-tdd
+  s_ef7175e1e25d41::t_7648f38e46b97b 1
+.agents/skills/act-git-commit
+  s_ef7175e1e25d41::t_7528c2ca4e5cbf 1
+.agents/skills/act-git-commit-all
+  s_ef7175e1e25d41::t_d01740a16c488a 1
+.agents/skills/act-git-push-make-pr
+  s_ef7175e1e25d41::t_e1db0fb589c8ca 1
+.agents/skills/act-git-switch-main-pull
+  s_ef7175e1e25d41::t_bbdc3ae3e1ab27 1
+.agents/skills/act-git-worktree
+  s_ef7175e1e25d41::t_67eb4b1d1df2af 1
+.agents/skills/act-help
+  s_ef7175e1e25d41::t_ed0c3069cf4ace 1
+.agents/skills/act-implement
+  s_ef7175e1e25d41::t_284f209c28c1e2 1
+.agents/skills/act-implement-flutter
+  s_ef7175e1e25d41::t_81ad982914dea9 1
+.agents/skills/act-install-official-dart-flutter-skills
+  s_ef7175e1e25d41::t_d7a10c105dea47 1
+.agents/skills/act-interview
+  s_ef7175e1e25d41::t_532c33c3c7e01b 1
+.agents/skills/act-interview-flutter
+  s_ef7175e1e25d41::t_1eafc66b6219b6 1
+.agents/skills/act-refine-spec
+  s_ef7175e1e25d41::t_6ece98c6c08418 1
+.agents/skills/act-refine-spec-flutter
+  s_ef7175e1e25d41::t_07ae60bf1756f6 1
+.agents/skills/act-update
+  s_ef7175e1e25d41::t_67f56440b03911 1
+.agents/skills/act-workflow-compound
+  s_ef7175e1e25d41::t_4a46cfadebc161 1
+.agents/skills/act-workflow-plan
+  s_ef7175e1e25d41::t_cb0d5b89b2847b 1
+.agents/skills/act-workflow-refine-spec
+  s_ef7175e1e25d41::t_5de8fc2e0b1071 1
+.agents/skills/act-workflow-spec
+  s_ef7175e1e25d41::t_278fe4b31b0232 1
+.agents/skills/act-workflow-work
+  s_ef7175e1e25d41::t_5205f36e78cfcd 1
+.codex/agents/act-codebase-researcher.toml
+  s_ef7175e1e25d41::t_d131296e8ea07e 1-162
+.codex/agents/act-flutter-docs-researcher.toml
+  s_ef7175e1e25d41::t_688312674c6762 1-106
+.codex/agents/act-flutter-patterns-researcher.toml
+  s_ef7175e1e25d41::t_9367ba0d63be8a 1-72
+plugins/agentic-coding-toolkit/.codex-plugin/plugin.json
+  s_ef7175e1e25d41::t_dcfc2c3e69cbbc 1-46
+plugins/agentic-coding-toolkit/.cursor-plugin/plugin.json
+  s_ef7175e1e25d41::t_5a564d3633dafe 1-7
+plugins/agentic-coding-toolkit/.devcontainer/Dockerfile
+  s_ef7175e1e25d41::t_492f0611c1d84a 1-119
+plugins/agentic-coding-toolkit/.devcontainer/README.MD
+  s_ef7175e1e25d41::t_20d12c9306d699 1-138
+plugins/agentic-coding-toolkit/.devcontainer/devcontainer.json
+  s_ef7175e1e25d41::t_ae0708868df38e 1-58
+plugins/agentic-coding-toolkit/.devcontainer/init-firewall.sh
+  s_ef7175e1e25d41::t_fdc1452d2b491f 1-144
+plugins/agentic-coding-toolkit/.factory-plugin/plugin.json
+  s_ef7175e1e25d41::t_15b0599fa60c6f 1-11
+plugins/agentic-coding-toolkit/.gitignore
+  s_ef7175e1e25d41::t_cdb69fc7ad9ef3 1-34
+plugins/agentic-coding-toolkit/CHANGELOG.md
+  s_ef7175e1e25d41::t_b7a8482fb92551 1-514
+plugins/agentic-coding-toolkit/LICENSE
+  s_ef7175e1e25d41::t_6fd3e19d25cb4a 1-35
+plugins/agentic-coding-toolkit/PROJECT_LOCAL_ACT_INSTALL.md
+  s_ef7175e1e25d41::t_eab87a29e69444 1-14
+plugins/agentic-coding-toolkit/README.md
+  s_ef7175e1e25d41::t_7f5bf118edbdf6 1-416
+plugins/agentic-coding-toolkit/VERSION
+  s_ef7175e1e25d41::t_4f5b8c4b861b91 1
+plugins/agentic-coding-toolkit/agents/act/codebase-researcher.md
+  s_ef7175e1e25d41::t_8bae4533ae4b17 1-168
+plugins/agentic-coding-toolkit/agents/act/flutter-docs-researcher.md
+  s_ef7175e1e25d41::t_4ecba087fbabdc 1-111
+plugins/agentic-coding-toolkit/agents/act/flutter-patterns-researcher.md
+  s_ef7175e1e25d41::t_77eae680e10708 1-78
+plugins/agentic-coding-toolkit/codex/agents/act-codebase-researcher.toml
+  s_ef7175e1e25d41::t_36a7c900c1319d 1-162
+plugins/agentic-coding-toolkit/codex/agents/act-flutter-docs-researcher.toml
+  s_ef7175e1e25d41::t_5499caeacc037c 1-106
+plugins/agentic-coding-toolkit/codex/agents/act-flutter-patterns-researcher.toml
+  s_ef7175e1e25d41::t_919c9c07e25bd0 1-72
+plugins/agentic-coding-toolkit/commands/act-help.md
+  s_ef7175e1e25d41::t_61c7db37360090 1-312
+plugins/agentic-coding-toolkit/commands/act-submit-feedback.md
+  s_ef7175e1e25d41::t_0dae6a3f4541b9 1-9
+plugins/agentic-coding-toolkit/commands/act-update-changelog.md
+  s_ef7175e1e25d41::t_035f919253af8c 1-134
+plugins/agentic-coding-toolkit/commands/act-update.md
+  s_ef7175e1e25d41::t_0003f0ca1613ea 1-300
+plugins/agentic-coding-toolkit/droids/codebase-researcher.md
+  s_ef7175e1e25d41::t_97d40be01131dc 1-168
+plugins/agentic-coding-toolkit/droids/flutter-docs-researcher.md
+  s_ef7175e1e25d41::t_581463f5255c5b 1-111
+plugins/agentic-coding-toolkit/droids/flutter-patterns-researcher.md
+  s_ef7175e1e25d41::t_13037deb9b1b80 1-78
+plugins/agentic-coding-toolkit/hooks/act-droid-dart-format.js
+  s_ef7175e1e25d41::t_7610445906e099 1-49
+plugins/agentic-coding-toolkit/hooks/claude/act-claude-dart-format.js
+  s_ef7175e1e25d41::t_f7c355baaad79c 1-29
+plugins/agentic-coding-toolkit/hooks/claude/act-claude-log-session.js
+  s_ef7175e1e25d41::t_04a9df90249164 1-122
+plugins/agentic-coding-toolkit/hooks/claude/act-claude-statusline.js
+  s_ef7175e1e25d41::t_75fe52b4f51cc2 1-78
+plugins/agentic-coding-toolkit/hooks/codex/act-codex-dart-format.js
+  s_ef7175e1e25d41::t_2e9f9154aab5d9 1-50
+plugins/agentic-coding-toolkit/hooks/codex/act-codex-log-session.js
+  s_ef7175e1e25d41::t_a6858b8423110e 1-131
+plugins/agentic-coding-toolkit/hooks/codex/hooks.json
+  s_ef7175e1e25d41::t_e50b276f3bcbab 1-71
+plugins/agentic-coding-toolkit/hooks/codex/hooks.project-local.json
+  s_ef7175e1e25d41::t_f32ba6520b167a 1-71
+plugins/agentic-coding-toolkit/hooks/core/act-dart-formatter.js
+  s_ef7175e1e25d41::t_feb2434a37ab3f 1-93
+plugins/agentic-coding-toolkit/hooks/core/act-logger.js
+  s_ef7175e1e25d41::t_482bdb09713ee6 1-232
+plugins/agentic-coding-toolkit/hooks/core/act-settings.js
+  s_ef7175e1e25d41::t_8e78be3d4e04cf 1-151
+plugins/agentic-coding-toolkit/hooks/hooks.json
+  s_ef7175e1e25d41::t_af0e6ff4c222a5 1-17
+plugins/agentic-coding-toolkit/hooks/opencode/act-hooks-plugin.js
+  s_ef7175e1e25d41::t_aff5c73c7a4eab 1-102
+plugins/agentic-coding-toolkit/hooks/opencode/act-opencode-log-session.js
+  s_ef7175e1e25d41::t_d3f1423b323fd9 1-437
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/claude/pre-tool-use-edit.json
+  s_ef7175e1e25d41::t_ce9bd68ce45e3c 1-10
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/claude/session-start.json
+  s_ef7175e1e25d41::t_fe50535a09b638 1-7
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/codex/permission-request.json
+  s_ef7175e1e25d41::t_d024ec977bbc45 1-10
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/codex/post-tool-use-apply-patch.json
+  s_ef7175e1e25d41::t_b0a027338aa640 1-12
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/codex/pre-tool-use-apply-patch.json
+  s_ef7175e1e25d41::t_32b3489a6f79f9 1-10
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/codex/session-start-resume.json
+  s_ef7175e1e25d41::t_ae6f968da618b3 1-7
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/codex/session-start.json
+  s_ef7175e1e25d41::t_8fa9998d21f5dd 1-7
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/codex/user-prompt-submit.json
+  s_ef7175e1e25d41::t_2512dd10354205 1-6
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/opencode/command-executed-help-workflow.json
+  s_ef7175e1e25d41::t_e16fadad1c44f4 1-9
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/opencode/message-part-updated-user-text.json
+  s_ef7175e1e25d41::t_d928f19ce0a247 1-12
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/opencode/message-updated-user-expanded-help-command.json
+  s_ef7175e1e25d41::t_ce97f9c219a6aa 1-11
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/opencode/message-updated-user.json
+  s_ef7175e1e25d41::t_b6e2e48935c403 1-10
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/opencode/session-created.json
+  s_ef7175e1e25d41::t_f5aae5ebb08fe2 1-9
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/opencode/tool-after-edit.json
+  s_ef7175e1e25d41::t_6df61bd6ba3bf9 1-18
+plugins/agentic-coding-toolkit/hooks/tests/fixtures/opencode/tool-before-edit.json
+  s_ef7175e1e25d41::t_129ab0ab825f77 1-18
+plugins/agentic-coding-toolkit/hooks/tests/run-hooks-tests.mjs
+  s_ef7175e1e25d41::t_1f706f2555a5ae 1-873
+plugins/agentic-coding-toolkit/scripts/git-worktree.sh
+  s_ef7175e1e25d41::t_5db9e84382ec6c 1
+plugins/agentic-coding-toolkit/scripts/install-official-dart-flutter-skills.sh
+  s_ef7175e1e25d41::t_1dcfcb333d482e 1-39
+plugins/agentic-coding-toolkit/scripts/install.sh
+  s_ef7175e1e25d41::t_90207035806fea 1-410
+plugins/agentic-coding-toolkit/scripts/lib/act-dart-migrate-project.js
+  s_ef7175e1e25d41::t_69558de7568c79 1-145
+plugins/agentic-coding-toolkit/scripts/lib/act-dart-migrate.js
+  s_ef7175e1e25d41::t_dc0a711f376842 1-225
+plugins/agentic-coding-toolkit/scripts/lib/act-run-script-project.js
+  s_ef7175e1e25d41::t_941eb8298d392f 1-116
+plugins/agentic-coding-toolkit/scripts/lib/act-run-script.js
+  s_ef7175e1e25d41::t_8f2a6dec9126ce 1-167
+plugins/agentic-coding-toolkit/scripts/lib/bootstrap-act-settings.js
+  s_ef7175e1e25d41::t_7ff09ad7099bb6 1-168
+plugins/agentic-coding-toolkit/scripts/lib/codex.sh
+  s_ef7175e1e25d41::t_f40b5256aeaa9f 1-45
+plugins/agentic-coding-toolkit/scripts/lib/common.sh
+  s_ef7175e1e25d41::t_8d9463838d9df4 1-256
+plugins/agentic-coding-toolkit/scripts/lib/install-codex-hooks.js
+  s_ef7175e1e25d41::t_5d232abc61f34a 1-225
+plugins/agentic-coding-toolkit/scripts/lib/install-codex.sh
+  s_ef7175e1e25d41::t_33adc939e68b24 1-238
+plugins/agentic-coding-toolkit/scripts/lib/install-hooks.js
+  s_ef7175e1e25d41::t_9da8bcc8b58803 1-303
+plugins/agentic-coding-toolkit/scripts/lib/install.sh
+  s_ef7175e1e25d41::t_88faf237e358e1 1-124
+plugins/agentic-coding-toolkit/scripts/lib/removed-skills.sh
+  s_ef7175e1e25d41::t_2a8f80dad63ce7 1-16
+plugins/agentic-coding-toolkit/scripts/lib/transform-agent.js
+  s_ef7175e1e25d41::t_1c96122069d5ba 1-145
+plugins/agentic-coding-toolkit/scripts/lib/transform-skill-codex.js
+  s_ef7175e1e25d41::t_7eb595eeb7fd1b 1-61
+plugins/agentic-coding-toolkit/scripts/lib/transform-skill-codex.mjs
+  s_ef7175e1e25d41::t_8beef07faf3c4c 1-181
+plugins/agentic-coding-toolkit/scripts/lib/uninstall-codex.sh
+  s_ef7175e1e25d41::t_8fd497018c49cf 1-133
+plugins/agentic-coding-toolkit/scripts/lib/uninstall.sh
+  s_ef7175e1e25d41::t_980bc383c3f5c1 1-54
+plugins/agentic-coding-toolkit/scripts/tests/run-codex-skill-transform-tests.mjs
+  s_ef7175e1e25d41::t_dd0c339ea82835 1-227
+plugins/agentic-coding-toolkit/scripts/tests/run-install-tests.mjs
+  s_ef7175e1e25d41::t_085d58cfe842a5 1-1783
+plugins/agentic-coding-toolkit/scripts/uninstall.sh
+  s_ef7175e1e25d41::t_5abb1c3c8de512 1-248
+plugins/agentic-coding-toolkit/scripts/validate-toolkit.js
+  s_ef7175e1e25d41::t_bcee8cd121c829 1-1003
+plugins/agentic-coding-toolkit/skills/act-config/SKILL.md
+  s_ef7175e1e25d41::t_c069635a2c7b8e 1-100
+plugins/agentic-coding-toolkit/skills/act-config/references/project-config.md
+  s_ef7175e1e25d41::t_c22cb2ee2f5ac9 1-80
+plugins/agentic-coding-toolkit/skills/act-config/references/storage-github.md
+  s_ef7175e1e25d41::t_e8727ad98a22a6 1-45
+plugins/agentic-coding-toolkit/skills/act-config/references/storage-local.md
+  s_ef7175e1e25d41::t_e928044b33878c 1-36
+plugins/agentic-coding-toolkit/skills/act-config/references/workflow-template.md
+  s_ef7175e1e25d41::t_4950f0489d9d6f 1-78
+plugins/agentic-coding-toolkit/skills/act-config/scripts/script-args.js
+  s_ef7175e1e25d41::t_f125639ea88bb8 1-21
+plugins/agentic-coding-toolkit/skills/act-config/scripts/show-storage-reference.js
+  s_ef7175e1e25d41::t_339353f9872e40 1-25
+plugins/agentic-coding-toolkit/skills/act-config/scripts/update-config.js
+  s_ef7175e1e25d41::t_7c940e7b793ac5 1-137
+plugins/agentic-coding-toolkit/skills/act-config/scripts/update-workflow-docs.js
+  s_ef7175e1e25d41::t_5b1df6b836f7ea 1-99
+plugins/agentic-coding-toolkit/skills/act-create-issues-flutter/SKILL.md
+  s_ef7175e1e25d41::t_496b1c017c1912 1-30
+plugins/agentic-coding-toolkit/skills/act-create-issues/SKILL.md
+  s_ef7175e1e25d41::t_ea4b6b5d67f40d 1-86
+plugins/agentic-coding-toolkit/skills/act-create-spec-flutter/SKILL.md
+  s_ef7175e1e25d41::t_311d1254c83770 1-34
+plugins/agentic-coding-toolkit/skills/act-create-spec/SKILL.md
+  s_ef7175e1e25d41::t_2a7b2121869c57 1-56
+plugins/agentic-coding-toolkit/skills/act-create-spec/references/interview-ledger-format.md
+  s_ef7175e1e25d41::t_620947fb94a9c7 1-95
+plugins/agentic-coding-toolkit/skills/act-create-spec/references/spec-format.md
+  s_ef7175e1e25d41::t_b8991fcaea4cc3 1-44
+plugins/agentic-coding-toolkit/skills/act-dart-create/SKILL.md
+  s_ef7175e1e25d41::t_9f8cffc4ce0a6d 1-49
+plugins/agentic-coding-toolkit/skills/act-dart-create/scripts/dart-create.sh
+  s_ef7175e1e25d41::t_dfed6fe8f255c9 1-55
+plugins/agentic-coding-toolkit/skills/act-dart-migrate-dot-shorthand/SKILL.md
+  s_ef7175e1e25d41::t_4c1fc1e462dfa0 1-192
+plugins/agentic-coding-toolkit/skills/act-dart-migrate-primary-constructors/SKILL.md
+  s_ef7175e1e25d41::t_3bf72cd9f491a9 1-216
+plugins/agentic-coding-toolkit/skills/act-download-flutter-rules/SKILL.md
+  s_ef7175e1e25d41::t_b20ac0cf766a6d 1-78
+plugins/agentic-coding-toolkit/skills/act-download-flutter-rules/scripts/download-flutter-rules.sh
+  s_ef7175e1e25d41::t_8ba0647d64744a 1-44
+plugins/agentic-coding-toolkit/skills/act-figma-to-flutter/SKILL.md
+  s_ef7175e1e25d41::t_7c4352062ee58e 1-90
+plugins/agentic-coding-toolkit/skills/act-figma-to-flutter/references/rules.md
+  s_ef7175e1e25d41::t_40c88e939b8ed7 1-44
+plugins/agentic-coding-toolkit/skills/act-figma-to-flutter/references/setup.md
+  s_ef7175e1e25d41::t_62f5f5f36d785f 1-98
+plugins/agentic-coding-toolkit/skills/act-flutter-create/SKILL.md
+  s_ef7175e1e25d41::t_eebe0286937ae7 1-67
+plugins/agentic-coding-toolkit/skills/act-flutter-create/scripts/flutter-create.sh
+  s_ef7175e1e25d41::t_205495384c5ea1 1-90
+plugins/agentic-coding-toolkit/skills/act-flutter-development/SKILL.md
+  s_ef7175e1e25d41::t_ec2f6d2f5f5511 1-162
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/aliases-flutter.md
+  s_ef7175e1e25d41::t_9d0a6dc81d15aa 1-17
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/breaking/dart.md
+  s_ef7175e1e25d41::t_b60793a15960f8 1-43
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/breaking/flutter.md
+  s_ef7175e1e25d41::t_f5604c29335232 1-34
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/breaking/riverpod.md
+  s_ef7175e1e25d41::t_fed5082e46d694 1-68
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/all-patterns.md
+  s_ef7175e1e25d41::t_5b753afccc8b8d 1-215
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/column-row-spacing.md
+  s_ef7175e1e25d41::t_a1bbe8477dfeea 1-79
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/compute-isolates.md
+  s_ef7175e1e25d41::t_8d88b569d1319b 1-85
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/constant-sizes.md
+  s_ef7175e1e25d41::t_3f858ae810a28f 1-90
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/dot-shorthand.md
+  s_ef7175e1e25d41::t_36eb4eb4815e1e 1-136
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/eager-provider-initialization.md
+  s_ef7175e1e25d41::t_ed8a08db66eea7 1-45
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/enhanced-enums.md
+  s_ef7175e1e25d41::t_741b8444f19ee1 1-83
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/folder-structure.md
+  s_ef7175e1e25d41::t_d820ddc829a8ef 1-65
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/logging.md
+  s_ef7175e1e25d41::t_026f7a5a569ad7 1-79
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/multiline-strings.md
+  s_ef7175e1e25d41::t_f1e71c10c028de 1-23
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/platform-split-shared-contracts.md
+  s_ef7175e1e25d41::t_8f9a8bc4eb1173 1-74
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/prefer-named-arguments.md
+  s_ef7175e1e25d41::t_f129b4c4c71513 1-36
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/public-constructor-args.md
+  s_ef7175e1e25d41::t_a8ca0a39fc22d4 1-43
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/responsive-mediaquery.md
+  s_ef7175e1e25d41::t_e0d015cb7dd5a1 1-81
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/result-modeling-enum-vs-sealed.md
+  s_ef7175e1e25d41::t_c888e746995314 1-62
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/semantics-a11y.md
+  s_ef7175e1e25d41::t_5b0dc1a9cc7dc8 1-77
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/switch-expressions.md
+  s_ef7175e1e25d41::t_72ed3ca94ebcde 1-82
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/patterns/theme-extensions.md
+  s_ef7175e1e25d41::t_2e69f2e7ea4c47 1-64
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/all-principles-lite.md
+  s_ef7175e1e25d41::t_1c8b516684604a 1-364
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/api-key-storage.md
+  s_ef7175e1e25d41::t_c9f1dddaf2608e 1-76
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/avoid-global-state.md
+  s_ef7175e1e25d41::t_17ecbafa2346dd 1-154
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/avoid-long-methods.md
+  s_ef7175e1e25d41::t_a7163bee3f19c4 1-68
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/avoid-tight-coupling.md
+  s_ef7175e1e25d41::t_6cfbdb34da939a 1-178
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/dispose-resources.md
+  s_ef7175e1e25d41::t_9ece1ca3c0421b 1-75
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/exception-handling.md
+  s_ef7175e1e25d41::t_3857c97f1b78cc 1-167
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/instance-vs-static-based-design.md
+  s_ef7175e1e25d41::t_6f9ed2b6f5e3a3 1-96
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/keep-it-simple.md
+  s_ef7175e1e25d41::t_090f906bbaf49f 1-265
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/pure-build-side-effects.md
+  s_ef7175e1e25d41::t_d1784eced350ee 1-78
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/reactive-state-management.md
+  s_ef7175e1e25d41::t_472d69c1e12995 1-319
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/small-composable-widgets.md
+  s_ef7175e1e25d41::t_9531da9aa670d6 1-134
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/strongly-typed-model-classes.md
+  s_ef7175e1e25d41::t_96a4c9ce10d60f 1-236
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/principles/widget-classes-no-build-helpers.md
+  s_ef7175e1e25d41::t_f6be4f25cf977d 1-63
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/setup/adaptive-alert-dialog.md
+  s_ef7175e1e25d41::t_caf5e4d9f8a4d9 1-106
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/setup/add-riverpod.md
+  s_ef7175e1e25d41::t_aaa4ba3665a34f 1-25
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/setup/constant-sizes.md
+  s_ef7175e1e25d41::t_35b449e833d94d 1-151
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/setup/env-file.md
+  s_ef7175e1e25d41::t_e685b97ad214ac 1-40
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/setup/flavors-dart.md
+  s_ef7175e1e25d41::t_e8e811955f2bf8 1-66
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/setup/force-update.md
+  s_ef7175e1e25d41::t_3311ee770261f7 1-85
+plugins/agentic-coding-toolkit/skills/act-flutter-development/references/setup/sentry.md
+  s_ef7175e1e25d41::t_159242ae0d1ad9 1-67
+plugins/agentic-coding-toolkit/skills/act-flutter-development/workflows/prime-full.md
+  s_ef7175e1e25d41::t_4231f44aef066b 1-49
+plugins/agentic-coding-toolkit/skills/act-flutter-development/workflows/prime-lite.md
+  s_ef7175e1e25d41::t_fc90e36637b93a 1-23
+plugins/agentic-coding-toolkit/skills/act-flutter-development/workflows/prime-official.md
+  s_ef7175e1e25d41::t_ddd975c4d9ccd3 1-15
+plugins/agentic-coding-toolkit/skills/act-flutter-drift-setup/SKILL.md
+  s_ef7175e1e25d41::t_4cc5104a43f2fb 1-160
+plugins/agentic-coding-toolkit/skills/act-flutter-drift-setup/references/connection.md
+  s_ef7175e1e25d41::t_326abd6b6882a7 1-127
+plugins/agentic-coding-toolkit/skills/act-flutter-driver-mcp/SKILL.md
+  s_ef7175e1e25d41::t_343efbea3683b0 1-53
+plugins/agentic-coding-toolkit/skills/act-flutter-driver-mcp/references/dart-mcp-setup.md
+  s_ef7175e1e25d41::t_77461f3469964f 1-190
+plugins/agentic-coding-toolkit/skills/act-flutter-driver-mcp/references/flutter-driver-setup.md
+  s_ef7175e1e25d41::t_dae275be1cc351 1-218
+plugins/agentic-coding-toolkit/skills/act-flutter-pub-upgrade-major/SKILL.md
+  s_ef7175e1e25d41::t_4d89e2eea01302 1-41
+plugins/agentic-coding-toolkit/skills/act-flutter-pub-upgrade-major/scripts/flutter-pub-upgrade-major.sh
+  s_ef7175e1e25d41::t_7df994e8805d23 1-63
+plugins/agentic-coding-toolkit/skills/act-flutter-robot-testing/SKILL.md
+  s_ef7175e1e25d41::t_6d9dc5944a1d3a 1-61
+plugins/agentic-coding-toolkit/skills/act-flutter-robot-testing/references/overview.md
+  s_ef7175e1e25d41::t_10fc3f22482c07 1-80
+plugins/agentic-coding-toolkit/skills/act-flutter-robot-testing/references/retrofitting-playbook.md
+  s_ef7175e1e25d41::t_a75eaa5d31b6cd 1-88
+plugins/agentic-coding-toolkit/skills/act-flutter-robot-testing/references/risk-reporting.md
+  s_ef7175e1e25d41::t_8444de4b9043dc 1-78
+plugins/agentic-coding-toolkit/skills/act-flutter-robot-testing/references/robot-architecture.md
+  s_ef7175e1e25d41::t_15e5602565b022 1-127
+plugins/agentic-coding-toolkit/skills/act-flutter-robot-testing/references/selector-contract.md
+  s_ef7175e1e25d41::t_11fb26b831b72e 1-78
+plugins/agentic-coding-toolkit/skills/act-flutter-robot-testing/references/test-harness-di-fakes.md
+  s_ef7175e1e25d41::t_a4144ad97a332e 1-124
+plugins/agentic-coding-toolkit/skills/act-flutter-robot-testing/references/test-layout-conventions.md
+  s_ef7175e1e25d41::t_001ce3222b966d 1-90
+plugins/agentic-coding-toolkit/skills/act-flutter-screenshot/SKILL.md
+  s_ef7175e1e25d41::t_d086082e775d0b 1-119
+plugins/agentic-coding-toolkit/skills/act-flutter-screenshot/scripts/flutter-screenshot.sh
+  s_ef7175e1e25d41::t_5ce7cfa7d11a7c 1-121
+plugins/agentic-coding-toolkit/skills/act-flutter-sentry-init/SKILL.md
+  s_ef7175e1e25d41::t_db254e0baab6c0 1-161
+plugins/agentic-coding-toolkit/skills/act-flutter-sentry-init/references/sentry-flutter-init.md
+  s_ef7175e1e25d41::t_926ca3f1400388 1-65
+plugins/agentic-coding-toolkit/skills/act-flutter-tdd/SKILL.md
+  s_ef7175e1e25d41::t_a006be068a9b72 1-65
+plugins/agentic-coding-toolkit/skills/act-flutter-tdd/references/overview.md
+  s_ef7175e1e25d41::t_f59435824c6865 1-66
+plugins/agentic-coding-toolkit/skills/act-flutter-tdd/references/planning-for-testability.md
+  s_ef7175e1e25d41::t_7c0fe6390813b6 1-152
+plugins/agentic-coding-toolkit/skills/act-flutter-tdd/references/test-quality-contract.md
+  s_ef7175e1e25d41::t_50873d4d745047 1-126
+plugins/agentic-coding-toolkit/skills/act-flutter-tdd/references/vertical-slice-cycle.md
+  s_ef7175e1e25d41::t_d2c4b89aae9607 1-145
+plugins/agentic-coding-toolkit/skills/act-git-commit-all/SKILL.md
+  s_ef7175e1e25d41::t_ee9756cd4545b1 1-37
+plugins/agentic-coding-toolkit/skills/act-git-commit/SKILL.md
+  s_ef7175e1e25d41::t_4b09d99da6606a 1-34
+plugins/agentic-coding-toolkit/skills/act-git-push-make-pr/SKILL.md
+  s_ef7175e1e25d41::t_1d7fd10232bb6b 1-62
+plugins/agentic-coding-toolkit/skills/act-git-switch-main-pull/SKILL.md
+  s_ef7175e1e25d41::t_98f646297602d2 1-11
+plugins/agentic-coding-toolkit/skills/act-git-worktree/SKILL.md
+  s_ef7175e1e25d41::t_97a88d1a4a46b2 1-258
+plugins/agentic-coding-toolkit/skills/act-git-worktree/scripts/git-worktree.sh
+  s_ef7175e1e25d41::t_6079b9d0d4ddf1 1-542
+plugins/agentic-coding-toolkit/skills/act-help/SKILL.md
+  s_ef7175e1e25d41::t_737e096d0ce744 1-320
+plugins/agentic-coding-toolkit/skills/act-implement-flutter/SKILL.md
+  s_ef7175e1e25d41::t_2ff74899cf4cc3 1-30
+plugins/agentic-coding-toolkit/skills/act-implement/SKILL.md
+  s_ef7175e1e25d41::t_90b5492fdb10a8 1-20
+plugins/agentic-coding-toolkit/skills/act-install-official-dart-flutter-skills/SKILL.md
+  s_ef7175e1e25d41::t_a5703373cb5213 1-13
+plugins/agentic-coding-toolkit/skills/act-interview-flutter/SKILL.md
+  s_ef7175e1e25d41::t_0d0ff0e60ad9ad 1-30
+plugins/agentic-coding-toolkit/skills/act-interview/SKILL.md
+  s_ef7175e1e25d41::t_09b6c15f1abebb 1-98
+plugins/agentic-coding-toolkit/skills/act-interview/references/glossary-docs.md
+  s_ef7175e1e25d41::t_a17cc8219bde47 1-52
+plugins/agentic-coding-toolkit/skills/act-interview/references/glossary-format.md
+  s_ef7175e1e25d41::t_35c74e90bc87ed 1-39
+plugins/agentic-coding-toolkit/skills/act-interview/references/summary-format.md
+  s_ef7175e1e25d41::t_11d7f6436e2c58 1-70
+plugins/agentic-coding-toolkit/skills/act-refine-spec-flutter/SKILL.md
+  s_ef7175e1e25d41::t_8bf338d3395b2e 1-32
+plugins/agentic-coding-toolkit/skills/act-refine-spec/SKILL.md
+  s_ef7175e1e25d41::t_eb5e537f63e9a5 1-106
+plugins/agentic-coding-toolkit/skills/act-update/SKILL.md
+  s_ef7175e1e25d41::t_d047cb85bb2ddf 1-308
+plugins/agentic-coding-toolkit/skills/act-workflow-compound/SKILL.md
+  s_ef7175e1e25d41::t_6f62d5264e7615 1-152
+plugins/agentic-coding-toolkit/skills/act-workflow-plan/SKILL.md
+  s_ef7175e1e25d41::t_4ca05a8cc3ae2a 1-254
+plugins/agentic-coding-toolkit/skills/act-workflow-refine-spec/SKILL.md
+  s_ef7175e1e25d41::t_09aacdd417e27a 1-252
+plugins/agentic-coding-toolkit/skills/act-workflow-spec/SKILL.md
+  s_ef7175e1e25d41::t_49307c63d12739 1-454
+plugins/agentic-coding-toolkit/skills/act-workflow-work/SKILL.md
+  s_ef7175e1e25d41::t_60d293b0d7004d 1-395
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/.gitignore
+  s_ef7175e1e25d41::t_d5ef807a69ba6c 1-10
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/CHANGELOG.md
+  s_ef7175e1e25d41::t_9086d724f784a1 1-33
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/README.md
+  s_ef7175e1e25d41::t_70ff56069a22ce 1-146
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/analysis_options.yaml
+  s_ef7175e1e25d41::t_cba249eb4cfbf1 1-30
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/bin/act_dart_migrate.dart
+  s_ef7175e1e25d41::t_1204208e639acb 1-7
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/doc/architecture.md
+  s_ef7175e1e25d41::t_edf0da60b8d275 1-128
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/doc/migration_rules.md
+  s_ef7175e1e25d41::t_c4c9f9d4df60e6 1-118
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/doc/report_contract.md
+  s_ef7175e1e25d41::t_15403b0daea4b3 1-139
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/act_dart_migrate.dart
+  s_ef7175e1e25d41::t_43f04756d35335 1-2
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/cli.dart
+  s_ef7175e1e25d41::t_38983054cb4e96 1-303
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/core/command_discovery.dart
+  s_ef7175e1e25d41::t_bb8f0a6846bffa 1-62
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/core/discovery.dart
+  s_ef7175e1e25d41::t_e5672c25fa9099 1-215
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/core/exit_codes.dart
+  s_ef7175e1e25d41::t_5908e768eb8f6c 1-6
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/core/package_root.dart
+  s_ef7175e1e25d41::t_1642344c62f67b 1-34
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/core/report_contract.dart
+  s_ef7175e1e25d41::t_95dbc5a08e99ca 1-470
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/core/source_edit.dart
+  s_ef7175e1e25d41::t_c9c7a2ca1bcaff 1-250
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/core/target_package_run.dart
+  s_ef7175e1e25d41::t_a9ee06ab607738 1-161
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/class_body_rewrite.dart
+  s_ef7175e1e25d41::t_5b97c02fe6f3c7 1-105
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/class_primary_constructor.dart
+  s_ef7175e1e25d41::t_9178cf29f3fe49 1-311
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/constructor_initialization.dart
+  s_ef7175e1e25d41::t_55d03f4f4b5a17 1-803
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/declaration_planner.dart
+  s_ef7175e1e25d41::t_10a63de381a671 1-534
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/empty_class_body.dart
+  s_ef7175e1e25d41::t_4bde093341d527 1-58
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/engine.dart
+  s_ef7175e1e25d41::t_f4560b70184d83 1-154
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/enum_primary_constructor.dart
+  s_ef7175e1e25d41::t_3508c30dbb3718 1-237
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/extension_type_primary_constructor.dart
+  s_ef7175e1e25d41::t_e06b6ae651bf7a 1-58
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/field_comments.dart
+  s_ef7175e1e25d41::t_7018218e562502 1-262
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/field_to_parameter.dart
+  s_ef7175e1e25d41::t_64ac4201a8d1b7 1-518
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/models.dart
+  s_ef7175e1e25d41::t_f001d983ad33d7 1-180
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/primary_constructors.dart
+  s_ef7175e1e25d41::t_0fcb60508afe05 1-226
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/migrations/primary_constructors/source_helpers.dart
+  s_ef7175e1e25d41::t_043264e2ac3ab5 1-47
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/lib/src/version.dart
+  s_ef7175e1e25d41::t_dc6a0410c2d26a 1
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/pubspec.yaml
+  s_ef7175e1e25d41::t_e2c612c0180a1b 1-17
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/class_primary_constructor_migration_test.dart
+  s_ef7175e1e25d41::t_10501da3dbae59 1-1896
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/class_primary_constructor_skip_test.dart
+  s_ef7175e1e25d41::t_915f53200ea2ec 1-1496
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/cli_report_test.dart
+  s_ef7175e1e25d41::t_927ae0ef738ce7 1-885
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/discovery_test.dart
+  s_ef7175e1e25d41::t_62393c69d5aa01 1-164
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/docs_sync_test.dart
+  s_ef7175e1e25d41::t_4274983882e03a 1-125
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/empty_class_body_migration_test.dart
+  s_ef7175e1e25d41::t_4c486b107c8621 1-275
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/enum_primary_constructor_migration_test.dart
+  s_ef7175e1e25d41::t_fb8591dd244840 1-514
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/extension_type_primary_constructor_migration_test.dart
+  s_ef7175e1e25d41::t_a823e2e4a4e1bb 1-202
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/migration_idempotency_test.dart
+  s_ef7175e1e25d41::t_d0c70800cd6dd3 1-406
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/mixin_class_primary_constructor_migration_test.dart
+  s_ef7175e1e25d41::t_71d082c8048454 1-102
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/package_root_test.dart
+  s_ef7175e1e25d41::t_20a332fdc1bf9b 1-39
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/report_test.dart
+  s_ef7175e1e25d41::t_da2499338c5208 1-483
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/source_edit_test.dart
+  s_ef7175e1e25d41::t_3261462fce2a11 1-222
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/src/test_support.dart
+  s_ef7175e1e25d41::t_8ff6c5d1b0a5ce 1-206
+plugins/agentic-coding-toolkit/tools/act_dart_migrate/test/target_package_run_test.dart
+  s_ef7175e1e25d41::t_6b0073730964e1 1-208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.9",
+  "base_commit_sha": "2dc4994108c7b22807c4f6504a3183fd98483d69",
+  "prompts": {},
+  "sessions": {
+    "s_2f16e0e318343c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1210-c2ff-7ab2-af9f-692b82c013b5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Jason Holt <jason@jasonholtdigital.com>"
+    },
+    "s_ef7175e1e25d41": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f27dc-74bc-7322-81c9-821429034051",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Jason Holt <jason@jasonholtdigital.com>"
+    }
+  }
+}
