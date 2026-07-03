@@ -1,0 +1,11 @@
+{
+  "name": "agentic-coding-toolkit",
+  "displayName": "Agentic Coding Toolkit",
+  "description": "Flutter/Dart workflow and automation skills, commands, and droids for agentic coding in Droid.",
+  "version": "1.0.0",
+  "author": {
+    "name": "CodeWithAndrea"
+  },
+  "homepage": "https://docs.agentictoolkit.dev",
+  "repository": "https://github.com/CodeWithAndreaPro/agentic-coding-toolkit"
+}

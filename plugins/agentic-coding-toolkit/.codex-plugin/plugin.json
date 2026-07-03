@@ -1,0 +1,46 @@
+{
+  "name": "agentic-coding-toolkit",
+  "version": "1.0.0",
+  "description": "Project-local Flutter/Dart workflow and automation skills for agentic coding in Codex.",
+  "author": {
+    "name": "Code With Andrea",
+    "url": "https://codewithandrea.com"
+  },
+  "homepage": "https://docs.agentictoolkit.dev",
+  "repository": "https://github.com/CodeWithAndreaPro/agentic-coding-toolkit",
+  "license": "MIT",
+  "keywords": [
+    "agentic-coding",
+    "flutter",
+    "dart",
+    "workflow",
+    "spec",
+    "planning",
+    "tdd",
+    "git",
+    "automation",
+    "codex"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agentic Coding Toolkit",
+    "shortDescription": "Project-local Flutter/Dart workflows for Codex",
+    "longDescription": "Use project-local Agentic Coding Toolkit workflows inside Codex. This plugin bundles Flutter and Dart skills for interview-led specs, Work Items, implementation, TDD, project creation, dependency upgrades, screenshots, Drift setup, Sentry setup, git automation, and session auditing without global ACT installation.",
+    "developerName": "Code With Andrea",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://docs.agentictoolkit.dev",
+    "privacyPolicyURL": "https://codewithandrea.com/privacy-policy/",
+    "termsOfServiceURL": "https://codewithandrea.com/terms-and-conditions/",
+    "defaultPrompt": [
+      "Use ACT to interview for this Flutter feature",
+      "Use ACT to create Work Items for this spec",
+      "Use ACT to implement this Work Item"
+    ],
+    "brandColor": "#0EA5E9",
+    "screenshots": []
+  }
+}

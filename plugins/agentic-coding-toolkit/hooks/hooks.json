@@ -1,0 +1,17 @@
+{
+  "description": "[ACT] Auto-format Dart files after edits (excludes generated .g.dart files)",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Create|ApplyPatch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${DROID_PLUGIN_ROOT}/hooks/act-droid-dart-format.js\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
