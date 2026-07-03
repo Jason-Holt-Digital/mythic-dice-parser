@@ -1,0 +1,21 @@
+plugins/.factory-plugin/marketplace.json
+  s_2f16e0e318343c::t_46d6f572d4fe50 1-15
+.codex/hooks.json
+  s_2f16e0e318343c::t_e873209336d37c 1-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.9",
+  "base_commit_sha": "0ad3f4690ccb01df1f7aa870b69646b4b4b58783",
+  "prompts": {},
+  "sessions": {
+    "s_2f16e0e318343c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1210-c2ff-7ab2-af9f-692b82c013b5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Jason Holt <jason@jasonholtdigital.com>"
+    }
+  }
+}
