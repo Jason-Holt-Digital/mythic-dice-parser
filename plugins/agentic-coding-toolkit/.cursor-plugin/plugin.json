@@ -1,7 +1,0 @@
-{
-  "name": "agentic-coding-toolkit",
-  "displayName": "Agentic Coding Toolkit",
-  "version": "1.0.0",
-  "description": "Flutter/Dart workflow and automation skills for agentic coding in Cursor.",
-  "skills": "./skills/"
-}

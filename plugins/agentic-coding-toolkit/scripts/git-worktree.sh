@@ -1,1 +1,0 @@
-/Users/jholt/.agentic-coding-toolkit/skills/act-git-worktree/scripts/git-worktree.sh
