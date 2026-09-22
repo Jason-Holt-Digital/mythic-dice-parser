@@ -1433,6 +1433,124 @@ void main() {
       final locked = push2.results.where((d) => d.locked);
       expect(locked.length, greaterThanOrEqualTo(2));
     });
+
+    test(
+      'rescore re-applies success flags so a second push locks them',
+      () async {
+        final dice = DiceExpression.create(
+          '3d6#s6',
+          roller: PreRolledDiceRoller([6, 2, 5]),
+        );
+        final summary = await dice.roll();
+        expect(
+          summary.results.where((d) => d.success).map((d) => d.result),
+          [6],
+        );
+
+        RolledDie rescore(RolledDie d) => d.result == 6
+            ? RolledDie.scoreForCountType(d, countType: CountType.success)
+            : d;
+        bool lockSuccess(RolledDie d) => d.success || d.critSuccess;
+
+        // First push: the locked 6 stays; the 2 and 5 re-roll to 6 and 3,
+        // and rescore stamps success on the new 6.
+        final push1 = await reroll(
+          summary,
+          lockWhere: lockSuccess,
+          roller: PreRolledDiceRoller([6, 3]),
+          rescore: rescore,
+        );
+        expect(push1.results.map((d) => d.result), [6, 6, 3]);
+        expect(
+          push1.results.where((d) => d.success).map((d) => d.result),
+          [6, 6],
+        );
+
+        // Second push: both sixes lock — only the non-six re-rolls.
+        final push2 = await reroll(
+          push1,
+          lockWhere: lockSuccess,
+          roller: PreRolledDiceRoller([4]),
+          rescore: rescore,
+        );
+        expect(push2.results.map((d) => d.result), [6, 6, 4]);
+        final locked = push2.results.where((d) => d.locked);
+        expect(locked.length, equals(2));
+        expect(locked.every((d) => d.result == 6 && d.success), isTrue);
+      },
+    );
+
+    test('without rescore, re-rolled dice keep no scoring flags', () async {
+      final dice = DiceExpression.create(
+        '3d6#s6',
+        roller: PreRolledDiceRoller([6, 2, 5]),
+      );
+      final summary = await dice.roll();
+
+      final push1 = await reroll(
+        summary,
+        lockWhere: (d) => d.success || d.critSuccess,
+        roller: PreRolledDiceRoller([6, 3]),
+      );
+      final freshSix = push1.results.where(
+        (d) => !d.locked && d.result == 6,
+      );
+      expect(freshSix.single.success, isFalse);
+
+      // The unflagged 6 is not a success for the next push: it re-rolls.
+      final push2 = await reroll(
+        push1,
+        lockWhere: (d) => d.success || d.critSuccess,
+        roller: PreRolledDiceRoller([1, 2]),
+      );
+      expect(push2.results.where((d) => d.locked).length, equals(1));
+    });
+
+    test('rescore can stamp failure and crit flags', () async {
+      final dice = DiceExpression.create(
+        '3d6',
+        roller: PreRolledDiceRoller([1, 2, 3]),
+      );
+      final summary = await dice.roll();
+
+      final pushed = await reroll(
+        summary,
+        lockWhere: (d) => false,
+        roller: PreRolledDiceRoller([6, 1, 4]),
+        rescore: (d) => RolledDie.copyWith(
+          d,
+          failure: d.result == 1,
+          critSuccess: d.result == 6,
+          critFailure: d.result == 1,
+        ),
+      );
+
+      final byResult = {for (final d in pushed.results) d.result: d};
+      expect(byResult[6]!.critSuccess, isTrue);
+      expect(byResult[1]!.failure, isTrue);
+      expect(byResult[1]!.critFailure, isTrue);
+      expect(byResult[4]!.success, isFalse);
+    });
+
+    test('rescore is not applied to locked dice', () async {
+      final dice = DiceExpression.create(
+        '2d6',
+        roller: PreRolledDiceRoller([2, 3]),
+      );
+      final summary = await dice.roll();
+
+      final pushed = await reroll(
+        summary,
+        lockWhere: (d) => d.result == 2,
+        roller: PreRolledDiceRoller([5]),
+        // Stamps success on every die it sees — but never sees the 2.
+        rescore: (d) => RolledDie.copyWith(d, success: true),
+      );
+
+      final byResult = {for (final d in pushed.results) d.result: d};
+      expect(byResult[2]!.success, isFalse);
+      expect(byResult[5]!.success, isTrue);
+    });
   });
 
   // ===================================================================
