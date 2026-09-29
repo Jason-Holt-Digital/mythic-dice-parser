@@ -103,7 +103,6 @@ void main() {
     seededRandTest('order of operations', '5+6*2', 17);
     seededRandTest('subtraction', '5-6', -1);
     seededRandTest('subtraction', '5-6', -1);
-    seededRandTest('subtraction', '1-', 1);
     seededRandTest('subtraction', '1-0', 1);
     seededRandTest('subtraction', '0-1', -1);
     seededRandTest('subtraction', '-1', -1);
@@ -404,8 +403,6 @@ void main() {
 
   group('missing ints', () {
     seededRandTest('empty string returns zero', '', 0);
-    seededRandTest('empty arith returns zero - add', '+', 0);
-    seededRandTest('empty arith returns zero - mult', '*', 0);
     seededRandTest('empty ndice is 1', 'd6', 6);
     seededRandTest('whitespace should be swallowed', '2 d6', 8);
     seededRandTest('whitespace should be swallowed', '2d 6', 8);
@@ -418,6 +415,102 @@ void main() {
       );
     });
   });
+  group('dangling binary operators', () {
+    // A binary arithmetic or comma operator needs a right operand. Dice
+    // modifiers such as `kh`, `-L`, `!`, and `#` keep their optional rhs.
+    final invalids = [
+      '+',
+      '*',
+      '1-',
+      '2d6+',
+      '2d6-',
+      '2d6*',
+      '2d6/',
+      '2d6 + ',
+      '2d6+-',
+      '2d6-+',
+      '2d6+ -',
+      '2d6+--1',
+      '2d6+*3',
+      '(2d6+)',
+      '(2d6+-)',
+      '{2d6+}',
+      '2d6+,1d4',
+      '4d6kh3+',
+      '4d6!-',
+      '2d6#+',
+      '2d6,',
+      '2d6, ',
+      '"Attack": 2d6,',
+      '()',
+      '{}',
+      '"A":',
+      '("A": )',
+      '2d6+()',
+      '2d6*()',
+      '2d6+{}',
+      '2d6+( )',
+      '2d6+(())',
+      '(2d6+())',
+      '2d6,()',
+      '2d6, "Damage":',
+      '"Attack": 2d6, "Damage":',
+    ];
+    for (final v in invalids) {
+      test('rejects dangling operator - $v', () {
+        expect(
+          () => DiceExpression.create(v, roller: RNGRoller(seededRandom)),
+          throwsFormatException,
+        );
+      });
+    }
+
+    void fedRollTest(
+      String name,
+      String input,
+      List<int> rolls,
+      int expectedTotal,
+    ) {
+      test('$name - $input', () async {
+        final summary = await DiceExpression.create(
+          input,
+          roller: PreRolledDiceRoller(rolls),
+        ).roll();
+        expect(summary.total, equals(expectedTotal));
+      });
+    }
+
+    // A single sign after a binary operator is a signed operand.
+    fedRollTest('signed operand after plus', '2d6+-1', [6, 2], 7);
+    fedRollTest('spaced signed operand', '2d6 + - 1', [6, 2], 7);
+    fedRollTest('signed operand after plus', '1d20+-2', [15], 13);
+    fedRollTest('plus-signed operand', '2d6++3', [6, 2], 11);
+    fedRollTest('negative operand after minus', '2d6--1', [6, 2], 9);
+    fedRollTest('plus-signed operand after minus', '2d6-+1', [6, 2], 7);
+    fedRollTest('signed dice operand', '2d6+-1d4', [6, 2, 3], 5);
+    fedRollTest('signed operand after keep', '4d6kh3+-2', [6, 2, 1, 5], 11);
+    fedRollTest('signed operand after multiply', '2*-3', [], -6);
+    fedRollTest('signed operand after dice multiply', '2d6*-1', [6, 2], -8);
+    fedRollTest('parenthesized signed operand', '2d6+(-1)', [6, 2], 7);
+    fedRollTest('aggregate operand', '2d6+{1d4}', [6, 2, 3], 11);
+    fedRollTest('nested parens operand', '2d6*((1))', [6, 2], 8);
+    fedRollTest('labeled groups', '"Attack": 2d6, "Damage": 1d8', [
+      6,
+      2,
+      5,
+    ], 13);
+
+    seededRandTest('trailing constant', '2d6+1', 9);
+    seededRandTest('spaced trailing constant', '2d6 + 1', 9);
+    seededRandTest('leading minus', '-1', -1);
+    seededRandTest('leading plus', '+3', 3);
+    seededRandTest('keep high then add', '4d6kh3+2', 15);
+    seededRandTest('dice rhs without count', '2+d6', 8);
+    seededRandTest('parenthesized rhs', '2*(3)', 6);
+    seededRandTest('signed rhs after comma', '2d6, -1', 7);
+    seededRandTest('keep high missing rhs still valid', '4d6kh', 6);
+  });
+
   group('metadata', () {
     seededRandTest(
       'reroll, keep, count success,count fail, add',

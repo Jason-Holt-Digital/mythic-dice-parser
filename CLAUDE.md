@@ -4,10 +4,10 @@
 
 **dart_dice_parser** — A Dart library for parsing and evaluating dice notation (e.g., `2d6+4`, `4d6!kh3`). Parses notation strings into an AST, evaluates them with configurable RNG, and returns detailed roll results with metadata.
 
-- **Package name:** `dart_dice_parser`
-- **Version:** 8.0.0
+- **Package name:** `mythic_dice_parser`
+- **Version:** 8.0.1
 - **SDK requirement:** Dart >=3.8.0
-- **Published on:** pub.dev
+- **Published on:** GLPub (`https://glpub.dev/api/p/default/pub`)
 
 ## Build & Development Commands
 
