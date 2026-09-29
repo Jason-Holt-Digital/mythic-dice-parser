@@ -10,17 +10,19 @@ import 'package:petitparser/petitparser.dart';
 /// (`d6`, `dF`, `D66`, ...), or a parenthesized/aggregate group.
 final Parser<String> _operandStart = pattern('0-9dD({');
 
-/// Characters that can start a comma operand: any arithmetic operand, a
-/// label, or a signed value such as `-1`.
-final Parser<String> _commaOperandStart = pattern('0-9dD({"+-');
+/// Characters that can start a non-empty expression: any arithmetic operand,
+/// a label, or a signed value such as `-1`.
+final Parser<String> _expressionStart = pattern('0-9dD({"+-');
 
-/// Matches a binary [operator] only when an operand follows it.
+/// Matches [token] only when a non-empty expression follows it.
 ///
 /// The primitive number parser accepts an empty string so that dice
-/// modifiers can omit their count (`d6`, `4d6kh`). Comma must not inherit
-/// that, or a dangling `2d6,` would parse as `2d6 , <empty>`.
-Parser<String> _binaryOperator(Parser<String> operator, Parser<String> next) =>
-    operator.trim().skip(after: next.and());
+/// modifiers can omit their count (`d6`, `4d6kh`). Commas, groups, and
+/// labels must not inherit that, or `2d6,`, `2d6+()`, and `"Damage":` would
+/// parse around an empty value. Each group and label applies the same rule
+/// to its own content, so emptiness cannot hide inside nesting.
+Parser<T> _followedByExpression<T>(Parser<T> token) =>
+    token.skip(after: _expressionStart.and());
 
 /// An arithmetic operator and the optional sign of its right operand.
 typedef _ArithmeticOperator = ({String name, String? sign});
@@ -54,9 +56,13 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
     );
   // parens & curlies
   builder.group()
-    ..wrapper(char('(').trim(), char(')').trim(), (left, value, right) => value)
     ..wrapper(
-      char('{').trim(),
+      _followedByExpression(char('(').trim()),
+      char(')').trim(),
+      (left, value, right) => value,
+    )
+    ..wrapper(
+      _followedByExpression(char('{').trim()),
       char('}').trim(),
       (left, value, right) => AggregateOp(value),
     );
@@ -203,11 +209,13 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
   // each sub-expression gets scored before comma joins them.
   builder.group()
     ..prefix(
-      seq3(
-        char('"'),
-        pattern('^"').star().flatten(),
-        string('":').trim(),
-      ).map((v) => v.$2),
+      _followedByExpression(
+        seq3(
+          char('"'),
+          pattern('^"').star().flatten(),
+          string('":').trim(),
+        ).map((v) => v.$2),
+      ),
       LabelOp.new,
     )
     ..postfix(
@@ -220,7 +228,7 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
       (a, tag) => TagOp(a, {tag.$2: tag.$4}),
     )
     ..left(
-      _binaryOperator(char(','), _commaOperandStart),
+      _followedByExpression(char(',').trim()),
       (a, op, b) => CommaOp(op, a, b),
     );
   return builder.build().end();

@@ -442,6 +442,19 @@ void main() {
       '2d6,',
       '2d6, ',
       '"Attack": 2d6,',
+      '()',
+      '{}',
+      '"A":',
+      '("A": )',
+      '2d6+()',
+      '2d6*()',
+      '2d6+{}',
+      '2d6+( )',
+      '2d6+(())',
+      '(2d6+())',
+      '2d6,()',
+      '2d6, "Damage":',
+      '"Attack": 2d6, "Damage":',
     ];
     for (final v in invalids) {
       test('rejects dangling operator - $v', () {
@@ -478,6 +491,14 @@ void main() {
     fedRollTest('signed operand after keep', '4d6kh3+-2', [6, 2, 1, 5], 11);
     fedRollTest('signed operand after multiply', '2*-3', [], -6);
     fedRollTest('signed operand after dice multiply', '2d6*-1', [6, 2], -8);
+    fedRollTest('parenthesized signed operand', '2d6+(-1)', [6, 2], 7);
+    fedRollTest('aggregate operand', '2d6+{1d4}', [6, 2, 3], 11);
+    fedRollTest('nested parens operand', '2d6*((1))', [6, 2], 8);
+    fedRollTest('labeled groups', '"Attack": 2d6, "Damage": 1d8', [
+      6,
+      2,
+      5,
+    ], 13);
 
     seededRandTest('trailing constant', '2d6+1', 9);
     seededRandTest('spaced trailing constant', '2d6 + 1', 9);

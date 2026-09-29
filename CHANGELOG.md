@@ -1,7 +1,7 @@
 # 8.0.1
 
 ## 🛠️ Bug fixes
-- Reject formulas that end with a dangling `+`, `-`, `*`, or `,` (for example `2d6+`) with a `FormatException` instead of rolling them. Signed operands such as `-1`, `+3`, and `2d6+-1` still parse.
+- Reject formulas that end with a dangling `+`, `-`, `*`, or `,` (for example `2d6+`) with a `FormatException` instead of rolling them. Empty groups and labels such as `2d6+()`, `{}`, and `"Damage":` are rejected the same way. Signed operands such as `-1`, `+3`, and `2d6+-1` still parse.
 
 # 8.0.0
 
