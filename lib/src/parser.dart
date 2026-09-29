@@ -6,6 +6,23 @@ import 'package:mythic_dice_parser/src/dice_expression.dart';
 import 'package:mythic_dice_parser/src/dice_roller.dart';
 import 'package:petitparser/petitparser.dart';
 
+/// Characters that can start an arithmetic operand: an integer, a die
+/// (`d6`, `dF`, `D66`, ...), or a parenthesized/aggregate group.
+final Parser<String> _operandStart = pattern('0-9dD({');
+
+/// Characters that can start a comma operand: any arithmetic operand, a
+/// label, or a signed value such as `-1`.
+final Parser<String> _commaOperandStart = pattern('0-9dD({"+-');
+
+/// Matches a binary [operator] only when an operand follows it.
+///
+/// The primitive number parser accepts an empty string so that dice
+/// modifiers can omit their count (`d6`, `4d6kh`). Arithmetic and comma
+/// operators must not inherit that, or a dangling `2d6+` would parse as
+/// `2d6 + <empty>`.
+Parser<String> _binaryOperator(Parser<String> operator, Parser<String> next) =>
+    operator.trim().skip(after: next.and());
+
 /// Builds the PetitParser grammar for dice expressions.
 Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
   final builder = ExpressionBuilder<DiceExpression>()
@@ -133,10 +150,19 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
       (a, op, b) => DropHighLowOp(op.toLowerCase(), a, b),
     );
 
-  builder.group().left(char('*').trim(), (a, op, b) => MultiplyOp(op, a, b));
+  builder.group().left(
+    _binaryOperator(char('*'), _operandStart),
+    (a, op, b) => MultiplyOp(op, a, b),
+  );
   builder.group()
-    ..left(char('+').trim(), (a, op, b) => AddOp(op, a, b))
-    ..left(char('-').trim(), (a, op, b) => SubOp(op, a, b));
+    ..left(
+      _binaryOperator(char('+'), _operandStart),
+      (a, op, b) => AddOp(op, a, b),
+    )
+    ..left(
+      _binaryOperator(char('-'), _operandStart),
+      (a, op, b) => SubOp(op, a, b),
+    );
   // count >=, <=, <, >, =,
   // #s, #cs, #f, #cf -- count (critical) successes / failures
   builder.group()
@@ -175,6 +201,9 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
       ).trim(),
       (a, tag) => TagOp(a, {tag.$2: tag.$4}),
     )
-    ..left(char(',').trim(), (a, op, b) => CommaOp(op, a, b));
+    ..left(
+      _binaryOperator(char(','), _commaOperandStart),
+      (a, op, b) => CommaOp(op, a, b),
+    );
   return builder.build().end();
 }

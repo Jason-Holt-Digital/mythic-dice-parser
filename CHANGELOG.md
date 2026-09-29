@@ -1,3 +1,8 @@
+# 8.0.1
+
+## 🛠️ Bug fixes
+- Reject formulas that end with a dangling `+`, `-`, `*`, or `,` (for example `2d6+`) with a `FormatException` instead of rolling them. Leading signs such as `-1` and `+3` still parse.
+
 # 8.0.0
 
 ## ⚠️⚠️ Breaking changes ⚠️⚠️

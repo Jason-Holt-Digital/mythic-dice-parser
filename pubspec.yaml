@@ -1,6 +1,6 @@
 name: mythic_dice_parser
 description: A dart library for parsing dice notation (`2d6+4`). Supports advantage/disadvantage, exploding die, injected rolls, and other variations.
-version: 8.0.0
+version: 8.0.1
 repository: https://github.com/kingdomseed/mythic-dice-parser
 publish_to: https://onepub.dev/api/unhuvuhnof/
 
