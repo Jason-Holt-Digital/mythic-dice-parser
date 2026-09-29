@@ -17,11 +17,29 @@ final Parser<String> _commaOperandStart = pattern('0-9dD({"+-');
 /// Matches a binary [operator] only when an operand follows it.
 ///
 /// The primitive number parser accepts an empty string so that dice
-/// modifiers can omit their count (`d6`, `4d6kh`). Arithmetic and comma
-/// operators must not inherit that, or a dangling `2d6+` would parse as
-/// `2d6 + <empty>`.
+/// modifiers can omit their count (`d6`, `4d6kh`). Comma must not inherit
+/// that, or a dangling `2d6,` would parse as `2d6 , <empty>`.
 Parser<String> _binaryOperator(Parser<String> operator, Parser<String> next) =>
     operator.trim().skip(after: next.and());
+
+/// An arithmetic operator and the optional sign of its right operand.
+typedef _ArithmeticOperator = ({String name, String? sign});
+
+/// Matches an arithmetic [operator], an optional sign, and then requires an
+/// operand, so `2d6+-1` parses while `2d6+` and `2d6+-` do not.
+Parser<_ArithmeticOperator> _arithmeticOperator(Parser<String> operator) =>
+    seq2(
+      operator.trim(),
+      pattern('+-').trim().optional(),
+    ).skip(after: _operandStart.and()).map((v) => (name: v.$1, sign: v.$2));
+
+/// Applies the optional [sign] to [operand] the same way a leading sign is
+/// parsed (`-1` is `<empty> - 1`).
+DiceExpression _signed(String? sign, DiceExpression operand) => switch (sign) {
+  '-' => SubOp('-', SimpleValue(''), operand),
+  '+' => AddOp('+', SimpleValue(''), operand),
+  _ => operand,
+};
 
 /// Builds the PetitParser grammar for dice expressions.
 Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
@@ -151,17 +169,17 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
     );
 
   builder.group().left(
-    _binaryOperator(char('*'), _operandStart),
-    (a, op, b) => MultiplyOp(op, a, b),
+    _arithmeticOperator(char('*')),
+    (a, op, b) => MultiplyOp(op.name, a, _signed(op.sign, b)),
   );
   builder.group()
     ..left(
-      _binaryOperator(char('+'), _operandStart),
-      (a, op, b) => AddOp(op, a, b),
+      _arithmeticOperator(char('+')),
+      (a, op, b) => AddOp(op.name, a, _signed(op.sign, b)),
     )
     ..left(
-      _binaryOperator(char('-'), _operandStart),
-      (a, op, b) => SubOp(op, a, b),
+      _arithmeticOperator(char('-')),
+      (a, op, b) => SubOp(op.name, a, _signed(op.sign, b)),
     );
   // count >=, <=, <, >, =,
   // #s, #cs, #f, #cf -- count (critical) successes / failures

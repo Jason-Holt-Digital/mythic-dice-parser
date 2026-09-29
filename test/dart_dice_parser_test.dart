@@ -427,10 +427,13 @@ void main() {
       '2d6*',
       '2d6/',
       '2d6 + ',
-      '2d6++3',
+      '2d6+-',
+      '2d6-+',
+      '2d6+ -',
+      '2d6+--1',
       '2d6+*3',
-      '2d6+-1',
       '(2d6+)',
+      '(2d6+-)',
       '{2d6+}',
       '2d6+,1d4',
       '4d6kh3+',
@@ -448,6 +451,33 @@ void main() {
         );
       });
     }
+
+    void fedRollTest(
+      String name,
+      String input,
+      List<int> rolls,
+      int expectedTotal,
+    ) {
+      test('$name - $input', () async {
+        final summary = await DiceExpression.create(
+          input,
+          roller: PreRolledDiceRoller(rolls),
+        ).roll();
+        expect(summary.total, equals(expectedTotal));
+      });
+    }
+
+    // A single sign after a binary operator is a signed operand.
+    fedRollTest('signed operand after plus', '2d6+-1', [6, 2], 7);
+    fedRollTest('spaced signed operand', '2d6 + - 1', [6, 2], 7);
+    fedRollTest('signed operand after plus', '1d20+-2', [15], 13);
+    fedRollTest('plus-signed operand', '2d6++3', [6, 2], 11);
+    fedRollTest('negative operand after minus', '2d6--1', [6, 2], 9);
+    fedRollTest('plus-signed operand after minus', '2d6-+1', [6, 2], 7);
+    fedRollTest('signed dice operand', '2d6+-1d4', [6, 2, 3], 5);
+    fedRollTest('signed operand after keep', '4d6kh3+-2', [6, 2, 1, 5], 11);
+    fedRollTest('signed operand after multiply', '2*-3', [], -6);
+    fedRollTest('signed operand after dice multiply', '2d6*-1', [6, 2], -8);
 
     seededRandTest('trailing constant', '2d6+1', 9);
     seededRandTest('spaced trailing constant', '2d6 + 1', 9);
