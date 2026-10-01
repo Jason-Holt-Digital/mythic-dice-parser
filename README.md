@@ -572,6 +572,10 @@ void main() async {
   // All dice retain their groupLabel through the push
   print(pushed);
 
+  // Which dice a push would re-roll (empty: nothing to push)
+  final toRoll = rerollableDice(pushed, lockWhere: (die) => die.result >= 4);
+  print(toRoll);
+
   // Multi-push: push again, locking more dice
   final pushed2 = await reroll(
     pushed,
@@ -580,6 +584,39 @@ void main() async {
   print(pushed2);
 }
 ```
+
+## Scoring pushed dice
+
+A push scores each new die with the count operators (`#s`, `#f`, `#cs`, `#cf`) that
+looked at the die it replaces. Those rules are recorded on every die as
+`RolledDie.scoreRules` and carried over to the new die, so a second push scores the same way.
+
+```dart
+  final summary = await DiceExpression.create('"Base": 3d6#s6, "Skill": 2d6#s>=5').roll();
+
+  // Year Zero style: keep the successes, re-roll the rest
+  final pushed = await reroll(
+    summary,
+    lockWhere: (die) => die.success,
+    roller: RNGRoller(),
+  );
+  // A new 5 is a success in "Skill" but not in "Base"
+  print(pushed.groups?['Skill']?.successCount);
+```
+
+Only scoring is applied again. Operators that change the dice are not run a second time:
+
+| Operator in the formula | What a pushed (new) die does |
+| --- | --- |
+| count `#s` `#f` `#cs` `#cf` | scored by the rules of the die it replaces |
+| clamp `c<` `c>` | keeps the face it rolled; not clamped |
+| drop / keep `kh` `-l` `-<` ... | takes the place of a kept die; dropped dice stay dropped and nothing is dropped again |
+| explode `!`, compound `!!`, penetrate `p` | does not explode. A die an explosion added is re-rolled like any other die; it has the rules of counts written after the explosion only |
+| reroll `r` `ro` | keeps the face it rolled; not re-rolled again |
+| sort `s` `sd` | stays in the position of the die it replaces |
+| plain count `#`, `*`, unlabeled `,`, totals | the result is a constant and is never re-rolled |
+
+`scoreRules` is not part of die equality or `toJson()`.
 
 # Named Die Types
 

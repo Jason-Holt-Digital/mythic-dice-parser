@@ -15,6 +15,7 @@ library;
 
 export 'src/dice_expression.dart';
 export 'src/dice_roller.dart';
+export 'src/die_score_rule.dart';
 export 'src/enums.dart';
 export 'src/extensions.dart';
 export 'src/group_result.dart';

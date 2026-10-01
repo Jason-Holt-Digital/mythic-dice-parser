@@ -111,3 +111,21 @@ enum CountType {
   /// Count of critical failures.
   critFailure,
 }
+
+/// How a count operator compares a die's result with its target.
+enum CountComparison {
+  /// `=`, or no comparison given (`#s6`).
+  equal,
+
+  /// `<`
+  less,
+
+  /// `<=`
+  lessOrEqual,
+
+  /// `>`
+  greater,
+
+  /// `>=`
+  greaterOrEqual,
+}
