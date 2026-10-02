@@ -1528,6 +1528,347 @@ void main() {
     });
   });
 
+  group('push scores the dice it re-rolls', () {
+    Future<RollSummary> rollFor(String formula, List<int> feed) =>
+        DiceExpression.create(
+          formula,
+          roller: PreRolledDiceRoller(feed),
+        ).roll();
+
+    bool isSuccess(RolledDie die) => die.success || die.critSuccess;
+
+    // A Year Zero style push: keep the successes, re-roll the rest.
+    Future<RollSummary> pushFor(RollSummary summary, List<int> feed) => reroll(
+      summary,
+      lockWhere: isSuccess,
+      roller: PreRolledDiceRoller(feed),
+    );
+
+    List<int> rerollable(RollSummary summary) => [
+      for (final die in rerollableDice(summary, lockWhere: isSuccess))
+        die.result,
+    ];
+
+    // Each die as `value`, with `S` for a success and `F` for a failure.
+    List<String> shown(RollSummary summary) => [
+      for (final die in summary.results)
+        '${die.result}${die.success ? 'S' : ''}${die.failure ? 'F' : ''}',
+    ];
+
+    String flags(RolledDie die) => [
+      die.result,
+      if (die.success) 'S',
+      if (die.failure) 'F',
+      if (die.critSuccess) 'CS',
+      if (die.critFailure) 'CF',
+    ].join();
+
+    group('rerollableDice', () {
+      test('lists the dice the lock predicate does not keep', () async {
+        final summary = await rollFor('4d6#s6', [6, 2, 5, 6]);
+
+        expect(rerollable(summary), [2, 5]);
+      });
+
+      test('keeps the die size of each die', () async {
+        final summary = await rollFor('(2d6 + 2d8)#s6', [6, 2, 3, 4]);
+
+        expect(
+          [
+            for (final die in rerollableDice(summary, lockWhere: isSuccess))
+              die.nsides,
+          ],
+          [6, 8, 8],
+        );
+      });
+
+      test('never lists a constant', () async {
+        final summary = await rollFor('2d6 + 3', [4, 5]);
+
+        expect(rerollable(summary), [4, 5]);
+      });
+
+      test('is empty when every die is kept', () async {
+        final summary = await rollFor('2d6#s6', [6, 6]);
+
+        expect(rerollable(summary), isEmpty);
+      });
+
+      test('is empty for an unlabeled comma roll, which totals each side '
+          'into a constant', () async {
+        final summary = await rollFor('3d6, 2d6', [3, 6, 1, 1, 6]);
+
+        expect(rerollable(summary), isEmpty);
+      });
+
+      test('lists exactly the dice reroll() replaces, after a push '
+          'too', () async {
+        final summary = await rollFor('3d10#s>=8', [9, 2, 5]);
+        final once = await pushFor(summary, [8, 3]);
+
+        expect(rerollable(summary), [2, 5]);
+        expect(rerollable(once), [3]);
+      });
+    });
+
+    test('a success threshold other than the top face scores the new '
+        'dice', () async {
+      final summary = await rollFor('4d10#s>=8', [9, 2, 6, 3]);
+      final pushed = await pushFor(summary, [6, 8, 10]);
+
+      expect(shown(pushed), ['9S', '6', '8S', '10S']);
+      expect(pushed.successCount, 3);
+    });
+
+    test('a success operator without a target means the highest '
+        'face', () async {
+      final summary = await rollFor('3d8#s', [8, 2, 6]);
+      final pushed = await pushFor(summary, [6, 8]);
+
+      expect(shown(pushed), ['8S', '6', '8S']);
+    });
+
+    test('a roll that counts no successes scores none on a push', () async {
+      final summary = await rollFor('"Pool": 4d6', [6, 2, 3, 4]);
+      final pushed = await pushFor(summary, [6, 1, 5, 2]);
+
+      expect(shown(pushed), ['6', '1', '5', '2']);
+      expect(rerollable(pushed), [6, 1, 5, 2]);
+    });
+
+    test('a 1 is a failure only when the roll counts failures', () async {
+      final plain = await pushFor(await rollFor('3d6#s6', [6, 2, 5]), [1, 4]);
+      final counted = await pushFor(await rollFor('3d6#s6#f1', [6, 2, 5]), [
+        1,
+        4,
+      ]);
+
+      expect(shown(plain), ['6S', '1', '4']);
+      expect(shown(counted), ['6S', '1F', '4']);
+    });
+
+    test('each labeled pool scores its new dice by its own rule', () async {
+      final summary = await rollFor(
+        '"Base": 2d6#s6, "Skill": 2d6#s>=5, "Gear": 2d6',
+        [2, 3, 2, 3, 2, 3],
+      );
+      final pushed = await pushFor(summary, [5, 6, 5, 6, 5, 6]);
+
+      expect(
+        [
+          for (final die in pushed.results)
+            '${die.groupLabel} ${die.result}${die.success ? 'S' : ''}',
+        ],
+        ['Base 5', 'Base 6S', 'Skill 5S', 'Skill 6S', 'Gear 5', 'Gear 6'],
+      );
+      expect(pushed.groups?['Base']?.successCount, 1);
+      expect(pushed.groups?['Skill']?.successCount, 2);
+      expect(pushed.groups?['Gear']?.successCount, 0);
+    });
+
+    test('unlabeled sub-pools of the same die size score their new dice by '
+        'their own rule', () async {
+      final summary = await rollFor('(2d6#s6) + (2d6#s>=5)', [2, 3, 2, 3]);
+      final pushed = await pushFor(summary, [5, 6, 5, 6]);
+
+      // A 5 is a success only in the second sub-pool.
+      expect(shown(pushed), ['5', '6S', '5S', '6S']);
+      expect(rerollable(pushed), [5]);
+    });
+
+    test('a rule above two sub-pools scores the new dice of both', () async {
+      final summary = await rollFor('((2d6#s6) + (2d6#s>=5))#f1', [2, 3, 2, 3]);
+      final pushed = await pushFor(summary, [1, 6, 1, 5]);
+
+      expect(shown(pushed), ['1F', '6S', '1F', '5S']);
+    });
+
+    test('dice kept by a drop are scored by the rule above the drop', () async {
+      final summary = await rollFor('(4d6kh3)#s>=5', [2, 3, 4, 1]);
+      final pushed = await pushFor(summary, [5, 2, 6]);
+
+      expect(shown(pushed).toSet(), {'5S', '2', '6S'});
+      // The dropped die stays dropped; the drop is not run again.
+      expect(pushed.results, hasLength(3));
+    });
+
+    test('a clamped die passes on the rules of the die it came from, and '
+        'the new die is not clamped', () async {
+      // The clamp raises both dice to 5, so neither shows its rolled face.
+      final summary = await rollFor('(2d6#s6)c<5', [1, 3]);
+      final pushed = await pushFor(summary, [6, 2]);
+
+      expect(shown(pushed), ['6S', '2']);
+    });
+
+    test('a re-rolled die passes on the rules of the die it came from, and '
+        'the new die is not re-rolled again', () async {
+      // The 1 is re-rolled into a 4 after it was scored.
+      final summary = await rollFor('(3d6#s6)r1', [1, 2, 3, 4]);
+      final pushed = await pushFor(summary, [6, 1, 6]);
+
+      expect(shown(pushed), ['6S', '1', '6S']);
+    });
+
+    test('a die added by an explosion after scoring has no rule to pass '
+        'on', () async {
+      // The 6 explodes into a 3; the count ran before the explosion.
+      final summary = await rollFor('(2d6#s>=5)!', [6, 2, 3]);
+      expect(shown(summary), ['6S', '3', '2']);
+      final pushed = await pushFor(summary, [5, 5]);
+
+      expect(shown(pushed), ['6S', '5', '5S']);
+    });
+
+    test('a die added by an explosion does not take the rules of another '
+        'die that shows the same face', () async {
+      // The 6 explodes into a 2, next to a rolled 2 that was scored.
+      final summary = await rollFor('(2d6#s>=5)!', [6, 2, 2]);
+      final pushed = await pushFor(summary, [5, 5]);
+
+      // Result order: the 6, its explosion, then the rolled 2.
+      expect(shown(pushed), ['6S', '5', '5S']);
+    });
+
+    test('an explosion scored by a count above it passes that rule on, and '
+        'the new dice do not explode', () async {
+      final summary = await rollFor('2d6!#s>=5', [6, 2, 3]);
+      final pushed = await pushFor(summary, [6, 5]);
+
+      expect(shown(pushed), ['6S', '6S', '5S']);
+      expect(pushed.results, hasLength(3));
+    });
+
+    test('a compounded die passes on the rules of the die it came '
+        'from', () async {
+      final summary = await rollFor('(2d6#f1)!!', [6, 2, 3]);
+      expect(shown(summary), ['9', '2']);
+      final pushed = await pushFor(summary, [1, 1]);
+
+      expect(shown(pushed), ['1F', '1F']);
+    });
+
+    // Every count comparison the grammar accepts (`#` + `s|f|cs|cf` +
+    // optional `<`/`>` + optional `=`), plus `#s!=1`: there is no "not
+    // equal", so that reads as a bare `#s`.
+    for (final operator in [
+      '#s', '#s6', '#s=4', '#s>4', '#s<3', '#s>=5', '#s<=2', '#s!=1', //
+      '#f', '#f1', '#f=2', '#f>4', '#f<3', '#f>=5', '#f<=2',
+      '#cs', '#cs6', '#cs=4', '#cs>4', '#cs<3', '#cs>=5', '#cs<=2',
+      '#cf', '#cf1', '#cf=2', '#cf>4', '#cf<3', '#cf>=5', '#cf<=2',
+    ]) {
+      test('6d6$operator: pushed dice are flagged exactly as rolled dice '
+          'are', () async {
+        const faces = [1, 2, 3, 4, 5, 6];
+        final formula = '6d6$operator';
+        final rolled = (await rollFor(formula, faces)).results;
+        // Start from six dice that all re-roll: a face that is no success.
+        final plainFace = faces.firstWhere(
+          (face) => !rolled.any((die) => die.result == face && isSuccess(die)),
+        );
+        final summary = await rollFor(formula, List.filled(6, plainFace));
+
+        final pushed = await pushFor(summary, faces);
+
+        expect(pushed.results.map(flags).toSet(), rolled.map(flags).toSet());
+      });
+    }
+
+    test('a success rolled by a push is kept by the next push', () async {
+      final summary = await rollFor('3d10#s>=8', [9, 2, 5]);
+      final once = await pushFor(summary, [8, 3]);
+      final twice = await pushFor(once, [4]);
+
+      expect(shown(once), ['9S', '8S', '3']);
+      expect(shown(twice), ['9S', '8S', '4']);
+    });
+
+    test('a die re-rolled by two pushes is still scored by the '
+        'formula', () async {
+      final summary = await rollFor('2d6#s6#f1', [3, 4]);
+      final once = await pushFor(summary, [2, 5]);
+      final twice = await pushFor(once, [1, 6]);
+
+      expect(shown(twice), ['1F', '6S']);
+    });
+
+    test('a plain count leaves a constant, so there is nothing to push or '
+        'score', () async {
+      final summary = await rollFor('4d6#>=5', [5, 6, 1, 2]);
+
+      expect(summary.total, 2);
+      expect(rerollable(summary), isEmpty);
+    });
+
+    test('scoreRules lists the scoring operators that looked at a die, '
+        'innermost first, matched or not', () async {
+      final summary = await rollFor('(2d6#s>=5)#f1', [6, 1]);
+
+      for (final die in summary.results) {
+        expect(die.scoreRules, const [
+          DieScoreRule(
+            countType: CountType.success,
+            comparison: CountComparison.greaterOrEqual,
+            target: 5,
+          ),
+          DieScoreRule(countType: CountType.failure, target: 1),
+        ]);
+      }
+    });
+
+    test('scoreRules is not part of die equality or toJson', () async {
+      final scored = (await rollFor('1d6#s6', [2])).results.single;
+      final plain = (await rollFor('1d6', [2])).results.single;
+
+      expect(scored.scoreRules, hasLength(1));
+      expect(scored, plain);
+      expect(scored.toJson(), plain.toJson());
+    });
+  });
+
+  group('DieScoreRule', () {
+    RolledDie d6(int result) => RolledDie.polyhedral(result: result, nsides: 6);
+
+    test('without a target, a success means the highest face and a failure '
+        'the lowest', () {
+      const success = DieScoreRule(countType: CountType.success);
+      const critFailure = DieScoreRule(countType: CountType.critFailure);
+
+      expect(
+        [for (var i = 1; i <= 6; i++) success.matches(d6(i))],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+        ],
+      );
+      expect(critFailure.matches(d6(1)), isTrue);
+      expect(critFailure.matches(d6(2)), isFalse);
+    });
+
+    test('without a target, a constant is neither a success nor a '
+        'failure', () {
+      const success = DieScoreRule(countType: CountType.success);
+
+      expect(success.matches(RolledDie.singleVal(result: 3)), isFalse);
+    });
+
+    test('score marks a matching die and leaves the others unchanged', () {
+      const rule = DieScoreRule(
+        countType: CountType.critSuccess,
+        comparison: CountComparison.greater,
+        target: 4,
+      );
+      final miss = d6(4);
+
+      expect(rule.score(d6(5)).critSuccess, isTrue);
+      expect(identical(rule.score(miss), miss), isTrue);
+    });
+  });
+
   // ===================================================================
   // Verification tests: prove agent claims about bugs and fixes.
   // ===================================================================

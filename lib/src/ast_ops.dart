@@ -1,5 +1,6 @@
 import 'package:mythic_dice_parser/src/ast_core.dart';
 import 'package:mythic_dice_parser/src/dice_roller.dart';
+import 'package:mythic_dice_parser/src/die_score_rule.dart';
 import 'package:mythic_dice_parser/src/enums.dart';
 import 'package:mythic_dice_parser/src/roll_result.dart';
 import 'package:mythic_dice_parser/src/rolled_die.dart';
@@ -55,74 +56,51 @@ class CountOp extends Binary {
     final lhs = await left();
     final rhs = await right();
 
-    bool shouldCount(RolledDie rolledDie) {
-      var rhsEmptyAndSimpleCount = false;
-      var calculatedDefault = false;
-      final target = rhs.totalOrDefault(() {
-        calculatedDefault = true;
-        // if missing RHS, we can make assumptions depending
-        // on operator and the dietype
-        switch (name) {
-          case '#':
-            // example: '3d6#' should be 3. target is ignored
-            // in case statement below.
-            rhsEmptyAndSimpleCount = true;
-            return 0;
-          case '#s' || '#cs':
-            // example: '3d6#s' should match 6, or '3D66' should match 66
-            return rolledDie.maxPotentialValue;
-          case '#f' || '#cf':
-            // generally should be 1 or whatever the minimum potential val is
-            return rolledDie.minPotentialValue;
-          default:
-            throw FormatException(
-              'Invalid count operation. Missing count target',
-              toString(),
-              toString().length,
-            );
-        }
-      });
-      final v = rolledDie.result;
-      switch (name) {
-        case '#>=' || '#s>=' || '#f>=' || '#cs>=' || '#cf>=':
-          // how many results on lhs are greater than or equal to rhs?
-          return v >= target;
-        case '#<=' || '#s<=' || '#f<=' || '#cs<=' || '#cf<=':
-          // how many results on lhs are less than or equal to rhs?
-          return v <= target;
-        case '#>' || '#s>' || '#f>' || '#cs>' || '#cf>':
-          // how many results on lhs are greater than rhs?
-          return v > target;
-        case '#<' || '#s<' || '#f<' || '#cs<' || '#cf<':
-          // how many results on lhs are less than rhs?
-          return v < target;
-        case '#=' || '#s=' || '#f=' || '#cs=' || '#cf=':
-          // how many results on lhs are equal to rhs?
-          return v == target;
-        case '#' || '#s' || '#f' || '#cs' || '#cf':
-          if (rhsEmptyAndSimpleCount) {
-            // if missing rhs, we're just counting results
-            // that is, '3d6#' should return 3
-            return true;
-          } else {
-            // don't allow a singleVal/nvals(with 1 element) be counted as a success just because it's the min or max.
-            if (calculatedDefault &&
-                rolledDie.dieType.requirePotentialValues &&
-                rolledDie.potentialValues.length == 1) {
-              return false;
-            }
-            // if not missing rhs, treat it as equivalent to '#='.
-            // that is, '3d6#2' should count 2s
-            return v == target;
-          }
-        default:
-          throw FormatException(
-            "unknown count operation '$name'",
-            toString(),
-            toString().indexOf(name),
-          );
+    // The operator name is `#`, the count type, then the comparison:
+    // `#s>=`, `#cf<`, `#`.
+    const bareOperators = {'#', '#s', '#f', '#cs', '#cf'};
+    final comparison = switch (name) {
+      '#>=' ||
+      '#s>=' ||
+      '#f>=' ||
+      '#cs>=' ||
+      '#cf>=' => CountComparison.greaterOrEqual,
+      '#<=' ||
+      '#s<=' ||
+      '#f<=' ||
+      '#cs<=' ||
+      '#cf<=' => CountComparison.lessOrEqual,
+      '#>' || '#s>' || '#f>' || '#cs>' || '#cf>' => CountComparison.greater,
+      '#<' || '#s<' || '#f<' || '#cs<' || '#cf<' => CountComparison.less,
+      '#=' || '#s=' || '#f=' || '#cs=' || '#cf=' => CountComparison.equal,
+      _ => bareOperators.contains(name) ? CountComparison.equal : null,
+    };
+    // An invalid operator only fails once there is a die to count.
+    if (lhs.results.isNotEmpty) {
+      // Only a bare operator (`3d6#`, `3d6#s`) may leave out the target: a
+      // plain count then counts every die, a success counts the highest
+      // face, a failure the lowest.
+      if (rhs.results.isEmpty && !bareOperators.contains(name)) {
+        throw FormatException(
+          'Invalid count operation. Missing count target',
+          toString(),
+          toString().length,
+        );
+      }
+      if (comparison == null) {
+        throw FormatException(
+          "unknown count operation '$name'",
+          toString(),
+          toString().indexOf(name),
+        );
       }
     }
+    final rule = DieScoreRule(
+      countType: countType,
+      comparison: comparison ?? CountComparison.equal,
+      target: rhs.results.isEmpty ? null : rhs.total,
+    );
+    final shouldCount = rule.matches;
 
     final scoredResults = lhs.results.where(shouldCount);
 
@@ -142,14 +120,21 @@ class CountOp extends Binary {
     } else {
       // if counting success/failures, the results are updated w/ scoring
 
-      final nonScoredResults = lhs.results.whereNot(shouldCount);
+      // Every die keeps the rule, matched or not, so a push can score the
+      // die that replaces it.
+      final nonScoredResults = lhs.results
+          .whereNot(shouldCount)
+          .map((v) => RolledDie.withScoreRule(v, rule));
 
       return RollResult(
         expression: toString(),
         opType: OpType.count,
         results: [
           ...scoredResults.map(
-            (v) => RolledDie.scoreForCountType(v, countType: countType),
+            (v) => RolledDie.withScoreRule(
+              RolledDie.scoreForCountType(v, countType: countType),
+              rule,
+            ),
           ),
           ...nonScoredResults,
         ],

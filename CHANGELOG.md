@@ -1,3 +1,24 @@
+# 8.1.0
+
+## 📈 Enhancements
+- **Push scores the dice it re-rolls.** `reroll()` now scores each new die with the count operators (`#s`, `#f`, `#cs`, `#cf`, with `=`, `<`, `>`, `<=`, `>=` or the default target) that looked at the die it replaces. Each pool and each branch keeps its own rules: in `(2d6#s6) + (2d6#s>=5)` or `"Base": 2d6#s6, "Skill": 2d6#s>=5` a new 5 is a success only in the second pool. A second push scores its new dice the same way. This removes the "re-rolled dice are not scored" limitation of 8.0.0; clients no longer need to score pushed dice themselves.
+- `RolledDie.scoreRules`: the scoring count operators that looked at a die, innermost first, matched or not, as `DieScoreRule` objects (`countType`, `comparison`, `target`, with `matches()` and `score()`). Copies of a die keep its rules. Not part of equality or `toJson()`.
+- `rerollableDice(summary, lockWhere: ...)`: the dice `reroll()` would re-roll with the same lock predicate. Use it to tell whether a roll can be pushed, or to roll the replacements elsewhere and feed them in through `PreRolledDiceRoller`.
+- New public types `DieScoreRule` and `CountComparison`; new optional `scoreRules` parameter on `RolledDie` and `RolledDie.copyWith`; new `RolledDie.withScoreRule`.
+
+## What a push does with operators that change dice
+Only scoring is applied again. Everything else is unchanged from 8.0.x:
+- **Clamp** (`(2d6#s6)c<5`): the new die keeps the face it rolled and is not clamped. It is scored by the rules of the die it replaces.
+- **Drop / keep** (`(4d6kh3)#s>=5`): the kept dice re-roll in place and are scored by the count above the drop. Dropped dice stay dropped and nothing is dropped again.
+- **Reroll** (`(3d6#s6)r1`): the new die is not re-rolled again, even if it shows the reroll face.
+- **Explode / compound / penetrate**: a new die does not explode. A die an explosion added is re-rolled like any other die. It carries only the rules of counts written after the explosion: in `(2d6#s>=5)!` it has none, in `2d6!#s>=5` it is scored.
+- **Sort**: a new die stays in the position of the die it replaces.
+- Constants (`+3`, a plain `#` count, `*`, totals, each side of an unlabeled `,`) are never re-rolled.
+
+## Notes
+- No change to how a formula rolls: totals, flags, counts, order, and errors are the same as 8.0.1.
+- A scoring count now returns a copy of each die it did not match (it used to pass the same object through), so that the die can carry its rule. The copy is equal to the original.
+
 # 8.0.1
 
 ## 🛠️ Bug fixes

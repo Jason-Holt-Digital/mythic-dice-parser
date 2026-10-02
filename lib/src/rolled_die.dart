@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import 'package:mythic_dice_parser/src/dice_roller.dart';
+import 'package:mythic_dice_parser/src/die_score_rule.dart';
 import 'package:mythic_dice_parser/src/enums.dart';
 
 /// representation of a single dice roll result.
@@ -32,6 +33,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     this.from = const IList.empty(),
     this.groupLabel,
     this.locked = false,
+    this.scoreRules = const IList.empty(),
   }) : potentialValues = IList(potentialValues) {
     if (dieType.requirePotentialValues && potentialValues.isEmpty) {
       throw ArgumentError(
@@ -125,6 +127,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     Iterable<RolledDie>? from,
     String? groupLabel,
     bool? locked,
+    Iterable<DieScoreRule>? scoreRules,
   }) => RolledDie(
     potentialValues: other.potentialValues,
     nsides: other.nsides,
@@ -149,6 +152,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     from: IList.orNull(from) ?? IList([other]),
     groupLabel: groupLabel ?? other.groupLabel,
     locked: locked ?? other.locked,
+    scoreRules: IList.orNull(scoreRules) ?? other.scoreRules,
   );
 
   /// Creates a discarded copy of [other].
@@ -166,6 +170,10 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     critSuccess: other.critSuccess || countType == CountType.critSuccess,
     critFailure: other.critFailure || countType == CountType.critFailure,
   );
+
+  /// Records on [other] that the scoring operator [rule] looked at it.
+  factory RolledDie.withScoreRule(RolledDie other, DieScoreRule rule) =>
+      RolledDie.copyWith(other, scoreRules: other.scoreRules.add(rule));
 
   /// the rolled result
   final int result;
@@ -247,6 +255,16 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
 
   /// Whether this die is locked (will not be re-rolled during a push).
   final bool locked;
+
+  /// The scoring count operators (`#s`, `#f`, `#cs`, `#cf`) of the formula
+  /// that looked at this die, innermost first, whether or not it matched.
+  ///
+  /// A copy of a die (clamped, re-rolled, labeled, ...) keeps its rules; a
+  /// die an operator creates (an explosion, a total) starts with the rules
+  /// of the operators above it only. A push (`reroll()`) scores each
+  /// replacement die with the rules of the die it replaces and passes them
+  /// on. Like [from], this is not part of equality or `toJson()`.
+  final IList<DieScoreRule> scoreRules;
 
   /// Whether this die rolled its maximum possible value.
   bool get isMaxResult => result == maxPotentialValue;

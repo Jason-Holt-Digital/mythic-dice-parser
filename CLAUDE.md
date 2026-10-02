@@ -5,7 +5,7 @@
 **dart_dice_parser** — A Dart library for parsing and evaluating dice notation (e.g., `2d6+4`, `4d6!kh3`). Parses notation strings into an AST, evaluates them with configurable RNG, and returns detailed roll results with metadata.
 
 - **Package name:** `mythic_dice_parser`
-- **Version:** 8.0.1
+- **Version:** 8.1.0
 - **SDK requirement:** Dart >=3.8.0
 - **Published on:** GLPub (`https://glpub.dev/api/p/default/pub`)
 
@@ -58,7 +58,8 @@ lib/
     roll_summary.dart         # Top-level RollSummary with groups support
     rolled_die.dart           # Immutable individual die roll representation (locked, groupLabel fields)
     group_result.dart         # Per-group results for labeled comma expressions
-    push.dart                 # Standalone reroll() function for push/reroll mechanic
+    push.dart                 # Standalone reroll() and rerollableDice() for the push/reroll mechanic
+    die_score_rule.dart       # DieScoreRule: one count operator as applied to a die; used by CountOp and push
     enums.dart                # DieType, OpType, CountType
     extensions.dart           # Extension methods on IList<RolledDie>
     stats.dart                # StatsCollector (Welford's algorithm)
@@ -77,7 +78,7 @@ example/
 - **Results:** `RollResult` is a tree node with `left`/`right` pointers, enabling introspection. `RollSummary` is the top-level output.
 - **Groups:** Comma-separated labeled expressions (`"Attack": 2d6, "Damage": 1d8`) produce `GroupResult` objects accessible via `RollSummary.groups`.
 - **Pluggable Roller:** `DiceRoller` is the abstract interface. Ships with `RNGRoller` (RNG-based), `PreRolledDiceRoller` (feed in known values for physical/external dice), and `CallbackDiceRoller` (async on-demand prompts for 3D dice, Bluetooth, etc.). Roller returns raw ints; the AST wraps them into `RolledDie` objects.
-- **Push/Reroll:** Standalone `reroll()` function in `push.dart` re-rolls unlocked dice from a `RollSummary`. Supports multi-push and auto-locks constants.
+- **Push/Reroll:** Standalone `reroll()` function in `push.dart` re-rolls unlocked dice from a `RollSummary`. Supports multi-push and auto-locks constants. Each replacement die is scored by the `RolledDie.scoreRules` of the die it replaces; `rerollableDice()` lists the dice a push would re-roll.
 - **Named Die Types:** Static registry on `DiceExpression` maps names to face lists (e.g., `4dfate` after `registerDieType('fate', [-1,-1,0,0,1,1])`).
 - **Tags:** `@key=value` syntax on expressions, stored on `RollResult` nodes and harvested into `GroupResult.tags`.
 - **Immutability:** Extensive use of `fast_immutable_collections` (`IList`). All result objects are immutable value types.
@@ -113,7 +114,7 @@ example/
 - **Operator overloading:** `+`, `-`, `*` defined on `RollResult`.
 - **JSON:** `toJson()` methods on result types; empty/zero/null values omitted via `removeWhere` for clean output.
 - **Exports:** Public API surface defined in `lib/dart_dice_parser.dart`. Only export what users need.
-- **Separation of concerns:** Roller returns raw ints, AST interprets meaning. Push operates below the AST (no scoring re-application).
+- **Separation of concerns:** Roller returns raw ints, AST interprets meaning. Push operates below the AST: it re-applies the scoring rules recorded on each die (`RolledDie.scoreRules`) and no other operator.
 
 ## Testing
 
@@ -131,6 +132,7 @@ example/
 - **Tag parser structure:** The `.postfix()` tag parser matches one `@key=value` per application. Multi-tag (`@a=1 @b=2`) works because PetitParser's `ExpressionBuilder.star()` re-applies the postfix, creating nested `TagOp` nodes. `TagOp` merges via `{...?result.tags, ...tags}`.
 - **`PreRolledDiceRoller` validates ranges:** Passing a value outside the die's range (e.g., `7` for a d6) throws `RangeError`. Values are consumed in parser-request order -- exploding/compounding dice consume extra values unpredictably.
 - **`from` excluded from `toJson()`:** `RolledDie.from` (provenance chain) is deliberately omitted from `toJson()` to avoid deeply recursive output. Each `copyWith` stores the original die, creating chains that can be very deep for exploding/penetrating dice.
+- **`scoreRules` excluded from equality and `toJson()`:** Like `from`, `RolledDie.scoreRules` is not in `props` or `toJson()`. A die rebuilt from JSON has no rules, so a push after that leaves new dice unscored.
 - **GroupResult stats are lazy getters:** `total`, `successCount`, etc. are computed getters (not stored fields), matching the pattern used by `RollResult`. Don't include them in `props`.
 
 ## Supported Dice Notation
