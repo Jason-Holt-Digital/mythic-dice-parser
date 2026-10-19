@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "cfd87205f241dcecb048554692bf4e4a966e9c84",
+  "include-component-in-tag": false,
+  "include-v-in-tag": true,
+  "packages": {
+    ".": {
+      "release-type": "dart",
+      "component": "mythic_dice_parser",
+      "changelog-path": "CHANGELOG.md"
+    }
+  }
+}
