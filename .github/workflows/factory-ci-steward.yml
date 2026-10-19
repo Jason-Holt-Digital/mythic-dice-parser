@@ -123,6 +123,9 @@ jobs:
             exit 1
           fi
 
+      - name: Let Git use the native action's GitHub App token
+        run: gh auth setup-git --hostname github.com --force
+
       # Use the Factory App token, not github_token, so fix pushes trigger CI
       # and Factory Review. No publishing or release credentials are passed.
       - name: Run native CI Steward
