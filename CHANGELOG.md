@@ -1,3 +1,20 @@
+# 8.2.0
+
+## 📈 Enhancements
+- **Push rules in the formula.** Two tags set how `reroll()` pushes a roll:
+  - `@push=N` (`N` ≥ 1) is how many times the roll may be pushed. It applies to the whole roll wherever it is written; if several pools set it, the smallest applies. `RollSummary.pushLimit` holds it, or `null` when the formula has none (unlimited).
+  - `@lock=s|sf|none` decides which dice of a pool a push keeps: successes and critical successes (`s`, the default), also failures and critical failures (`sf`), or none (`none`). A pool's own `@lock` wins over one on a parenthesised group around it. Each die records its rule as `RolledDie.pushLock` (a `PushLock`), and the dice a push rolls take the rule of the dice they replace.
+- `lockWhere` is now optional on `reroll()` and `rerollableDice()`. Without it, the formula's `@lock` rules decide. A `lockWhere` that is passed replaces them, as before.
+- `RollSummary.pushCount`: how many pushes led to this summary. `reroll()` returns `pushCount + 1`. `reroll()` does not enforce `pushLimit`; compare the two to decide whether a roll can be pushed again.
+- New public type `PushLock`; new optional `pushLock` parameter on `RolledDie` and `RolledDie.copyWith`; new optional `pushCount` parameter on `RollSummary`.
+
+## Notes
+- `@push=0`, `@push=-1`, `@push=once`, `@lock=x` and other bad values of the two keys are now a `FormatException`. Every other `@key=value` tag parses as before.
+- A formula without `@push` or `@lock` rolls and pushes exactly as in 8.1.0 with `lockWhere: (die) => die.success || die.critSuccess`.
+- Several tags written in a row on one expression (`2d6 @a=1 @b=2`) now parse into one `TagOp` holding all of them, so a repeated key keeps its last value for `@lock` as it always did in `tags`. The tags, `toString()` and `GroupResult.tags` are unchanged.
+- Pushed dice still re-apply only scoring, not `r`, `C`, `!` or keep.
+- `pushLock` is not part of die equality or `toJson()`, like `scoreRules`.
+
 # 8.1.0
 
 ## 📈 Enhancements

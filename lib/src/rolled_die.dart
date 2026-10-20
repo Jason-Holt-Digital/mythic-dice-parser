@@ -5,6 +5,7 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:mythic_dice_parser/src/dice_roller.dart';
 import 'package:mythic_dice_parser/src/die_score_rule.dart';
 import 'package:mythic_dice_parser/src/enums.dart';
+import 'package:mythic_dice_parser/src/push_lock.dart';
 
 /// representation of a single dice roll result.
 class RolledDie extends Equatable implements Comparable<RolledDie> {
@@ -34,6 +35,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     this.groupLabel,
     this.locked = false,
     this.scoreRules = const IList.empty(),
+    this.pushLock,
   }) : potentialValues = IList(potentialValues) {
     if (dieType.requirePotentialValues && potentialValues.isEmpty) {
       throw ArgumentError(
@@ -128,6 +130,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     String? groupLabel,
     bool? locked,
     Iterable<DieScoreRule>? scoreRules,
+    PushLock? pushLock,
   }) => RolledDie(
     potentialValues: other.potentialValues,
     nsides: other.nsides,
@@ -153,6 +156,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     groupLabel: groupLabel ?? other.groupLabel,
     locked: locked ?? other.locked,
     scoreRules: IList.orNull(scoreRules) ?? other.scoreRules,
+    pushLock: pushLock ?? other.pushLock,
   );
 
   /// Creates a discarded copy of [other].
@@ -265,6 +269,13 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
   /// replacement die with the rules of the die it replaces and passes them
   /// on. Like [from], this is not part of equality or `toJson()`.
   final IList<DieScoreRule> scoreRules;
+
+  /// The `@lock=` rule of the innermost tagged group around this die, or
+  /// `null` when there is none.
+  ///
+  /// Copies of the die and the dice a push rolls in its place keep it. Like
+  /// [scoreRules], this is not part of equality or `toJson()`.
+  final PushLock? pushLock;
 
   /// Whether this die rolled its maximum possible value.
   bool get isMaxResult => result == maxPotentialValue;

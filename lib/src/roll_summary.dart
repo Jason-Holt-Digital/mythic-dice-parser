@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
@@ -20,8 +21,9 @@ import 'package:mythic_dice_parser/src/rolled_die.dart';
 
 class RollSummary extends Equatable {
   /// Creates a summary from the given [detailedResults] tree.
-  RollSummary({required this.detailedResults})
-    : total = detailedResults.results.sum,
+  RollSummary({required this.detailedResults, this.pushCount = 0})
+    : pushLimit = _pushLimit(detailedResults),
+      total = detailedResults.results.sum,
       results = IList(detailedResults.results),
       discarded = IList(detailedResults.discarded),
       expression = detailedResults.expression,
@@ -57,6 +59,14 @@ class RollSummary extends Equatable {
 
   /// the dice we lost along the way
   late final IList<RolledDie> discarded;
+
+  /// How many times `reroll()` pushed the roll to reach this summary.
+  final int pushCount;
+
+  /// The smallest `@push=N` in the formula: how many times the roll may be
+  /// pushed. `null` when the formula has no `@push` tag, so pushes are
+  /// unlimited. `reroll()` does not enforce it; compare it with [pushCount].
+  final int? pushLimit;
 
   /// Per-group results, populated when the expression uses label syntax.
   /// null when no labels/commas are used (plain expressions like "2d6+4").
@@ -134,6 +144,15 @@ class RollSummary extends Equatable {
       ..write(detailedResults.toStringPretty(indent: '  '));
 
     return buffer.toString();
+  }
+
+  static int? _pushLimit(RollResult node) {
+    final own = node.tags?['push'];
+    return [
+      if (own != null) int.parse(own),
+      for (final child in [node.left, node.right])
+        if (child != null) ?_pushLimit(child),
+    ].minOrNull;
   }
 
   static Map<String, T>? _unmodifiable<T>(Map<String, T>? map) =>

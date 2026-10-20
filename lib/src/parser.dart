@@ -4,6 +4,7 @@ import 'package:mythic_dice_parser/src/ast_dice.dart';
 import 'package:mythic_dice_parser/src/ast_ops.dart';
 import 'package:mythic_dice_parser/src/dice_expression.dart';
 import 'package:mythic_dice_parser/src/dice_roller.dart';
+import 'package:mythic_dice_parser/src/push_lock.dart';
 import 'package:petitparser/petitparser.dart';
 
 /// Characters that can start an arithmetic operand: an integer, a die
@@ -41,6 +42,12 @@ DiceExpression _signed(String? sign, DiceExpression operand) => switch (sign) {
   '-' => SubOp('-', SimpleValue(''), operand),
   '+' => AddOp('+', SimpleValue(''), operand),
   _ => operand,
+};
+
+bool _isValidTag(String key, String value) => switch (key) {
+  'push' => (int.tryParse(value) ?? 0) >= 1,
+  'lock' => PushLock.fromTag(value) != null,
+  _ => true,
 };
 
 /// Builds the PetitParser grammar for dice expressions.
@@ -224,8 +231,10 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
         letter().plus().flatten(),
         char('='),
         pattern('^ ,)').plus().flatten(),
-      ).trim(),
-      (a, tag) => TagOp(a, {tag.$2: tag.$4}),
+      ).trim().where((tag) => _isValidTag(tag.$2, tag.$4)),
+      (a, tag) => a is TagOp
+          ? TagOp(a.left, {...a.tags, tag.$2: tag.$4})
+          : TagOp(a, {tag.$2: tag.$4}),
     )
     ..left(
       _followedByExpression(char(',').trim()),

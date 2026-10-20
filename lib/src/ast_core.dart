@@ -2,6 +2,7 @@ import 'package:mythic_dice_parser/src/dice_expression.dart';
 import 'package:mythic_dice_parser/src/dice_roller.dart';
 import 'package:mythic_dice_parser/src/enums.dart';
 import 'package:mythic_dice_parser/src/extensions.dart';
+import 'package:mythic_dice_parser/src/push_lock.dart';
 import 'package:mythic_dice_parser/src/roll_result.dart';
 import 'package:mythic_dice_parser/src/rolled_die.dart';
 import 'package:mythic_dice_parser/src/utils.dart';
@@ -244,8 +245,10 @@ class LabelOp extends Unary {
 
 /// Wraps a sub-expression with tags (key-value metadata).
 /// In the expression `2d6 @color=red`, the tag is {color: red}.
-/// Tags are stored on the RollResult node, NOT on individual RolledDie objects.
-/// GroupResult picks them up when building groups from the result tree.
+/// Tags are stored on the RollResult node. GroupResult picks them up when
+/// building groups from the result tree. A `@lock=` tag is also recorded on
+/// each die under it that has no `RolledDie.pushLock` yet, so a pool's own
+/// tag wins over an enclosing one.
 class TagOp extends Unary {
   /// Creates a tag op attaching [tags] to the result of [child].
   TagOp(DiceExpression child, this.tags) : super('tag', child);
@@ -262,12 +265,18 @@ class TagOp extends Unary {
   @override
   Future<RollResult> eval() async {
     final result = await left();
-    // Store tags on the RollResult node (not individual dice).
-    // GroupResult will pick these up from the result tree.
+    final lock = PushLock.fromTag(tags['lock']);
     return RollResult.fromRollResult(
       result,
       expression: toString(),
       opType: result.opType,
+      results: lock == null
+          ? null
+          : result.results.map(
+              (d) => d.pushLock == null
+                  ? RolledDie.copyWith(d, pushLock: lock)
+                  : d,
+            ),
       tags: {...?result.tags, ...tags},
     );
   }
