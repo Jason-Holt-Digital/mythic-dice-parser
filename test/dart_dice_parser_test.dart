@@ -1947,6 +1947,41 @@ void main() {
       expect(summary.pushLimit, 1);
     });
 
+    test('a tag inside parentheses keeps its own value under a tag on the '
+        'parentheses', () async {
+      final locked = await rollFor('(3d6#s6 @lock=s) @lock=none', [6, 2, 3]);
+      final limited = await rollFor('(3d6 @push=1) @push=3', [6, 2, 3]);
+
+      expect(rerollable(locked), [2, 3]);
+      expect(limited.pushLimit, 1);
+    });
+
+    test('a push tag inside braces parses', () async {
+      final summary = await rollFor('{2d6 @push=1}', [2, 3]);
+
+      expect(summary.total, 5);
+      expect(summary.pushLimit, 1);
+    });
+
+    test('@lock is recorded on the dice a drop discards too', () async {
+      final summary = await rollFor('4d6kh3 @lock=sf', [1, 2, 3, 4]);
+
+      expect(
+        [for (final die in summary.discarded) die.pushLock],
+        [
+          PushLock.successesAndFailures,
+        ],
+      );
+    });
+
+    test('toJson includes pushCount and pushLimit', () async {
+      final summary = await rollFor('2d6 @push=2', [2, 3]);
+      final pushed = await pushFor(summary, [4, 5]);
+
+      expect(pushed.toJson()['pushCount'], 1);
+      expect(pushed.toJson()['pushLimit'], 2);
+    });
+
     test('a tag repeated on one pool keeps its last value', () async {
       final summary = await rollFor(
         '3d6#s6 @push=1 @lock=none @push=3 @lock=s',
@@ -2129,7 +2164,7 @@ void main() {
       });
     });
 
-    group('tag parser without .plus()', () {
+    group('tag parser with several tags', () {
       test('single tag still works', () async {
         final dice = DiceExpression.create(
           '"Fire": 2d6 @type=fire',

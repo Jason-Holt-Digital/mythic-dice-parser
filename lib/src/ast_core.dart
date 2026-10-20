@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:mythic_dice_parser/src/dice_expression.dart';
 import 'package:mythic_dice_parser/src/dice_roller.dart';
 import 'package:mythic_dice_parser/src/enums.dart';
@@ -248,7 +250,8 @@ class LabelOp extends Unary {
 /// Tags are stored on the RollResult node. GroupResult picks them up when
 /// building groups from the result tree. A `@lock=` tag is also recorded on
 /// each die under it that has no `RolledDie.pushLock` yet, so a pool's own
-/// tag wins over an enclosing one.
+/// tag wins over an enclosing one. A `@push=` tag over an inner one keeps the
+/// smaller limit.
 class TagOp extends Unary {
   /// Creates a tag op attaching [tags] to the result of [child].
   TagOp(DiceExpression child, this.tags) : super('tag', child);
@@ -266,18 +269,22 @@ class TagOp extends Unary {
   Future<RollResult> eval() async {
     final result = await left();
     final lock = PushLock.fromTag(tags['lock']);
+    final innerPush = result.tags?['push'];
+    final ownPush = tags['push'];
+    RolledDie withLock(RolledDie d) =>
+        d.pushLock == null ? RolledDie.copyWith(d, pushLock: lock) : d;
     return RollResult.fromRollResult(
       result,
       expression: toString(),
       opType: result.opType,
-      results: lock == null
-          ? null
-          : result.results.map(
-              (d) => d.pushLock == null
-                  ? RolledDie.copyWith(d, pushLock: lock)
-                  : d,
-            ),
-      tags: {...?result.tags, ...tags},
+      results: lock == null ? null : result.results.map(withLock),
+      discarded: lock == null ? null : result.discarded.map(withLock),
+      tags: {
+        ...?result.tags,
+        ...tags,
+        if ((innerPush, ownPush) case (final String a, final String b))
+          'push': '${min(int.parse(a), int.parse(b))}',
+      },
     );
   }
 }

@@ -230,11 +230,9 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
         char('@'),
         letter().plus().flatten(),
         char('='),
-        pattern('^ ,)').plus().flatten(),
-      ).trim().where((tag) => _isValidTag(tag.$2, tag.$4)),
-      (a, tag) => a is TagOp
-          ? TagOp(a.left, {...a.tags, tag.$2: tag.$4})
-          : TagOp(a, {tag.$2: tag.$4}),
+        pattern('^ ,)}').plus().flatten(),
+      ).trim().where((tag) => _isValidTag(tag.$2, tag.$4)).plus(),
+      (a, tags) => TagOp(a, {for (final tag in tags) tag.$2: tag.$4}),
     )
     ..left(
       _followedByExpression(char(',').trim()),

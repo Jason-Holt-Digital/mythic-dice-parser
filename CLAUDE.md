@@ -129,11 +129,10 @@ example/
 - **Label syntax:** The colon goes AFTER the closing quote: `"Attack": 2d6`, NOT `"Attack:" 2d6`. The parser matches `"` + chars + `":` as a unit.
 - **Named dice are lowercase only:** Use `4dfate`, not `4dFate`. The parser uses `lowercase().plus()` to avoid shadowing the built-in `dF` (fudge) and `D66` notation. `string('dF')` is tried first in the same precedence group, so uppercase names starting with F would be consumed by the fudge dice parser and fail. `registerDieType()` stores names in lowercase regardless of input case.
 - **CommaOp dual-mode:** `CommaOp` chooses labeled vs totalized behavior at runtime by inspecting `groupLabel` on dice. This is known architectural debt -- a cleaner design would split into `GroupCommaOp`/`TotalCommaOp` at parse time. The runtime check must inspect both `.results` and `.discarded`.
-- **Tag parser structure:** The `.postfix()` tag parser matches one `@key=value` per application. Multi-tag (`@a=1 @b=2`) works because PetitParser's `ExpressionBuilder.star()` re-applies the postfix; the postfix callback folds each tag into the `TagOp` it follows, so a run of tags is one `TagOp` and a repeated key keeps its last value. `TagOp` merges via `{...?result.tags, ...tags}` with tags from enclosing groups.
+- **Tag parser structure:** The `.postfix()` tag parser matches a run of side-by-side tags (`@a=1 @b=2`) with `.plus()`, creating one `TagOp`. A tag on enclosing parentheses is a separate `TagOp`, which merges via `{...?result.tags, ...tags}`.
 - **`PreRolledDiceRoller` validates ranges:** Passing a value outside the die's range (e.g., `7` for a d6) throws `RangeError`. Values are consumed in parser-request order -- exploding/compounding dice consume extra values unpredictably.
 - **`from` excluded from `toJson()`:** `RolledDie.from` (provenance chain) is deliberately omitted from `toJson()` to avoid deeply recursive output. Each `copyWith` stores the original die, creating chains that can be very deep for exploding/penetrating dice.
 - **`scoreRules` excluded from equality and `toJson()`:** Like `from`, `RolledDie.scoreRules` is not in `props` or `toJson()`. A die rebuilt from JSON has no rules, so a push after that leaves new dice unscored.
-- **Push tags are validated in the grammar:** `@push` and `@lock` values are checked by `_isValidTag` in `parser.dart`; a bad value fails the parse. `TagOp` records `@lock` on each die under it as `RolledDie.pushLock` (innermost tag wins). `RollSummary.pushLimit` is the smallest `@push` found in the result tree. `pushLock`, like `scoreRules`, is not in `props` or `toJson()`.
 - **GroupResult stats are lazy getters:** `total`, `successCount`, etc. are computed getters (not stored fields), matching the pattern used by `RollResult`. Don't include them in `props`.
 
 ## Supported Dice Notation
@@ -148,5 +147,4 @@ Arithmetic: `+`, `-`, `*`, parentheses
 Penetrating: `4d6p`
 Labels: `"Attack": 2d6, "Damage": 1d8` (colon goes AFTER the closing quote)
 Tags: `2d6 @type=fire @source=spell`
-Push tags: `5d6#s6 @push=1`, `3d6#s6#f1 @lock=sf`, `@lock=none`
 Sorting: `4d6s`, `4d6sd`

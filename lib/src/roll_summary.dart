@@ -123,6 +123,8 @@ class RollSummary extends Equatable {
         'failureCount': failureCount,
         'critSuccessCount': critSuccessCount,
         'critFailureCount': critFailureCount,
+        'pushCount': pushCount,
+        'pushLimit': pushLimit,
         'results': results.map((e) => e.toJson()).toList(growable: false),
         'discarded': discarded.map((e) => e.toJson()).toList(growable: false),
         'detailedResults': detailedResults.toJson(),

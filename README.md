@@ -573,6 +573,7 @@ void main() async {
   final pushed = await reroll(
     summary,
     lockWhere: (die) => die.result >= 5,
+    roller: RNGRoller(),
   );
 
   // pushed.results contains locked dice (unchanged) + newly rolled dice
@@ -587,6 +588,7 @@ void main() async {
   final pushed2 = await reroll(
     pushed,
     lockWhere: (die) => die.result >= 4,
+    roller: RNGRoller(),
   );
   print(pushed2);
 }
@@ -631,14 +633,18 @@ Two tags set the push rules, so they travel with the formula text:
 
 | Tag | Applies to | Effect |
 | --- | --- | --- |
-| `@push=N` | the whole roll, wherever it is written | the roll may be pushed `N` times (`N` ≥ 1). If several pools set it, the smallest applies. Without it, pushes are unlimited |
+| `@push=N` | the whole roll, wherever it is written | the roll may be pushed `N` times (`N` ≥ 1). Without it, pushes are unlimited |
 | `@lock=s` | the dice under the tag | keep successes and critical successes. This is the default |
 | `@lock=sf` | the dice under the tag | also keep failures and critical failures |
 | `@lock=none` | the dice under the tag | keep nothing; every die re-rolls |
 
 A tag written after a pool applies to that pool. A tag written after a parenthesised roll
-applies to every pool in it, except a pool that has its own `@lock`.
-A tag repeated on the same pool keeps its last value, like any tag.
+applies to every pool in it. When tags overlap:
+
+* a pool's own tag wins: in `("A": 2d6#s6 @lock=s, "B": 2d6#s6) @lock=none`, pool `A` keeps its successes;
+* the smallest `@push` across the formula is the limit: `("A": 2d6 @push=2, "B": 2d6 @push=1)` and `(3d6 @push=1) @push=3` can both be pushed once;
+* a tag repeated side by side keeps its last value: `3d6 @push=1 @push=3` can be pushed three times.
+
 The dice a push rolls take the place, scoring rules and `@lock` rule of the dice they replace.
 
 ```dart
