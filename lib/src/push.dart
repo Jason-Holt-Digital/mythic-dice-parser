@@ -1,17 +1,19 @@
 import 'package:mythic_dice_parser/src/dice_roller.dart';
 import 'package:mythic_dice_parser/src/enums.dart';
+import 'package:mythic_dice_parser/src/push_lock.dart';
 import 'package:mythic_dice_parser/src/roll_result.dart';
 import 'package:mythic_dice_parser/src/roll_summary.dart';
 import 'package:mythic_dice_parser/src/rolled_die.dart';
 
 /// Whether a push keeps [die] as it is: constants (`singleVal` and
 /// `totaled` dice, like the `+3` of `2d6+3`), dice an earlier push locked,
-/// and dice [lockWhere] picks.
-bool _keptOnPush(RolledDie die, bool Function(RolledDie) lockWhere) =>
+/// and dice [lockWhere] picks. Without [lockWhere], the die's `@lock=` rule
+/// picks, and a die without one is kept when it is a (critical) success.
+bool _keptOnPush(RolledDie die, bool Function(RolledDie)? lockWhere) =>
     die.locked ||
     die.dieType == DieType.singleVal ||
     die.totaled ||
-    lockWhere(die);
+    (lockWhere ?? (die.pushLock ?? PushLock.successes).locks)(die);
 
 /// The dice of [summary] that [reroll] would re-roll with the same
 /// [lockWhere], in result order.
@@ -21,7 +23,7 @@ bool _keptOnPush(RolledDie die, bool Function(RolledDie) lockWhere) =>
 /// feeding them to [reroll] through a `PreRolledDiceRoller`.
 List<RolledDie> rerollableDice(
   RollSummary summary, {
-  required bool Function(RolledDie) lockWhere,
+  bool Function(RolledDie)? lockWhere,
 }) => [
   for (final die in summary.results)
     if (!_keptOnPush(die, lockWhere)) die,
@@ -30,6 +32,9 @@ List<RolledDie> rerollableDice(
 /// Re-roll unlocked dice from a previous [RollSummary].
 ///
 /// [lockWhere] determines which dice to lock (true = lock, false = re-roll).
+/// Without it, the formula's `@lock=` tags decide (see [PushLock]): each die
+/// follows the rule of the innermost tagged group around it, and a die with
+/// no rule is locked when it is a success or critical success.
 /// Locked dice appear in the new result unchanged, with `locked: true`.
 /// Unlocked dice are re-rolled using [roller], one new die in each die's
 /// place. `singleVal` and `totaled` dice are auto-locked (constants like +3).
@@ -45,13 +50,15 @@ List<RolledDie> rerollableDice(
 /// keeps the face it rolled, takes the place of a kept die, and does not
 /// explode.
 ///
-/// Can be called multiple times on successive results (multi-push).
+/// Can be called multiple times on successive results (multi-push). The
+/// new summary's `pushCount` is one more than [summary]'s; it keeps the
+/// formula's `pushLimit`, which this function does not enforce.
 ///
 /// Returns a new [RollSummary] — does NOT mutate the original.
 Future<RollSummary> reroll(
   RollSummary summary, {
-  required bool Function(RolledDie) lockWhere,
   required DiceRoller roller,
+  bool Function(RolledDie)? lockWhere,
 }) async {
   final diceResultRoller = DiceResultRoller(roller);
   final newResults = <RolledDie>[];
@@ -75,18 +82,21 @@ Future<RollSummary> reroll(
     left: summary.detailedResults,
   );
 
-  return RollSummary(detailedResults: newRollResult);
-}
-
-/// [rolled] in the place of [replaced]: in its group, scored by its rules.
-RolledDie _replacementFor(RolledDie replaced, RolledDie rolled) {
-  if (replaced.groupLabel == null && replaced.scoreRules.isEmpty) return rolled;
-  return replaced.scoreRules.fold(
-    RolledDie.copyWith(
-      rolled,
-      groupLabel: replaced.groupLabel,
-      scoreRules: replaced.scoreRules,
-    ),
-    (die, rule) => rule.score(die),
+  return RollSummary(
+    detailedResults: newRollResult,
+    pushCount: summary.pushCount + 1,
   );
 }
+
+/// [rolled] in the place of [replaced]: in its group, scored by its rules,
+/// with its `@lock=` rule.
+RolledDie _replacementFor(RolledDie replaced, RolledDie rolled) =>
+    replaced.scoreRules.fold(
+      RolledDie.copyWith(
+        rolled,
+        groupLabel: replaced.groupLabel,
+        scoreRules: replaced.scoreRules,
+        pushLock: replaced.pushLock,
+      ),
+      (die, rule) => rule.score(die),
+    );

@@ -1826,6 +1826,229 @@ void main() {
     });
   });
 
+  group('push rules in the formula', () {
+    Future<RollSummary> rollFor(String formula, List<int> feed) =>
+        DiceExpression.create(
+          formula,
+          roller: PreRolledDiceRoller(feed),
+        ).roll();
+
+    Future<RollSummary> pushFor(RollSummary summary, List<int> feed) =>
+        reroll(summary, roller: PreRolledDiceRoller(feed));
+
+    List<int> rerollable(RollSummary summary) => [
+      for (final die in rerollableDice(summary)) die.result,
+    ];
+
+    List<String> shown(RollSummary summary) => [
+      for (final die in summary.results)
+        [
+          die.result,
+          if (die.success) 'S',
+          if (die.failure) 'F',
+          if (die.locked) 'L',
+        ].join(),
+    ];
+
+    test('Year Zero: 5d6#s6 @push=1 keeps the 6s and can be pushed '
+        'once', () async {
+      final summary = await DiceExpression.create(
+        '5d6#s6 @push=1',
+        roller: RNGRoller(seededRandom),
+      ).roll();
+
+      expect(shown(summary), ['6S', '2', '1', '5', '3']);
+      expect(summary.pushLimit, 1);
+      expect(summary.pushCount, 0);
+      expect(rerollable(summary), [2, 1, 5, 3]);
+
+      final pushed = await reroll(summary, roller: RNGRoller(seededRandom));
+
+      expect(shown(pushed), ['6SL', '5', '1', '4', '6S']);
+      expect(pushed.successCount, 2);
+      expect(pushed.pushLimit, 1);
+      expect(pushed.pushCount, 1);
+    });
+
+    test('Forbidden Lands base dice: @lock=sf keeps the 1s counted by #f, '
+        'on every push', () async {
+      final summary = await rollFor('3d6#s6#f1 @lock=sf', [1, 6, 3]);
+
+      expect(rerollable(summary), [3]);
+
+      final once = await pushFor(summary, [1]);
+
+      expect(shown(once), ['1FL', '6SL', '1F']);
+      expect(rerollable(once), isEmpty);
+    });
+
+    test('@lock=sf on one pool leaves the 1s of another pool to '
+        're-roll', () async {
+      final summary = await rollFor(
+        '("Base": 3d6#s6#f1 @lock=sf, "Skill": 2d6#s6#f1) @push=1',
+        [1, 6, 3, 1, 4],
+      );
+
+      expect(rerollable(summary), [3, 1, 4]);
+      expect(summary.pushLimit, 1);
+    });
+
+    test('@lock=none re-rolls every die, successes too', () async {
+      final summary = await rollFor('3d6#s6 @lock=none', [6, 2, 6]);
+
+      expect(rerollable(summary), [6, 6, 2]);
+
+      final pushed = await pushFor(summary, [1, 6, 3]);
+
+      expect(shown(pushed), ['1', '6S', '3']);
+      expect(rerollable(pushed), [1, 6, 3]);
+    });
+
+    test("a pool's own @lock wins over the one on the group around "
+        'it', () async {
+      final summary = await rollFor(
+        '("A": 2d6#s6 @lock=s, "B": 2d6#s6) @lock=none',
+        [6, 2, 6, 2],
+      );
+
+      expect(rerollable(summary), [2, 6, 2]);
+    });
+
+    test('a lockWhere passed by the caller overrides @lock', () async {
+      final summary = await rollFor('3d6#s6 @lock=none', [6, 2, 6]);
+
+      expect(
+        [
+          for (final die in rerollableDice(
+            summary,
+            lockWhere: (die) => die.success,
+          ))
+            die.result,
+        ],
+        [2],
+      );
+    });
+
+    test('pushCount reaches pushLimit after the allowed pushes', () async {
+      final summary = await rollFor('2d6#s6 @push=2', [2, 3]);
+      final once = await pushFor(summary, [4, 5]);
+      final twice = await pushFor(once, [1, 2]);
+
+      expect([summary.pushCount, once.pushCount, twice.pushCount], [0, 1, 2]);
+      expect(twice.pushLimit, 2);
+    });
+
+    test('the smallest @push in the formula is the limit', () async {
+      final summary = await rollFor('"A": 1d6 @push=2, "B": 1d6 @push=1', [
+        2,
+        3,
+      ]);
+
+      expect(summary.pushLimit, 1);
+    });
+
+    test('a tag inside parentheses keeps its own value under a tag on the '
+        'parentheses', () async {
+      final locked = await rollFor('(3d6#s6 @lock=s) @lock=none', [6, 2, 3]);
+      final limited = await rollFor('(3d6 @push=1) @push=3', [6, 2, 3]);
+
+      expect(rerollable(locked), [2, 3]);
+      expect(limited.pushLimit, 1);
+    });
+
+    test('a push tag inside braces parses', () async {
+      final summary = await rollFor('{2d6 @push=1}', [2, 3]);
+
+      expect(summary.total, 5);
+      expect(summary.pushLimit, 1);
+    });
+
+    test('@lock is recorded on the dice a drop discards too', () async {
+      final summary = await rollFor('4d6kh3 @lock=sf', [1, 2, 3, 4]);
+
+      expect(
+        [for (final die in summary.discarded) die.pushLock],
+        [
+          PushLock.successesAndFailures,
+        ],
+      );
+    });
+
+    test('summaries that differ only in pushCount are not equal', () async {
+      final summary = await rollFor('2d6 @push=1', [2, 3]);
+
+      expect(
+        RollSummary(detailedResults: summary.detailedResults, pushCount: 1),
+        isNot(summary),
+      );
+      expect(RollSummary(detailedResults: summary.detailedResults), summary);
+    });
+
+    test('toJson includes pushCount and pushLimit', () async {
+      final summary = await rollFor('2d6 @push=2', [2, 3]);
+      final pushed = await pushFor(summary, [4, 5]);
+
+      expect(pushed.toJson()['pushCount'], 1);
+      expect(pushed.toJson()['pushLimit'], 2);
+    });
+
+    test('a tag repeated on one pool keeps its last value', () async {
+      final summary = await rollFor(
+        '3d6#s6 @push=1 @lock=none @push=3 @lock=s',
+        [
+          6,
+          2,
+          3,
+        ],
+      );
+
+      expect(summary.pushLimit, 3);
+      expect(rerollable(summary), [2, 3]);
+    });
+
+    for (final formula in [
+      '5d6#s6 @push=0',
+      '5d6#s6 @push=-1',
+      '5d6#s6 @push=once',
+      '5d6#s6 @lock=x',
+      '5d6#s6 @lock=S',
+      '"Base": 3d6#s6 @lock=f, "Gear": 1d6',
+    ]) {
+      test('rejects $formula', () {
+        expect(() => DiceExpression.create(formula), throwsFormatException);
+      });
+    }
+
+    test('other tags still pass through next to the push tags', () async {
+      final summary = await rollFor('"A": 2d6 @push=1 @lock=none @type=fire', [
+        2,
+        3,
+      ]);
+
+      expect(summary.groups?['A']?.tags, {
+        'push': '1',
+        'lock': 'none',
+        'type': 'fire',
+      });
+    });
+
+    test('with no tags a push keeps successes and critical successes, '
+        'with no limit', () async {
+      final summary = await rollFor('4d6#cs6#s5#f1', [6, 5, 1, 3]);
+
+      expect(summary.pushLimit, isNull);
+      expect(summary.pushCount, 0);
+      expect(rerollable(summary), [1, 3]);
+
+      final pushed = await pushFor(summary, [1, 2]);
+
+      expect(shown(pushed), ['1F', '5SL', '6L', '2']);
+      expect(pushed.critSuccessCount, 1);
+      expect(pushed.pushLimit, isNull);
+      expect(pushed.pushCount, 1);
+    });
+  });
+
   group('DieScoreRule', () {
     RolledDie d6(int result) => RolledDie.polyhedral(result: result, nsides: 6);
 
@@ -1951,7 +2174,7 @@ void main() {
       });
     });
 
-    group('tag parser without .plus()', () {
+    group('tag parser with several tags', () {
       test('single tag still works', () async {
         final dice = DiceExpression.create(
           '"Fire": 2d6 @type=fire',

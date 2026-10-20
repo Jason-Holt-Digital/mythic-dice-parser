@@ -141,6 +141,12 @@ void main() {
   * Tags are stored on `GroupResult.tags` (when used with labels) or on `RollResult.tags`
   * Tag values cannot contain spaces, commas, or closing parentheses
 
+* push tags (rules for `reroll()`, see [Push rules in the formula](#push-rules-in-the-formula))
+  * `5d6#s6 @push=1` -- the roll can be pushed once. `N` must be 1 or more. Without `@push`, pushes are unlimited
+  * `3d6#s6#f1 @lock=sf` -- a push keeps the dice counted as successes or failures
+  * `@lock=s` keeps successes and critical successes (the default), `@lock=sf` also keeps failures and critical failures, `@lock=none` re-rolls every die
+  * Any other value of `@push` or `@lock` is a `FormatException`
+
 * named die types (custom dice registration)
   * `DiceExpression.registerDieType('fate', [-1, -1, 0, 0, 1, 1])` -- register a custom die
   * `4dfate` -- roll 4 of the registered "fate" dice
@@ -553,7 +559,8 @@ the events for your specific roll. In that case, pass an 'onRoll' method to the 
 # Push / Re-roll
 
 The push mechanic (Year Zero Engine, etc.) allows locking certain dice and re-rolling the rest.
-This operates on a `RollSummary` result, not as grammar syntax.
+It operates on a `RollSummary` result. The formula can set the push rules with tags
+(see [Push rules in the formula](#push-rules-in-the-formula)), or the caller passes a `lockWhere` predicate.
 
 ```dart
 import 'package:mythic_dice_parser/mythic_dice_parser.dart';
@@ -566,6 +573,7 @@ void main() async {
   final pushed = await reroll(
     summary,
     lockWhere: (die) => die.result >= 5,
+    roller: RNGRoller(),
   );
 
   // pushed.results contains locked dice (unchanged) + newly rolled dice
@@ -580,6 +588,7 @@ void main() async {
   final pushed2 = await reroll(
     pushed,
     lockWhere: (die) => die.result >= 4,
+    roller: RNGRoller(),
   );
   print(pushed2);
 }
@@ -617,6 +626,45 @@ Only scoring is applied again. Operators that change the dice are not run a seco
 | plain count `#`, `*`, unlabeled `,`, totals | the result is a constant and is never re-rolled |
 
 `scoreRules` is not part of die equality or `toJson()`.
+
+## Push rules in the formula
+
+Two tags set the push rules, so they travel with the formula text:
+
+| Tag | Applies to | Effect |
+| --- | --- | --- |
+| `@push=N` | the whole roll, wherever it is written | the roll may be pushed `N` times (`N` ≥ 1). Without it, pushes are unlimited |
+| `@lock=s` | the dice under the tag | keep successes and critical successes. This is the default |
+| `@lock=sf` | the dice under the tag | also keep failures and critical failures |
+| `@lock=none` | the dice under the tag | keep nothing; every die re-rolls |
+
+A tag written after a pool applies to that pool. A tag written after a parenthesised roll
+applies to every pool in it. When tags overlap:
+
+* a pool's own tag wins: in `("A": 2d6#s6 @lock=s, "B": 2d6#s6) @lock=none`, pool `A` keeps its successes;
+* the smallest `@push` across the formula is the limit: `("A": 2d6 @push=2, "B": 2d6 @push=1)` and `(3d6 @push=1) @push=3` can both be pushed once;
+* a tag repeated side by side keeps its last value: `3d6 @push=1 @push=3` can be pushed three times.
+
+The dice a push rolls take the place, scoring rules and `@lock` rule of the dice they replace.
+
+```dart
+  // Forbidden Lands: 6s lock, and 1s on base and gear dice lock too. One push.
+  final summary = await DiceExpression.create(
+    '("Base": 3d6#s6#f1 @lock=sf, "Skill": 2d6#s6, "Gear": 1d6#s6#f1 @lock=sf) @push=1',
+  ).roll();
+
+  final toRoll = rerollableDice(summary); // no lockWhere: the formula decides
+  final pushed = await reroll(summary, roller: RNGRoller());
+
+  print(pushed.pushCount); // 1
+  print(pushed.pushLimit); // 1: hide Push once pushCount reaches pushLimit
+```
+
+`reroll()` and `rerollableDice()` follow the `@lock` rules when no `lockWhere` is passed.
+A `lockWhere` replaces them. `RollSummary.pushLimit` is `null` without a `@push` tag.
+`reroll()` does not enforce the limit; the caller compares `pushCount` with `pushLimit`.
+`RolledDie.pushLock` holds each die's `@lock` rule and, like `scoreRules`, is not part of
+die equality or `toJson()`.
 
 # Named Die Types
 
