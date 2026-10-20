@@ -13,6 +13,7 @@
 - A formula without `@push` or `@lock` rolls and pushes exactly as in 8.1.0 with `lockWhere: (die) => die.success || die.critSuccess`.
 - Tags written side by side (`2d6 @a=1 @b=2`) now parse into one `TagOp` holding all of them, so a repeated key keeps its last value, for `@lock` as it always did in `tags`. A `}` now ends a tag value, so `{2d6 @push=1}` parses.
 - `RollSummary.toJson()` includes `pushCount` and `pushLimit` when they are set.
+- `pushCount` and `pushLimit` are part of `RollSummary` equality.
 - Pushed dice still re-apply only scoring, not `r`, `C`, `!` or keep.
 - `pushLock` is not part of die equality or `toJson()`, like `scoreRules`.
 

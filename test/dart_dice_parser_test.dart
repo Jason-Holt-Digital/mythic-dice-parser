@@ -1974,6 +1974,16 @@ void main() {
       );
     });
 
+    test('summaries that differ only in pushCount are not equal', () async {
+      final summary = await rollFor('2d6 @push=1', [2, 3]);
+
+      expect(
+        RollSummary(detailedResults: summary.detailedResults, pushCount: 1),
+        isNot(summary),
+      );
+      expect(RollSummary(detailedResults: summary.detailedResults), summary);
+    });
+
     test('toJson includes pushCount and pushLimit', () async {
       final summary = await rollFor('2d6 @push=2', [2, 3]);
       final pushed = await pushFor(summary, [4, 5]);

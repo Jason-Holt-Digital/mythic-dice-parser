@@ -83,6 +83,8 @@ class RollSummary extends Equatable {
     results,
     discarded,
     groups,
+    pushCount,
+    pushLimit,
   ];
 
   @override
