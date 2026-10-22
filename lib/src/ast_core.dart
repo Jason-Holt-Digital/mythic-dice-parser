@@ -162,11 +162,60 @@ class AddOp extends Binary {
 
 /// Subtraction operation.
 class SubOp extends Binary {
-  /// Creates a subtract op.
-  SubOp(super.name, super.left, super.right);
+  /// Creates a subtract op. Every subtraction inside [right] folds (see
+  /// [foldSubtractions]), so a die is subtracted at most once.
+  SubOp(super.name, super.left, super.right) {
+    foldSubtractions(right);
+  }
+
+  /// Whether this subtraction folds its right-hand dice into one negative
+  /// constant (see [foldSubtractions]).
+  bool _folded = false;
 
   @override
-  Future<RollResult> eval() async => await left() - await right();
+  Future<RollResult> eval() async {
+    final lhs = await left();
+    final rhs = await right();
+    if (!_folded) return lhs - rhs;
+    return RollResult.fromRollResult(
+      rhs,
+      expression: '(${lhs.expression} - ${rhs.expression})',
+      opType: OpType.subtract,
+      results: [
+        ...lhs.results,
+        RolledDie.singleVal(result: -rhs.results.sum, from: rhs.results),
+      ],
+      discarded: [
+        ...lhs.discarded,
+        ...rhs.discarded,
+        ...rhs.results.map(RolledDie.discard),
+      ],
+      left: lhs,
+      right: rhs,
+    );
+  }
+}
+
+/// [expression], with every subtraction inside it folding its right-hand
+/// dice into one negative constant. An operator that reads its dice one by
+/// one (count, score, keep, drop, clamp, reroll, explode, compound) then
+/// reads a difference the way it reads `2d6 - 7`, and the right side of a
+/// subtraction never holds subtracted dice.
+DiceExpression foldSubtractions(DiceExpression expression) {
+  switch (expression) {
+    case SubOp():
+      expression._folded = true;
+  }
+  switch (expression) {
+    case Binary(:final left, :final right):
+      foldSubtractions(left);
+      foldSubtractions(right);
+    case Unary(:final left):
+      foldSubtractions(left);
+    case AggregateOp(:final subexpression):
+      foldSubtractions(subexpression);
+  }
+  return expression;
 }
 
 /// Base class for unary dice operations.

@@ -1,3 +1,38 @@
+# 8.3.0
+
+## 📈 Enhancements
+- **Push re-rolls both sides of a subtraction.** A subtraction keeps the dice of its right side in the results, with the new `RolledDie.subtracted` set and a negative `result` (a 3 is `-3`). `rerollableDice()` and `reroll()` treat them like any other die, under each die's own `@lock` rule, and a new die in the place of a subtracted die is scored by the face it rolled, then subtracted. In 8.2.0 the right side was one constant and only the left side re-rolled.
+- New optional `subtracted` parameter on `RolledDie` and `RolledDie.copyWith`. `subtracted` is part of die equality and `toJson()`.
+
+## 🛠 Breaking: a count target is only the number after it
+The count operators (`#`, `#s`, `#f`, `#cs`, `#cf`, with `=`, `<`, `<=`, `>`, `>=`) now take only the number right after them as the target, and they apply to the dice just before them. In 8.2.0 the target was the whole arithmetic expression after the operator, and the count applied to the whole sum before it. These formulas roll differently:
+
+| Formula | 8.2.0 | 8.3.0 |
+| --- | --- | --- |
+| `2d6#s6 - 2d6#s6` | `2d6 #s (6 - 2d6)`, then `#s6` | two scored pools subtracted |
+| `2d6#s6 - 2d6` | target `6 - 2d6` | `(2d6#s6) - 2d6` |
+| `2d6#s-2d6#s` | `2d6 #s (-2d6)`, then a bare `#s` | two scored pools subtracted. A number that starts dice is not a target |
+| `2d6 - 2d6#s6` | scores the difference | scores the second 2d6 only |
+| `2d6 + 1d6#` | counts all three dice | `2d6 + (1d6#)` |
+| `4d6# - 2` | count of dice equal to -2 | the count minus 2 |
+| `4d10#>=6+2` | counts dice of 8 or more | counts dice of 6 or more, then adds 2 |
+| `2d6# + 5d6!>=5 + 5D66` | `2d6 # (5d6!>=5 + 5D66)` | `(2d6#) + 5d6!>=5 + 5D66` |
+| `2d20 #cf #cs kh` | the `kh` was the target of `#cs` and kept nothing | `FormatException`. Write `(2d20 #cf #cs)kh` |
+| `4d6#s6kh2` | target `6 kh 2` | `FormatException`. Write `(4d6#s6)kh2` or `4d6kh2#s6` |
+| `6d6#s!=1` | a bare `#s` (the `!=1` was its target) | `FormatException`: there is no "not equal" count |
+
+A count after a keep, drop, clamp, reroll or explode reads as before (`4d6kh3#s6`, `4d6-<2#`), and a parenthesized pool before a count reads as before (`(4d6+1)#s#f`). Keep, drop, clamp, reroll and explode targets do not change.
+
+## Notes
+- Every other formula of the README and the tests rolls the same total and counts as in 8.2.0 (`test/parity_8_2_0_test.dart`).
+- An operator that reads a difference die by die (count, score, keep, drop, clamp, reroll, explode, compound), as in `(2d6 - 1d6)kh1`, still sees the subtracted dice as one negative constant, as in 8.2.0, so its total does not change. Those dice are not pushable.
+- `successCount`, `failureCount`, `critSuccessCount` and `critFailureCount` do not count subtracted dice, so they match 8.2.0.
+- A subtraction inside the right side of another subtraction folds into one constant, so a die is subtracted at most once: in `10 - (2d6 - 1d6)` the 1d6 is not pushable.
+- A labeled pool on the right of a subtraction keeps its dice and its label, so its group total is negative: `2d6 - ("Penalty": 3)` has a `Penalty` group of -3. In 8.2.0 the 3 was discarded, the group total was 0, and the -3 was unlabeled.
+- `isMaxResult` compares the face a subtracted die shows.
+- A subtraction now keeps the discarded dice of both sides in `discarded`. 8.2.0 lost them (`2d6kh1 - 1d6` had no discarded 2d6 die).
+- Multiplication stays one constant and is not pushable.
+
 # 8.2.0
 
 ## 📈 Enhancements

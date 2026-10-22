@@ -83,18 +83,18 @@ class RollResult extends Equatable {
 
   /// subtraction operator for [RollResult].
   ///
-  /// Results create new list lhs.results + (-1)*(other.results).
-  /// other.results are discarded, and a single value result is added
-  ///
+  /// The results of [other] stay in the results with `subtracted` set and a
+  /// negated result, so a push can re-roll its dice.
   RollResult operator -(RollResult other) => RollResult.fromRollResult(
     other,
     expression: '($expression - ${other.expression})',
     opType: OpType.subtract,
     results: [
       ...results,
-      RolledDie.singleVal(result: -1 * other.results.sum, from: other.results),
+      for (final die in other.results)
+        RolledDie.copyWith(die, result: -die.result, subtracted: true),
     ],
-    discarded: [...other.results.map(RolledDie.discard)],
+    discarded: [...discarded, ...other.discarded],
     left: this,
     right: other,
   );

@@ -37,7 +37,9 @@ List<RolledDie> rerollableDice(
 /// no rule is locked when it is a success or critical success.
 /// Locked dice appear in the new result unchanged, with `locked: true`.
 /// Unlocked dice are re-rolled using [roller], one new die in each die's
-/// place. `singleVal` and `totaled` dice are auto-locked (constants like +3).
+/// place. `singleVal` and `totaled` dice are auto-locked (constants like
+/// +3). Both sides of a subtraction are re-rolled: a new die in the place
+/// of a subtracted die is scored by the face it rolled, then subtracted.
 ///
 /// Each new die is scored by the count operators (`#s`, `#f`, `#cs`, `#cf`)
 /// that looked at the die it replaces, and carries those rules on (see
@@ -89,14 +91,18 @@ Future<RollSummary> reroll(
 }
 
 /// [rolled] in the place of [replaced]: in its group, scored by its rules,
-/// with its `@lock=` rule.
-RolledDie _replacementFor(RolledDie replaced, RolledDie rolled) =>
-    replaced.scoreRules.fold(
-      RolledDie.copyWith(
-        rolled,
-        groupLabel: replaced.groupLabel,
-        scoreRules: replaced.scoreRules,
-        pushLock: replaced.pushLock,
-      ),
-      (die, rule) => rule.score(die),
-    );
+/// with its `@lock=` rule, and subtracted when [replaced] was.
+RolledDie _replacementFor(RolledDie replaced, RolledDie rolled) {
+  final scored = replaced.scoreRules.fold(
+    RolledDie.copyWith(
+      rolled,
+      groupLabel: replaced.groupLabel,
+      scoreRules: replaced.scoreRules,
+      pushLock: replaced.pushLock,
+    ),
+    (die, rule) => rule.score(die),
+  );
+  return replaced.subtracted
+      ? RolledDie.copyWith(scored, result: -scored.result, subtracted: true)
+      : scored;
+}
