@@ -83,21 +83,37 @@ class RollResult extends Equatable {
 
   /// subtraction operator for [RollResult].
   ///
-  /// Results create new list lhs.results + (-1)*(other.results).
-  /// other.results are discarded, and a single value result is added
-  ///
-  RollResult operator -(RollResult other) => RollResult.fromRollResult(
-    other,
-    expression: '($expression - ${other.expression})',
-    opType: OpType.subtract,
-    results: [
-      ...results,
-      RolledDie.singleVal(result: -1 * other.results.sum, from: other.results),
-    ],
-    discarded: [...other.results.map(RolledDie.discard)],
-    left: this,
-    right: other,
-  );
+  /// The dice of [other] stay in the results with `subtracted` set and a
+  /// negated result, so a push can re-roll them. Its constants (`singleVal`
+  /// and `totaled` results) become one negative constant.
+  RollResult operator -(RollResult other) {
+    bool isConstant(RolledDie die) =>
+        die.dieType == DieType.singleVal || die.totaled;
+    final constants = other.results.where(isConstant);
+    return RollResult.fromRollResult(
+      other,
+      expression: '($expression - ${other.expression})',
+      opType: OpType.subtract,
+      results: [
+        ...results,
+        for (final die in other.results)
+          if (!isConstant(die))
+            RolledDie.copyWith(
+              die,
+              result: -die.result,
+              subtracted: !die.subtracted,
+            ),
+        if (constants.isNotEmpty)
+          RolledDie.singleVal(
+            result: -IList(constants).sum,
+            from: constants,
+          ),
+      ],
+      discarded: [...discarded, ...other.discarded],
+      left: this,
+      right: other,
+    );
+  }
 
   /// the parsed expression
   final String expression;

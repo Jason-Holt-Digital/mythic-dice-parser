@@ -273,6 +273,8 @@ void main() {
       '4d6 C=',
       '4d6 r=',
       '4d6 ro=',
+      // There is no "not equal" count.
+      '6d6#s!=1',
     ];
     for (final v in invalids) {
       test('invalid count - $v', () {
@@ -708,7 +710,7 @@ void main() {
         '2d6# + 5d6!>=5 + 5D66',
         roller: RNGRoller(seededRandom),
       );
-      expect(dice.toString(), '((2d6) # (( + ((5d6) !>= 5)) + (5D66)))');
+      expect(dice.toString(), '((((2d6) # ) + ((5d6) !>= 5)) + (5D66))');
     });
 
     test('invalid dice str', () {
@@ -1749,10 +1751,9 @@ void main() {
     });
 
     // Every count comparison the grammar accepts (`#` + `s|f|cs|cf` +
-    // optional `<`/`>` + optional `=`), plus `#s!=1`: there is no "not
-    // equal", so that reads as a bare `#s`.
+    // optional `<`/`>` + optional `=`).
     for (final operator in [
-      '#s', '#s6', '#s=4', '#s>4', '#s<3', '#s>=5', '#s<=2', '#s!=1', //
+      '#s', '#s6', '#s=4', '#s>4', '#s<3', '#s>=5', '#s<=2', //
       '#f', '#f1', '#f=2', '#f>4', '#f<3', '#f>=5', '#f<=2',
       '#cs', '#cs6', '#cs=4', '#cs>4', '#cs<3', '#cs>=5', '#cs<=2',
       '#cf', '#cf1', '#cf=2', '#cf>4', '#cf<3', '#cf>=5', '#cf<=2',

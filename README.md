@@ -103,7 +103,7 @@ void main() {
     the arithmetic operators; `4d10-L2+2` is equivalent to `(4d10-L2)+2`
   * NOTE: drop is not subtraction. 
     * `4d6 - 3` -- roll 4d6, subtract 3
-    * `4d6 - 2d6` -- roll 4d6, subtract the result of rolling 2d6
+    * `4d6 - 2d6` -- roll 4d6, subtract the result of rolling 2d6. The 2d6 stay in the results as subtracted dice (`RolledDie.subtracted`, with a negative `result`), so a push can re-roll them
 * cap/clamp:
   * `4d20 C<5` -- roll 4d20, change any value < 5 to 5
   * `4d20 C>15` -- roll 4d20, change any value > 15 to 15
@@ -117,6 +117,8 @@ void main() {
     * `4d6 #>=5` -- roll 4d6, count any >= 5
     * `4d6 #<=2` -- roll 4d6, count any <= 2
     * `4d6 #=5` -- roll 4d6, count any equal to 5
+    * the target is only the number right after the operator: `4d10#>=6+2` counts dice of 6 or more, then adds 2 to the count
+    * a count applies to the dice just before it: `2d6 + 1d6#` counts the 1d6 only. Write `(2d6 + 1d6)#` to count all three
   * successes and failures 
     * A normal count operation `#` discards the rolled dice and changes the result to be the count 
       * For example, `2d6#<=3` rolls `[3,4]` then counts which results are `<=3` , returning `[1]`
@@ -127,7 +129,8 @@ void main() {
     * NOTE: order matters
       * `2d20 kh #cf #cs` -- roll 2d20, keep the highest, count critical successes & failures. If this 
          rolled `[1,18]`, the `1` is dropped and the result metadata won't record a critical failure.
-         If that's not the behavior you want, move the counts prior to the drop (`2d20 #cf #cs kh`).
+         If that's not the behavior you want, move the counts prior to the drop (`(2d20 #cf #cs)kh`).
+         A keep or drop right after a count needs the parentheses.
       
 * labeled groups (for multi-pool rolls like Year Zero Engine, Cortex Prime, etc.)
   * `"Attack": 2d6, "Damage": 1d8` -- roll two labeled groups; results are separated into `GroupResult` objects accessible via `RollSummary.groups`
@@ -623,9 +626,25 @@ Only scoring is applied again. Operators that change the dice are not run a seco
 | explode `!`, compound `!!`, penetrate `p` | does not explode. A die an explosion added is re-rolled like any other die; it has the rules of counts written after the explosion only |
 | reroll `r` `ro` | keeps the face it rolled; not re-rolled again |
 | sort `s` `sd` | stays in the position of the die it replaces |
+| subtraction `-` | both sides re-roll. A new die in the place of a subtracted die is scored by the face it rolled, then subtracted |
 | plain count `#`, `*`, unlabeled `,`, totals | the result is a constant and is never re-rolled |
 
 `scoreRules` is not part of die equality or `toJson()`.
+
+## Push re-rolls both sides of a subtraction
+
+In `2d6#s6 - 2d6#s6` each pool is scored by its own `#s6`, and a push re-rolls the dice of
+both pools that are not successes. Each side follows its own `@lock` rule:
+`2d6#s6#f1 - (2d6#s6#f1 @lock=sf)` re-rolls the 1s of the first pool only.
+
+* The subtracted dice have `subtracted: true` and a negative `result` (a 3 is `-3`), so
+  `total` adds them up as before. A `lockWhere` passed to `reroll()` sees that negative
+  `result`.
+* `successCount` and the other counts do not count subtracted dice.
+* Multiplication is not pushable: `2d6*2` is one constant.
+* An operator that reads the difference die by die (count, score, keep, drop, clamp, reroll,
+  explode, compound), as in `(2d6 - 1d6)kh1`, sees the subtracted dice as one negative
+  constant. Those dice are not pushable.
 
 ## Push rules in the formula
 

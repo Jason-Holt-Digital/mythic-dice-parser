@@ -36,6 +36,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     this.locked = false,
     this.scoreRules = const IList.empty(),
     this.pushLock,
+    this.subtracted = false,
   }) : potentialValues = IList(potentialValues) {
     if (dieType.requirePotentialValues && potentialValues.isEmpty) {
       throw ArgumentError(
@@ -131,6 +132,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     bool? locked,
     Iterable<DieScoreRule>? scoreRules,
     PushLock? pushLock,
+    bool? subtracted,
   }) => RolledDie(
     potentialValues: other.potentialValues,
     nsides: other.nsides,
@@ -157,6 +159,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     locked: locked ?? other.locked,
     scoreRules: IList.orNull(scoreRules) ?? other.scoreRules,
     pushLock: pushLock ?? other.pushLock,
+    subtracted: subtracted ?? other.subtracted,
   );
 
   /// Creates a discarded copy of [other].
@@ -277,6 +280,13 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
   /// [scoreRules], this is not part of equality or `toJson()`.
   final PushLock? pushLock;
 
+  /// Whether the die is on the subtracted side of a subtraction, as the 3
+  /// of `2d6 - 1d6` is. Its [result] is then the negative of the face it
+  /// shows (-3), so sums stay correct, and it is not counted by
+  /// `successCount` and the other counts. A push rolls a new face for it and
+  /// subtracts that.
+  final bool subtracted;
+
   /// Whether this die rolled its maximum possible value.
   bool get isMaxResult => result == maxPotentialValue;
 
@@ -309,6 +319,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
     totaled,
     groupLabel,
     locked,
+    subtracted,
   ];
 
   /// Serializes this die to a JSON-compatible map.
@@ -336,6 +347,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
         'totaled': totaled,
         'groupLabel': groupLabel,
         'locked': locked,
+        'subtracted': subtracted,
       }..removeWhere(
         (k, v) =>
             v == null ||
@@ -448,5 +460,6 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
       .if0(rerolled.compareTo(other.rerolled))
       .if0(clampCeiling.compareTo(other.clampCeiling))
       .if0(clampFloor.compareTo(other.clampFloor))
-      .if0(locked.compareTo(other.locked));
+      .if0(locked.compareTo(other.locked))
+      .if0(subtracted.compareTo(other.subtracted));
 }

@@ -133,7 +133,7 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
             char('=').optional())
         .flatten()
         .trim(),
-    (a, op, b) => CompoundingDice(op.toLowerCase(), a, b, roller),
+    (a, op, b) => CompoundingDice(op.toLowerCase(), readsDice(a), b, roller),
   );
   builder.group()
     // reroll & reroll once
@@ -144,7 +144,7 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
               char('=').optional())
           .flatten()
           .trim(),
-      (a, op, b) => RerollDice(op.toLowerCase(), a, b, roller),
+      (a, op, b) => RerollDice(op.toLowerCase(), readsDice(a), b, roller),
     )
     // exploding
     ..left(
@@ -154,33 +154,53 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
               char('=').optional())
           .flatten()
           .trim(),
-      (a, op, b) => ExplodingDice(op.toLowerCase(), a, b, roller),
+      (a, op, b) => ExplodingDice(op.toLowerCase(), readsDice(a), b, roller),
     )
     // cap/clamp >,<
     ..left(
       (pattern('cC') & pattern('<>').optional()).flatten().trim(),
-      (a, op, b) => ClampOp(op.toLowerCase(), a, b),
+      (a, op, b) => ClampOp(op.toLowerCase(), readsDice(a), b),
     )
     // drop >=,<=,>,<
     ..left(
       (char('-') & pattern('<>') & char('=').optional()).flatten().trim(),
-      (a, op, b) => DropOp(op.toLowerCase(), a, b),
+      (a, op, b) => DropOp(op.toLowerCase(), readsDice(a), b),
     )
     ..left(
       (string('-=')).flatten().trim(),
-      (a, op, b) => DropOp(op.toLowerCase(), a, b),
+      (a, op, b) => DropOp(op.toLowerCase(), readsDice(a), b),
     )
     // drop(-) low, high
     ..left(
       (char('-') & pattern('lLhH')).flatten().trim(),
-      (a, op, b) => DropHighLowOp(op.toLowerCase(), a, b),
+      (a, op, b) => DropHighLowOp(op.toLowerCase(), readsDice(a), b),
     )
     // keep low/high
     ..left(
       (pattern('k') & pattern('lLhH').optional()).flatten().trim(),
-      (a, op, b) => DropHighLowOp(op.toLowerCase(), a, b),
+      (a, op, b) => DropHighLowOp(op.toLowerCase(), readsDice(a), b),
     );
 
+  // count >=, <=, <, >, =, and #s, #cs, #f, #cf: (critical) successes and
+  // failures. The target is only the number right after the operator, so
+  // `2d6#s6 - 2d6#s6` subtracts two scored pools.
+  builder.group().postfix(
+    seq2(
+      (char('#') &
+              char('c').optional() &
+              pattern('sf').optional() &
+              pattern('<>').optional() &
+              char('=').optional())
+          .flatten()
+          .trim(),
+      (char('-').optional() & digit().plus()).flatten().trim().optional(),
+    ),
+    (a, op) => CountOp(
+      op.$1.toLowerCase(),
+      readsDice(a),
+      SimpleValue(op.$2 ?? ''),
+    ),
+  );
   builder.group().left(
     _arithmeticOperator(char('*')),
     (a, op, b) => MultiplyOp(op.name, a, _signed(op.sign, b)),
@@ -194,23 +214,10 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
       _arithmeticOperator(char('-')),
       (a, op, b) => SubOp(op.name, a, _signed(op.sign, b)),
     );
-  // count >=, <=, <, >, =,
-  // #s, #cs, #f, #cf -- count (critical) successes / failures
-  builder.group()
-    ..left(
-      (char('#') &
-              char('c').optional() &
-              pattern('sf').optional() &
-              pattern('<>').optional() &
-              char('=').optional())
-          .flatten()
-          .trim(),
-      (a, op, b) => CountOp(op.toLowerCase(), a, b),
-    )
-    ..postfix(
-      (char('s') & char('d').optional()).flatten().trim(),
-      (a, op) => SortOp(op.toLowerCase(), a),
-    );
+  builder.group().postfix(
+    (char('s') & char('d').optional()).flatten().trim(),
+    (a, op) => SortOp(op.toLowerCase(), a),
+  );
 
   // Labels, tags, and comma — lower precedence than count/sort so that
   // each sub-expression gets scored before comma joins them.

@@ -165,8 +165,54 @@ class SubOp extends Binary {
   /// Creates a subtract op.
   SubOp(super.name, super.left, super.right);
 
+  /// Whether an operator above this one reads the difference die by die
+  /// (see [readsDice]). The right-hand dice are then folded into one
+  /// negative constant, which that operator reads as a single value.
+  bool _folded = false;
+
   @override
-  Future<RollResult> eval() async => await left() - await right();
+  Future<RollResult> eval() async {
+    final lhs = await left();
+    final rhs = await right();
+    if (!_folded) return lhs - rhs;
+    return RollResult.fromRollResult(
+      rhs,
+      expression: '(${lhs.expression} - ${rhs.expression})',
+      opType: OpType.subtract,
+      results: [
+        ...lhs.results,
+        RolledDie.singleVal(result: -rhs.results.sum, from: rhs.results),
+      ],
+      discarded: [
+        ...lhs.discarded,
+        ...rhs.discarded,
+        ...rhs.results.map(RolledDie.discard),
+      ],
+      left: lhs,
+      right: rhs,
+    );
+  }
+}
+
+/// [pool], marked as the dice an operator reads one by one (count, score,
+/// keep, drop, clamp, reroll, explode, compound). Every subtraction inside
+/// it folds its right-hand dice into one constant, so a keep, a count or an
+/// explosion reads the difference the way it reads `2d6 - 7`.
+DiceExpression readsDice(DiceExpression pool) {
+  switch (pool) {
+    case SubOp():
+      pool._folded = true;
+  }
+  switch (pool) {
+    case Binary(:final left, :final right):
+      readsDice(left);
+      readsDice(right);
+    case Unary(:final left):
+      readsDice(left);
+    case AggregateOp(:final subexpression):
+      readsDice(subexpression);
+  }
+  return pool;
 }
 
 /// Base class for unary dice operations.
