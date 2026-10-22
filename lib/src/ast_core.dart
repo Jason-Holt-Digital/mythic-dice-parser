@@ -162,12 +162,14 @@ class AddOp extends Binary {
 
 /// Subtraction operation.
 class SubOp extends Binary {
-  /// Creates a subtract op.
-  SubOp(super.name, super.left, super.right);
+  /// Creates a subtract op. Every subtraction inside [right] folds (see
+  /// [foldSubtractions]), so a die is subtracted at most once.
+  SubOp(super.name, super.left, super.right) {
+    foldSubtractions(right);
+  }
 
-  /// Whether an operator above this one reads the difference die by die
-  /// (see [readsDice]). The right-hand dice are then folded into one
-  /// negative constant, which that operator reads as a single value.
+  /// Whether this subtraction folds its right-hand dice into one negative
+  /// constant (see [foldSubtractions]).
   bool _folded = false;
 
   @override
@@ -194,25 +196,26 @@ class SubOp extends Binary {
   }
 }
 
-/// [pool], marked as the dice an operator reads one by one (count, score,
-/// keep, drop, clamp, reroll, explode, compound). Every subtraction inside
-/// it folds its right-hand dice into one constant, so a keep, a count or an
-/// explosion reads the difference the way it reads `2d6 - 7`.
-DiceExpression readsDice(DiceExpression pool) {
-  switch (pool) {
+/// [expression], with every subtraction inside it folding its right-hand
+/// dice into one negative constant. An operator that reads its dice one by
+/// one (count, score, keep, drop, clamp, reroll, explode, compound) then
+/// reads a difference the way it reads `2d6 - 7`, and the right side of a
+/// subtraction never holds subtracted dice.
+DiceExpression foldSubtractions(DiceExpression expression) {
+  switch (expression) {
     case SubOp():
-      pool._folded = true;
+      expression._folded = true;
   }
-  switch (pool) {
+  switch (expression) {
     case Binary(:final left, :final right):
-      readsDice(left);
-      readsDice(right);
+      foldSubtractions(left);
+      foldSubtractions(right);
     case Unary(:final left):
-      readsDice(left);
+      foldSubtractions(left);
     case AggregateOp(:final subexpression):
-      readsDice(subexpression);
+      foldSubtractions(subexpression);
   }
-  return pool;
+  return expression;
 }
 
 /// Base class for unary dice operations.

@@ -11,6 +11,7 @@ The count operators (`#`, `#s`, `#f`, `#cs`, `#cf`, with `=`, `<`, `<=`, `>`, `>
 | --- | --- | --- |
 | `2d6#s6 - 2d6#s6` | `2d6 #s (6 - 2d6)`, then `#s6` | two scored pools subtracted |
 | `2d6#s6 - 2d6` | target `6 - 2d6` | `(2d6#s6) - 2d6` |
+| `2d6#s-2d6#s` | `2d6 #s (-2d6)`, then a bare `#s` | two scored pools subtracted. A number that starts dice is not a target |
 | `2d6 - 2d6#s6` | scores the difference | scores the second 2d6 only |
 | `2d6 + 1d6#` | counts all three dice | `2d6 + (1d6#)` |
 | `4d6# - 2` | count of dice equal to -2 | the count minus 2 |
@@ -26,6 +27,9 @@ A count after a keep, drop, clamp, reroll or explode reads as before (`4d6kh3#s6
 - Every other formula of the README and the tests rolls the same total and counts as in 8.2.0 (`test/parity_8_2_0_test.dart`).
 - An operator that reads a difference die by die (count, score, keep, drop, clamp, reroll, explode, compound), as in `(2d6 - 1d6)kh1`, still sees the subtracted dice as one negative constant, as in 8.2.0, so its total does not change. Those dice are not pushable.
 - `successCount`, `failureCount`, `critSuccessCount` and `critFailureCount` do not count subtracted dice, so they match 8.2.0.
+- A subtraction inside the right side of another subtraction folds into one constant, so a die is subtracted at most once: in `10 - (2d6 - 1d6)` the 1d6 is not pushable.
+- A labeled pool on the right of a subtraction keeps its dice and its label, so its group total is negative: `2d6 - ("Penalty": 3)` has a `Penalty` group of -3. In 8.2.0 the 3 was discarded, the group total was 0, and the -3 was unlabeled.
+- `isMaxResult` compares the face a subtracted die shows.
 - A subtraction now keeps the discarded dice of both sides in `discarded`. 8.2.0 lost them (`2d6kh1 - 1d6` had no discarded 2d6 die).
 - Multiplication stays one constant and is not pushable.
 

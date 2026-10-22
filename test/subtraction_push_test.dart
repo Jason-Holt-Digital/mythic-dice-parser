@@ -79,7 +79,52 @@ void main() {
     expect((await push(subtracted, [1, 2])).total, 7);
   });
 
+  test('a die subtracted twice is subtracted once and not counted', () async {
+    final summary = await roll('(1d6#s6) - ((1d6#s6) - (1d6#s6))', [6, 6, 6]);
+
+    expect(dice(summary.results), [
+      (6, true, false, false),
+      (-6, true, false, true),
+      (6, false, false, true),
+    ]);
+    expect(summary.total, 6);
+    expect(summary.successCount, 1);
+  });
+
+  test('a subtracted die that rolled its highest face is a maximum', () async {
+    final summary = await roll('2d6 - 2d6', [6, 2, 6, 3]);
+
+    expect(dice(rerollableDice(summary, lockWhere: (d) => d.isMaxResult)), [
+      (2, false, false, false),
+      (-3, false, false, true),
+    ]);
+  });
+
+  test('a labeled constant on the right keeps its pool', () async {
+    final summary = await roll('2d6 - ("Penalty": 3)', [6, 2]);
+
+    expect(
+      summary.groups?.map((label, group) => MapEntry(label, group.total)),
+      {
+        '': 8,
+        'Penalty': -3,
+      },
+    );
+  });
+
   group('a count target is only the number right after the operator', () {
+    test('2d6#s-2d6#s subtracts two scored pools', () async {
+      final summary = await roll('2d6#s-2d6#s', [6, 2, 3, 6]);
+
+      expect(dice(summary.results), [
+        (6, true, false, false),
+        (2, false, false, false),
+        (-6, true, false, true),
+        (-3, false, false, true),
+      ]);
+      expect(summary.successCount, 1);
+    });
+
     test('4d10#>=6+2 adds 2 to the count', () async {
       expect((await roll('4d10#>=6+2', [6, 7, 2, 9])).total, 5);
     });

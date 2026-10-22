@@ -642,6 +642,8 @@ both pools that are not successes. Each side follows its own `@lock` rule:
   `result`.
 * `successCount` and the other counts do not count subtracted dice.
 * Multiplication is not pushable: `2d6*2` is one constant.
+* A subtraction inside the right side of another one is one constant, so a die is subtracted at
+  most once: in `10 - (2d6 - 1d6)` the 1d6 is not pushable.
 * An operator that reads the difference die by die (count, score, keep, drop, clamp, reroll,
   explode, compound), as in `(2d6 - 1d6)kh1`, sees the subtracted dice as one negative
   constant. Those dice are not pushable.

@@ -56,7 +56,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
         maxPotentialValue = 66;
         minPotentialValue = 1;
       case DieType.singleVal:
-        maxPotentialValue = minPotentialValue = result;
+        maxPotentialValue = minPotentialValue = _face;
       case DieType.nvals || DieType.fudge:
         maxPotentialValue = potentialValues.max;
         minPotentialValue = potentialValues.min;
@@ -287,8 +287,10 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
   /// subtracts that.
   final bool subtracted;
 
+  int get _face => subtracted ? -result : result;
+
   /// Whether this die rolled its maximum possible value.
-  bool get isMaxResult => result == maxPotentialValue;
+  bool get isMaxResult => _face == maxPotentialValue;
 
   /// Whether this die has a range of possible values.
   bool get isCountable => minPotentialValue != maxPotentialValue;
