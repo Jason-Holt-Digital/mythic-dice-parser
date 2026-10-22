@@ -125,6 +125,14 @@ void main() {
       expect(summary.successCount, 1);
     });
 
+    test('a target keeps a sign written before its number', () async {
+      final scored = await roll('2d6#s>=+5', [6, 5]);
+      final counted = await roll('4d6#+1', [6, 5, 2, 1]);
+
+      expect((scored.total, scored.successCount), (11, 2));
+      expect(counted.total, 1);
+    });
+
     test('4d10#>=6+2 adds 2 to the count', () async {
       expect((await roll('4d10#>=6+2', [6, 7, 2, 9])).total, 5);
     });

@@ -198,7 +198,7 @@ Parser<DiceExpression> parserBuilder(DiceResultRoller roller) {
                 char('=').optional())
             .flatten()
             .trim(),
-        (char('-').optional() & digit().plus())
+        (pattern('+-').optional() & digit().plus())
             .flatten()
             .trim()
             .skip(after: pattern('dD').not())
