@@ -1,0 +1,60 @@
+{
+  "generatedAt": "2026-10-23T10:24:51.734Z",
+  "commitHash": "559f2b2192d495a17c5a966321085647a885564a",
+  "branch": "main",
+  "pageCount": 32,
+  "topLevelSections": [
+    "overview",
+    "by-the-numbers",
+    "lore",
+    "how-to-contribute",
+    "systems",
+    "features",
+    "deployment",
+    "security",
+    "background",
+    "cleanup-opportunities",
+    "reference",
+    "maintainers"
+  ],
+  "pageOrder": [
+    "overview/index.md",
+    "overview/architecture.md",
+    "overview/getting-started.md",
+    "overview/glossary.md",
+    "by-the-numbers.md",
+    "lore.md",
+    "how-to-contribute/index.md",
+    "how-to-contribute/development-workflow.md",
+    "how-to-contribute/testing.md",
+    "how-to-contribute/debugging.md",
+    "how-to-contribute/patterns-and-conventions.md",
+    "how-to-contribute/tooling.md",
+    "systems/index.md",
+    "systems/parser.md",
+    "systems/operators.md",
+    "systems/rollers.md",
+    "systems/results.md",
+    "features/index.md",
+    "features/push.md",
+    "features/groups-and-tags.md",
+    "features/custom-dice.md",
+    "features/events-and-statistics.md",
+    "features/example-cli.md",
+    "deployment.md",
+    "security.md",
+    "background.md",
+    "cleanup-opportunities.md",
+    "reference/index.md",
+    "reference/configuration.md",
+    "reference/data-models.md",
+    "reference/dependencies.md",
+    "maintainers.md"
+  ],
+  "videoOverview": {
+    "status": "skipped",
+    "warnings": [
+      "Video overview skipped: incremental diff is minor (documentation only) and the prior run's video failed to render. FFmpeg and FFprobe are not installed in this environment and no TTS engine is available, so no video was rendered and none could be reused."
+    ]
+  }
+}
