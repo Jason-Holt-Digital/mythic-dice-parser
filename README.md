@@ -10,6 +10,46 @@
 A dart library for parsing dice notation (`2d6+4`). Supports advantage/disadvantage, counting success/failures, 
 exploding, compounding, and other variations.
 
+# Development setup
+
+## Requirements
+
+* A stable Dart SDK that satisfies the `pubspec.yaml` constraint (`>=3.8.0 <4.0.0`), available on your `PATH`.
+  * **_NOTE_**: `mise.toml` currently pins Dart 3.7, which does not satisfy that constraint. Use a compatible SDK instead of that pin.
+
+No environment variables, credentials, databases, or local services are needed to run the examples or the VM tests.
+
+## Fresh clone
+
+```bash
+git clone https://github.com/Jason-Holt-Digital/mythic-dice-parser.git
+cd mythic-dice-parser
+dart pub upgrade --no-precompile
+dart run example/main.dart -r 42 '2d6+4'
+```
+
+`dart pub upgrade --no-precompile` resolves the dependencies. This is a library with no build step or server, so the last command runs the example CLI to confirm the setup works. The `-r 42` option seeds the random number generator so the roll repeats.
+
+## Local verification
+
+Run these from the repository root. They are the same checks CI runs on the Dart VM:
+
+```bash
+dart format --output=none --set-exit-if-changed .
+dart analyze --fatal-infos .
+dart test --platform vm
+```
+
+The format command only checks formatting and does not change files. Run `dart format .` to apply fixes.
+
+For a quick check of a single test instead of the full suite:
+
+```bash
+dart test --platform vm test/dart_dice_parser_test.dart --plain-name 'arithmetic addition - 1+20'
+```
+
+CI also runs the tests on Chrome (`dart test --platform chrome`). The VM checks above need no browser.
+
 # Example
 
 ```dart
