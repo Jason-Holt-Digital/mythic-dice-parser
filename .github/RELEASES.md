@@ -5,7 +5,7 @@ This repository uses Release Please to manage the parser's version, changelog, a
 ## What it manages
 
 - One root component that uses the `dart` strategy.
-- The baseline version is 8.1.0.
+- The baseline version is 8.3.0, the current `pubspec.yaml` version. No `v8.2.0` or `v8.3.0` tag exists, so the first release scans from `bootstrap-sha`.
 - Tags use the form `vVERSION`.
 - Release Please updates `pubspec.yaml`, `CHANGELOG.md`, and the manifest.
 - This setup does not add an automatic GLPub publisher.
@@ -39,7 +39,7 @@ The credential preflight check only proves two things: the secret exists, and th
 
 ## First run
 
-The first run may not open a release PR. When a release PR does open, compare its diff and changelog with the 8.1.0 baseline and with earlier tags. If an earlier tag matches, Release Please can scan from that tag instead of `bootstrap-sha`, so older commits may still show up in the notes.
+The first run may not open a release PR. When a release PR does open, compare its diff and changelog with the 8.3.0 baseline and with earlier tags. If an earlier tag matches, Release Please can scan from that tag instead of `bootstrap-sha`, so older commits may still show up in the notes.
 
 ## Verify a release
 
