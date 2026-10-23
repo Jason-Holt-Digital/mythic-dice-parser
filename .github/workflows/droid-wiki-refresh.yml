@@ -52,10 +52,14 @@ jobs:
       - name: Set up Git for the GitHub wiki push
         # /wiki commits to and pushes {repo}.wiki.git from a fresh clone, which
         # sees neither checkout's repository-local credentials nor an author.
+        # A credential helper, not a global extraheader: inside the checkout,
+        # a second Authorization header makes GitHub reject the request and
+        # /wiki then reports the wiki as uninitialized.
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git config --global http.https://github.com/.extraheader "AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 -w0)"
+          printf 'https://x-access-token:%s@github.com\n' "$GITHUB_TOKEN" > ~/.git-credentials
+          git config --global credential.helper store
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
