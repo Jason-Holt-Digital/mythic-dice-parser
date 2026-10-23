@@ -22,4 +22,4 @@ The grammar in `lib/src/parser.dart` supports standard and special dice, explodi
 
 This checkout contains one Dart package and two console examples, not a Flutter app or a running service. The proposed 3D runtime in `doc/3d-dice-research/00-3d-dice-direction-index.md` is research, not shipped code. See [Background](../background.md) before treating historical design documents as current API reference.
 
-This wiki describes commit `559f2b2192d495a17c5a966321085647a885564a` on `main`. Current source and `pubspec.yaml` take precedence over older names, synchronous examples, and metadata-map descriptions still present in `README.md` and `CLAUDE.md`.
+This wiki describes commit `8812e58ff3245e8d428ed08ae6810c08b92c7e2e` on `claude/clever-meitner-iyop54`. Current source and `pubspec.yaml` take precedence over older names, synchronous examples, and metadata-map descriptions still present in `README.md` and `CLAUDE.md`.

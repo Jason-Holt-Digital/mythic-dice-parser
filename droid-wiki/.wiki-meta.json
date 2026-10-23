@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-23T10:24:51.734Z",
-  "commitHash": "559f2b2192d495a17c5a966321085647a885564a",
-  "branch": "main",
+  "generatedAt": "2026-10-23T11:51:59Z",
+  "commitHash": "8812e58ff3245e8d428ed08ae6810c08b92c7e2e",
+  "branch": "claude/clever-meitner-iyop54",
   "pageCount": 32,
   "topLevelSections": [
     "overview",
@@ -52,9 +52,9 @@
     "maintainers.md"
   ],
   "videoOverview": {
-    "status": "skipped",
+    "status": "failed",
     "warnings": [
-      "Video overview skipped: incremental diff is minor (documentation only) and the prior run's video failed to render. FFmpeg and FFprobe are not installed in this environment and no TTS engine is available, so no video was rendered and none could be reused."
+      "Video overview unavailable: no playable video exists in the five prior wiki runs. HyperFrames 0.4.44 doctor reported missing FFmpeg and FFprobe (despite exiting 0), and no local TTS executable was found. Rendering was not attempted."
     ]
   }
 }

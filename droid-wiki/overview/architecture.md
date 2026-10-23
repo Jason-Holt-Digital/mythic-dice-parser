@@ -4,7 +4,7 @@ Parsing is synchronous; rolling is asynchronous. The parser builds reusable oper
 
 ## Language footprint
 
-The tracked checkout contains 6,698 physical Dart lines across library, tests, and examples. Supporting text includes 7,468 Markdown lines, 829 YAML lines, 101 JSON lines, and 29 TOML lines. These counts exclude the generated wiki and include comments and blank lines; see [By the numbers](../by-the-numbers.md) for methods and history metrics.
+The tracked checkout contains 6,698 physical Dart lines across library, tests, and examples. Supporting text includes 7,476 Markdown lines, 867 YAML lines, 101 JSON lines, and 29 TOML lines. These counts exclude the generated wiki and include comments and blank lines; see [By the numbers](../by-the-numbers.md) for methods and history metrics.
 
 ## Formula lifecycle
 

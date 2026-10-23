@@ -62,7 +62,7 @@ The following names are referenced by checked-in workflows. Their configured val
 | Name | Purpose |
 | --- | --- |
 | `FACTORY_API_KEY` | Factory workflow authentication |
-| `FACTORY_WIKI_PR_TOKEN` | Optional wiki branch/PR token |
+| `FACTORY_WIKI_PR_TOKEN` | Optional source wiki branch/PR token for the publish job, not the generation job's wiki-tab push |
 | `CODECOV_TOKEN` | Coverage upload authentication |
 | `RELEASE_PLEASE_TOKEN` | Required repository-scoped release PR/release token; read-only preflight does not verify write scopes |
 | `JHD_FACTORY_REVIEW_ENABLED` | Enable the new advisory review workflow |
@@ -72,5 +72,22 @@ The following names are referenced by checked-in workflows. Their configured val
 | `JHD_FACTORY_STEWARD_FIX_ENABLED` | Permit its optional auto-fix mode |
 
 Source: `.github/workflows/dart.yml`, `.github/workflows/droid-wiki-refresh.yml`, `.github/workflows/factory-review.yml`, `.github/workflows/factory-mentions.yml`, `.github/workflows/factory-triage.yml`, `.github/workflows/factory-ci-steward.yml`, and `.github/workflows/release-please.yml`.
+
+### Wiki and review controls
+
+| Control | Value or behavior | Source |
+| --- | --- | --- |
+| Wiki trigger | Manual `workflow_dispatch` only; no push or schedule | `.github/workflows/droid-wiki-refresh.yml` |
+| Wiki concurrency | `droid-wiki-refresh`, `cancel-in-progress: false` | `.github/workflows/droid-wiki-refresh.yml` |
+| Rolling wiki branch | `factory/droid-wiki` | `.github/workflows/droid-wiki-refresh.yml` |
+| Default workflow permissions | `contents: read` | `.github/workflows/droid-wiki-refresh.yml` |
+| Generation job permissions | `contents: write`, required for the GitHub wiki push | `.github/workflows/droid-wiki-refresh.yml` |
+| Wiki clone credentials | Built-in GitHub token passed as `GITHUB_TOKEN`, written to the runner's Git credential file, and used by the global `store` helper; no additional global Authorization header | `.github/workflows/droid-wiki-refresh.yml` |
+| Wiki commit author | Global Git identity set to `github-actions[bot]` before generation | `.github/workflows/droid-wiki-refresh.yml` |
+| Publish job permissions | `contents: write`, `pull-requests: write` | `.github/workflows/droid-wiki-refresh.yml` |
+| Source PR credential | `FACTORY_WIKI_PR_TOKEN`, falling back to `github.token` | `.github/workflows/droid-wiki-refresh.yml` |
+| Completed-review label | `droid-reviewed`, added after successful review | `.github/workflows/factory-review.yml` |
+| Automatic rereview exception | Events sent by `factory-droid[bot]` bypass the label gate, not the other authorization checks | `.github/workflows/factory-review.yml` |
+| Explicit rereview | Authorized writer comments `@droid review`; mentions must be enabled | `.github/workflows/factory-mentions.yml` |
 
 See [Automation and publishing](../deployment.md) for workflow behavior. No actual credentials were inspected.

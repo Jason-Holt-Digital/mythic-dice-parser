@@ -43,11 +43,17 @@ Treat package publication and its credentials as a separate, explicitly authoriz
 
 ## Wiki refresh
 
-`.github/workflows/droid-wiki-refresh.yml` runs on `main` pushes and serializes refreshes per repository. Its generation job has read-only repository permissions, checks out full history, and restores `droid-wiki/` from the rolling `factory/droid-wiki` branch when available.
+`.github/workflows/droid-wiki-refresh.yml` runs only through manual `workflow_dispatch`, started from the Actions tab. It has no push or scheduled trigger. Each run starts a paid Droid session, so the workflow leaves refresh timing to a human.
 
-The generation job invokes `/wiki` and passes Markdown plus hidden metadata to a separate publish job. Video and images are excluded from Git artifacts and commits. The publish job writes the rolling branch and opens or updates a documentation pull request against the default branch.
+The repository-wide `droid-wiki-refresh` concurrency group serializes runs without cancelling an in-progress refresh. The workflow defaults to `contents: read`, but its generation job explicitly grants `contents: write`: `/wiki` itself pushes generated pages to the separate GitHub wiki repository, `{repo}.wiki.git`. The job checks out full history and restores `droid-wiki/` from the rolling `factory/droid-wiki` branch when available.
 
-`FACTORY_WIKI_PR_TOKEN` is optional; the workflow falls back to the built-in GitHub token. The comments warn that pull requests created by that fallback do not trigger other workflows. Push/PR failures in the publish step are reported as warnings rather than discarding generated documentation.
+Before invoking `/wiki`, the generation job configures the runner's global Git author as `github-actions[bot]`. It writes the built-in GitHub token to the runner's Git credential file and enables the global `store` credential helper. The fresh wiki clone can use those credentials even though it does not inherit checkout's repository-local credentials. This is a write-capable generation job, not a read-only analysis boundary.
+
+The helper replaces the previous global GitHub HTTPS authorization header. As documented in `.github/workflows/droid-wiki-refresh.yml`, adding a global header alongside checkout's repository-local header sent duplicate Authorization headers, which GitHub rejected; `/wiki` then reported the wiki as uninitialized. An initialization warning can therefore indicate a credential failure, not necessarily a missing wiki.
+
+The generation job passes Markdown plus hidden metadata to a separate publish job. Video and images are excluded from Git artifacts and commits. The publish job grants `contents: write` and `pull-requests: write`, writes the rolling source branch, and opens or updates a documentation pull request against the default branch. This source-tree PR is separate from the GitHub wiki-tab push performed during generation.
+
+`FACTORY_WIKI_PR_TOKEN` is optional for the publish job; that job falls back to the built-in GitHub token. It does not replace the generation job's GitHub wiki credential. The comments warn that pull requests created by the fallback do not trigger other workflows. Push/PR failures in the publish step are reported as warnings rather than discarding generated documentation; this handling does not cover failures in the earlier generation job.
 
 ## Native Factory workflows
 
@@ -55,7 +61,7 @@ These are the checked-in controls, not a claim that the repository variables are
 
 | Workflow | Enable variable | Behavior |
 | --- | --- | --- |
-| `.github/workflows/factory-review.yml` | `JHD_FACTORY_REVIEW_ENABLED` | Advisory deep code and security review for authorized same-repository, non-draft PRs |
+| `.github/workflows/factory-review.yml` | `JHD_FACTORY_REVIEW_ENABLED` | Advisory deep code and security review, normally once per authorized same-repository, non-draft PR |
 | `.github/workflows/factory-mentions.yml` | `JHD_FACTORY_MENTIONS_ENABLED` | PR-only commands from authorized human repository writers |
 | `.github/workflows/factory-triage.yml` | `JHD_FACTORY_TRIAGE_ENABLED` | Classify a new issue and post a bounded suggestion |
 | `.github/workflows/factory-ci-steward.yml` | `JHD_FACTORY_STEWARD_ENABLED` | Diagnose failed or timed-out Dart PR runs; bounded retries and optional fixes |
@@ -64,6 +70,12 @@ The steward's separate `JHD_FACTORY_STEWARD_FIX_ENABLED` controls auto-fix. Its 
 
 Triage separates read-only classification from comment publication. It permits only fixed categories and known candidate issue numbers, revalidates the issue's update time, and uses a marker to avoid duplicate comments. The duplicate search is limited to recently updated issues/PRs, not an exhaustive repository search.
 
+### Review frequency
+
+After a successful review, `.github/workflows/factory-review.yml` creates the `droid-reviewed` label if needed and adds it to the PR. Later automatic review events skip labelled PRs, except events sent by `factory-droid[bot]`, which remain eligible for the CI steward's fix-review loop. That exception still passes the existing authorization and completed-head/base review checks.
+
+The label is PR-wide, not a record that every later commit was reviewed. To request another review, an authorized repository writer can comment `@droid review` through `.github/workflows/factory-mentions.yml`, when `JHD_FACTORY_MENTIONS_ENABLED` is enabled.
+
 See [Input boundaries](security.md) for trust boundaries and [Configuration](reference/configuration.md) for the release settings and CI control names.
 
 ## Source map
@@ -71,8 +83,8 @@ See [Input boundaries](security.md) for trust boundaries and [Configuration](ref
 | File | Purpose |
 | --- | --- |
 | `.github/workflows/dart.yml` | Format, analyze, test, examples, coverage |
-| `.github/workflows/droid-wiki-refresh.yml` | Read-only generation and separate wiki PR job |
-| `.github/workflows/factory-review.yml` | Gated advisory review |
+| `.github/workflows/droid-wiki-refresh.yml` | Manual generation with GitHub wiki write access and a separate source wiki PR job |
+| `.github/workflows/factory-review.yml` | Label-gated advisory review and Factory bot exception |
 | `.github/workflows/factory-mentions.yml` | Authorized PR commands |
 | `.github/workflows/factory-triage.yml` | Bounded classification and comment jobs |
 | `.github/workflows/factory-ci-steward.yml` | Bounded Dart CI repair policy |

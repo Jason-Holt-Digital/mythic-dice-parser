@@ -44,6 +44,12 @@ Large history trees and provenance chains also have a memory cost. Die provenanc
 
 GitHub workflows receive untrusted issue, PR, and log text. The native Factory authorization and classification boundaries are described in [Automation and publishing](deployment.md).
 
+`.github/workflows/droid-wiki-refresh.yml` gives the wiki generation job `contents: write`, even though the workflow defaults to read-only. Before running `/wiki`, it writes the built-in token to the runner's Git credential file, enables the global `store` credential helper, and configures a bot commit author so the fresh `{repo}.wiki.git` clone can push. The helper avoids adding a second Authorization header alongside checkout's local header. The generation agent reads repository content while Git has write credentials; the separate publish job is not the only write boundary.
+
+Git's `store` helper keeps credentials unencrypted on the runner's filesystem. Treat that file as a secret, never print or include it in artifacts, and do not copy this setup to a persistent shared workstation without choosing an appropriate credential-storage policy. The checked-in job runs on `ubuntu-latest`.
+
+The publish job independently grants Contents and Pull requests write access for the rolling source branch and documentation PR. Its optional `FACTORY_WIKI_PR_TOKEN` applies to that job, not the generation job's wiki push. These are checked-in permissions and credential wiring, not verification that repository policy permits a push.
+
 `.github/workflows/release-please.yml` is restricted to `main` and requires `RELEASE_PLEASE_TOKEN`, with no built-in-token fallback. `.github/RELEASES.md` specifies repository-scoped Contents, Pull requests, and Issues read/write access. The workflow's `contents: read` setting does not change the supplied token's permissions. The preflight checks only secret presence and repository read access; it does not verify write permissions or successful release creation.
 
 Release Please does not use Factory or an AI service, and it does not publish to GLPub. Keep token setup and package publication separately authorized, and never print credentials. No actual credential values or configured permissions were inspected for this wiki.
