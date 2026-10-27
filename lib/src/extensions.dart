@@ -21,4 +21,10 @@ extension RolledDieIListExtensions on IList<RolledDie> {
   /// Number of dice marked as critical failures.
   int get critFailureCount =>
       where((d) => d.critFailure && !d.subtracted).length;
+
+  /// Sum of the [n] highest die results.
+  int sumOfHighest(int n) {
+    final results = [...map((d) => d.result)]..sort();
+    return results.take(n).fold(0, (sum, i) => sum + i);
+  }
 }
