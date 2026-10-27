@@ -127,8 +127,24 @@ jobs:
 
       - name: Run native deep review and security
         uses: Factory-AI/droid-action@ec767fcf5fac43b64e746cd42bb398b3b0b529ed # v10
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         with:
           factory_api_key: ${{ secrets.FACTORY_API_KEY }}
+          # Bills the review to the Anthropic API key instead of Factory.
+          settings: |
+            {"customModels": [{
+              "id": "custom:anthropic-api:sonnet-5-5",
+              "displayName": "Anthropic API: Sonnet 5.5",
+              "model": "claude-sonnet-5-5",
+              "baseModelId": "claude-sonnet-5-5",
+              "baseUrl": "https://api.anthropic.com",
+              "apiKey": "${ANTHROPIC_API_KEY}",
+              "provider": "anthropic",
+              "maxOutputTokens": 64000
+            }]}
+          review_model: custom:anthropic-api:sonnet-5-5
+          security_model: custom:anthropic-api:sonnet-5-5
           automatic_review: "true"
           automatic_security_review: "true"
           review_depth: deep
