@@ -5,7 +5,7 @@ repository: https://github.com/Jason-Holt-Digital/mythic-dice-parser
 publish_to: https://glpub.dev/api/p/default/pub
 
 environment:
-  sdk: "^3.8.0"
+  sdk: "^3.13.0"
 
 topics:
   - dice
