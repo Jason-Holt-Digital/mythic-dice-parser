@@ -105,10 +105,7 @@ void main() {
 
     expect(
       summary.groups?.map((label, group) => MapEntry(label, group.total)),
-      {
-        '': 8,
-        'Penalty': -3,
-      },
+      {'': 8, 'Penalty': -3},
     );
   });
 

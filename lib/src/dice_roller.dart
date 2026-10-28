@@ -274,13 +274,13 @@ class DiceResultRoller with LoggingMixin {
   Future<RollResult> reroll(RolledDie rolledDie, [String msg = '']) async {
     switch (rolledDie.dieType) {
       case DieType.polyhedral:
-        return roll(1, rolledDie.nsides, msg);
+        return await roll(1, rolledDie.nsides, msg);
       case DieType.fudge:
-        return rollFudge(1, msg);
+        return await rollFudge(1, msg);
       case DieType.d66:
-        return rollD66(1, msg);
+        return await rollD66(1, msg);
       case DieType.nvals:
-        return rollVals(1, rolledDie.potentialValues, msg);
+        return await rollVals(1, rolledDie.potentialValues, msg);
       case DieType.singleVal:
         return RollResult(
           expression: rolledDie.result.toString(),

@@ -101,10 +101,7 @@ class CommaOp extends Binary {
   /// Existing behavior: collapse each sub-expression to a singleVal total.
   RollResult _evalTotalized(RollResult lhs, RollResult rhs) {
     final results = <RolledDie>[];
-    final discarded = <RolledDie>[
-      ...lhs.discarded,
-      ...rhs.discarded,
-    ];
+    final discarded = <RolledDie>[...lhs.discarded, ...rhs.discarded];
 
     if (lhs.opType == OpType.comma) {
       results.addAll(lhs.results);

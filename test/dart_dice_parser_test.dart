@@ -354,10 +354,7 @@ void main() {
       );
       final results = <RollResult>[];
       final summaries = <RollSummary>[];
-      await dice.roll(
-        onRoll: results.add,
-        onSummary: summaries.add,
-      );
+      await dice.roll(onRoll: results.add, onSummary: summaries.add);
       final rrRoll = RollResult(
         expression: '(2d6)',
         opType: OpType.rollDice,
@@ -1969,9 +1966,7 @@ void main() {
 
       expect(
         [for (final die in summary.discarded) die.pushLock],
-        [
-          PushLock.successesAndFailures,
-        ],
+        [PushLock.successesAndFailures],
       );
     });
 
@@ -1996,11 +1991,7 @@ void main() {
     test('a tag repeated on one pool keeps its last value', () async {
       final summary = await rollFor(
         '3d6#s6 @push=1 @lock=none @push=3 @lock=s',
-        [
-          6,
-          2,
-          3,
-        ],
+        [6, 2, 3],
       );
 
       expect(summary.pushLimit, 3);
@@ -2060,14 +2051,7 @@ void main() {
 
       expect(
         [for (var i = 1; i <= 6; i++) success.matches(d6(i))],
-        [
-          false,
-          false,
-          false,
-          false,
-          false,
-          true,
-        ],
+        [false, false, false, false, false, true],
       );
       expect(critFailure.matches(d6(1)), isTrue);
       expect(critFailure.matches(d6(2)), isFalse);
