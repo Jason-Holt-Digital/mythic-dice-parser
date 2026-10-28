@@ -44,8 +44,7 @@ void main(List<String> arguments) async {
       allowedHelp: {
         'plain': 'output using toString',
         'json': 'output JSON',
-        'pretty':
-            'output result summary and detailed results of evaluating the expression tree',
+        'pretty': 'output result summary and detailed results of evaluating the expression tree',
       },
     )
     ..addOption(

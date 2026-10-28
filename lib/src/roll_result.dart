@@ -9,7 +9,7 @@ import 'package:mythic_dice_parser/src/rolled_die.dart';
 ///
 class RollResult extends Equatable {
   /// Creates a roll result for the given expression and dice.
-  RollResult({
+  new({
     required this.expression,
     required this.opType,
     Iterable<RolledDie> results = const IList.empty(),
@@ -23,7 +23,7 @@ class RollResult extends Equatable {
 
   /// factory constructor to merge [other] with the params of this function
   /// and produce a new [RollResult].
-  factory RollResult.fromRollResult(
+  factory fromRollResult(
     RollResult other, {
     required String expression,
     OpType? opType,

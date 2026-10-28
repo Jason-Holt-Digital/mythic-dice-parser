@@ -15,7 +15,7 @@ enum DieType implements Comparable<DieType> {
   /// Single value (e.g. a sum or count of dice).
   singleVal(explodable: false, requirePotentialValues: true);
 
-  const DieType({
+  new({
     this.explodable = true,
     this.requirePotentialValues = false,
     this.requireNSides = true,

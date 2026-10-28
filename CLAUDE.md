@@ -6,7 +6,7 @@
 
 - **Package name:** `mythic_dice_parser`
 - **Version:** 8.2.0
-- **SDK requirement:** Dart >=3.8.0
+- **SDK requirement:** Dart >=3.13.0
 - **Published on:** GLPub (`https://glpub.dev/api/p/default/pub`)
 
 ## Build & Development Commands

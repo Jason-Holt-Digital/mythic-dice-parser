@@ -10,7 +10,7 @@ import 'package:mythic_dice_parser/src/rolled_die.dart';
 /// two [GroupResult]s are produced: one for "Attack" and one for "Damage".
 class GroupResult extends Equatable {
   /// Creates a [GroupResult] for the given label and dice.
-  GroupResult({
+  new({
     required this.label,
     required Iterable<RolledDie> results,
     required Iterable<RolledDie> discarded,

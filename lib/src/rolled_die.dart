@@ -10,7 +10,7 @@ import 'package:mythic_dice_parser/src/push_lock.dart';
 /// representation of a single dice roll result.
 class RolledDie extends Equatable implements Comparable<RolledDie> {
   /// Creates a rolled die with the given [result] and [dieType].
-  RolledDie({
+  new({
     required this.result,
     required this.dieType,
     this.nsides = 0,
@@ -64,7 +64,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
   }
 
   /// Creates a standard polyhedral die result.
-  factory RolledDie.polyhedral({
+  factory polyhedral({
     required int result,
     required int nsides,
     bool discarded = false,
@@ -76,7 +76,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
   );
 
   /// Creates a fudge die result (-1, 0, or +1).
-  factory RolledDie.fudge({required int result}) => RolledDie(
+  factory fudge({required int result}) => RolledDie(
     result: result,
     nsides: DiceRoller.defaultFudgeVals.length,
     dieType: DieType.fudge,
@@ -84,7 +84,7 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
   );
 
   /// Creates a synthetic single-value result (e.g. a sum).
-  factory RolledDie.singleVal({
+  factory singleVal({
     required int result,
     bool discarded = false,
     bool penetrator = false,
@@ -102,13 +102,13 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
   );
 
   /// Creates a D66 die result.
-  factory RolledDie.d66({
+  factory d66({
     required int result,
     Iterable<RolledDie>? from = const IList.empty(),
   }) => RolledDie(result: result, dieType: DieType.d66, from: IList(from));
 
   /// Creates a copy of [other] with overridden fields.
-  factory RolledDie.copyWith(
+  factory copyWith(
     RolledDie other, {
     int? result,
     bool? discarded,
@@ -163,23 +163,21 @@ class RolledDie extends Equatable implements Comparable<RolledDie> {
   );
 
   /// Creates a discarded copy of [other].
-  factory RolledDie.discard(RolledDie other) =>
+  factory discard(RolledDie other) =>
       RolledDie.copyWith(other, discarded: true);
 
   /// Marks [other] with the appropriate count flag.
-  factory RolledDie.scoreForCountType(
-    RolledDie other, {
-    required CountType countType,
-  }) => RolledDie.copyWith(
-    other,
-    success: other.success || countType == CountType.success,
-    failure: other.failure || countType == CountType.failure,
-    critSuccess: other.critSuccess || countType == CountType.critSuccess,
-    critFailure: other.critFailure || countType == CountType.critFailure,
-  );
+  factory scoreForCountType(RolledDie other, {required CountType countType}) =>
+      RolledDie.copyWith(
+        other,
+        success: other.success || countType == CountType.success,
+        failure: other.failure || countType == CountType.failure,
+        critSuccess: other.critSuccess || countType == CountType.critSuccess,
+        critFailure: other.critFailure || countType == CountType.critFailure,
+      );
 
   /// Records on [other] that the scoring operator [rule] looked at it.
-  factory RolledDie.withScoreRule(RolledDie other, DieScoreRule rule) =>
+  factory withScoreRule(RolledDie other, DieScoreRule rule) =>
       RolledDie.copyWith(other, scoreRules: other.scoreRules.add(rule));
 
   /// the rolled result
