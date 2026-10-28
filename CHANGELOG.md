@@ -1,4 +1,17 @@
-# 8.3.0
+# Changelog
+
+## [9.0.0](https://github.com/Jason-Holt-Digital/mythic-dice-parser/compare/v8.3.0...v9.0.0) (2026-10-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* Requires Dart 3.13, equatable 3 and fast_immutable_collections 12. Result types expose IList, so apps must move to fast_immutable_collections 12.
+
+### Features
+
+* require equatable 3, fast_immutable_collections 12 and Dart 3.13 ([#25](https://github.com/Jason-Holt-Digital/mythic-dice-parser/issues/25)) ([fc1aa9e](https://github.com/Jason-Holt-Digital/mythic-dice-parser/commit/fc1aa9eb1b55cb77d3f8abe6880230ddb5124be0))
+
+## 8.3.0
 
 ## 📈 Enhancements
 - **Push re-rolls both sides of a subtraction.** A subtraction keeps the dice of its right side in the results, with the new `RolledDie.subtracted` set and a negative `result` (a 3 is `-3`). `rerollableDice()` and `reroll()` treat them like any other die, under each die's own `@lock` rule, and a new die in the place of a subtracted die is scored by the face it rolled, then subtracted. In 8.2.0 the right side was one constant and only the left side re-rolled.
@@ -33,7 +46,7 @@ A count after a keep, drop, clamp, reroll or explode reads as before (`4d6kh3#s6
 - A subtraction now keeps the discarded dice of both sides in `discarded`. 8.2.0 lost them (`2d6kh1 - 1d6` had no discarded 2d6 die).
 - Multiplication stays one constant and is not pushable.
 
-# 8.2.0
+## 8.2.0
 
 ## 📈 Enhancements
 - **Push rules in the formula.** Two tags set how `reroll()` pushes a roll:
@@ -52,7 +65,7 @@ A count after a keep, drop, clamp, reroll or explode reads as before (`4d6kh3#s6
 - Pushed dice still re-apply only scoring, not `r`, `C`, `!` or keep.
 - `pushLock` is not part of die equality or `toJson()`, like `scoreRules`.
 
-# 8.1.0
+## 8.1.0
 
 ## 📈 Enhancements
 - **Push scores the dice it re-rolls.** `reroll()` now scores each new die with the count operators (`#s`, `#f`, `#cs`, `#cf`, with `=`, `<`, `>`, `<=`, `>=` or the default target) that looked at the die it replaces. Each pool and each branch keeps its own rules: in `(2d6#s6) + (2d6#s>=5)` or `"Base": 2d6#s6, "Skill": 2d6#s>=5` a new 5 is a success only in the second pool. A second push scores its new dice the same way. This removes the "re-rolled dice are not scored" limitation of 8.0.0; clients no longer need to score pushed dice themselves.
@@ -73,12 +86,12 @@ Only scoring is applied again. Everything else is unchanged from 8.0.x:
 - No change to how a formula rolls: totals, flags, counts, order, and errors are the same as 8.0.1.
 - A scoring count now returns a copy of each die it did not match (it used to pass the same object through), so that the die can carry its rule. The copy is equal to the original.
 
-# 8.0.1
+## 8.0.1
 
 ## 🛠️ Bug fixes
 - Reject formulas that end with a dangling `+`, `-`, `*`, or `,` (for example `2d6+`) with a `FormatException` instead of rolling them. Empty groups and labels such as `2d6+()`, `{}`, and `"Damage":` are rejected the same way. Signed operands such as `-1`, `+3`, and `2d6+-1` still parse.
 
-# 8.0.0
+## 8.0.0
 
 ## ⚠️⚠️ Breaking changes ⚠️⚠️
 
@@ -107,12 +120,12 @@ Only scoring is applied again. Everything else is unchanged from 8.0.x:
 - `GroupResult` stats converted from redundant stored fields (6x `IList` wrapping) to lazy getters
 - Removed dead `.plus()` from tag postfix parser -- `ExpressionBuilder.star()` handles multi-tag repetition
 
-# 7.1.1
+## 7.1.1
 ## 🛠️ Bug fixes
 - fix typo in readme
 
 
-# 7.1.0
+## 7.1.0
 
 ## 📈 Enhancements
 - upgrade to dart 3.6.0
@@ -120,20 +133,20 @@ Only scoring is applied again. Everything else is unchanged from 8.0.x:
   For example, to roll 2 dice of primes under 20, use: `2d[2,3,5,7,11,13,17,19]` 
 
 
-# 7.0.3
+## 7.0.3
 
 ## 🛠️ Bug fixes
 - Previously, `4d6 + 3d6 #s #f` would only count success/failures of the 3d6 rolls, since counting
   had higher priority than the plus operation. You could workaround that with parens `(4d6 + 3d6) #s #f`
   In 7.0.3 and later, the counting operations now have the lowest priority.
 
-# 7.0.2
+## 7.0.2
 - remove demo code accidentally added
 
-# 7.0.1
+## 7.0.1
 - remove direct dependency on `meta`
 
-# 7.0.0
+## 7.0.0
 
 ## ⚠️⚠️ Breaking changes ⚠️⚠️
 
@@ -149,33 +162,33 @@ traverse the graph.
 - propagate the roll metadata up to the top of the graph
 
 
-# 6.0.2
+## 6.0.2
 - more readme fixes
 - cleanup error handling / exceptions
 
-# 6.0.1
+## 6.0.1
 - fix deprecation
 - minor readme language changes
 
-# 6.0.0
+## 6.0.0
 - dart 3.0 requirement
 - upgrade deps
 
-# 5.1.5
+## 5.1.5
 - clean up example documenation in README.md
 
-# 5.1.4
+## 5.1.4
 - upgrade deps (lint)
 
-# 5.1.3
+## 5.1.3
 - transfer repository to Adventuresmith org
 
-# 5.1.2
+## 5.1.2
 - fix error messages with extraneous `'`
 - make examples in README less abstract
 - add method for json encoding roll result
 
-# 5.1.1
+## 5.1.1
 - add syntax for exploding/compounding/reroll once
   - `4d6 !o`
   - `4d6 !!o`
@@ -186,10 +199,10 @@ traverse the graph.
   - but `#s`, `#f`, `#cs`, `#cf` only add metadata to the roll result, and can be chained together.
     - `9d6! -= 3 #s>=5#f1#cs` -- roll 9d6 with exploding, drop any threes, count >=5 as success, 1s as failures, and 6 as critical success
 
-# 5.1.0
+## 5.1.0
 - make RollResult aggregate _all_ results for whole AST
 
-# 5.0.0
+## 5.0.0
 - add compounding dice: `5d6!!`
 - add keep high/low: `2d20k`
 - add reroll: `10d4 r<=2`
@@ -200,31 +213,31 @@ traverse the graph.
 - dice rolls return RollResult
 - clean up redundant parser config
 
-# 4.1.0
+## 4.1.0
 - cleanup examples
 - add syntax for `>=` and `<=` for counts, drop, clamp
 - remove redundancy in parser defintion
 
-# 4.0.6
+## 4.0.6
 - allow subtraction
 
-# 4.0.5
+## 4.0.5
 - remove unused dev dependency
 
-# 4.0.4
+## 4.0.4
 - fix typo in unit test
 
-# 4.0.3
+## 4.0.3
 - increase test coverage -- test rollN and stats.
 
-# 4.0.1
+## 4.0.1
 - add github actions, remove circleci
 - add codecov
 
-# 4.0.0
+## 4.0.0
 - cleanup petitparser usage -- generate AST so that parsing the dice expression can be separate from rolling dice.
 
-# 3.1.0
+## 3.1.0
 - remove subtraction
 - clean up add/mult -- don't collapse lists to ints
   - `[1,4,5] + 2` => `[1,4,5,2]`
@@ -232,85 +245,85 @@ traverse the graph.
 - remove subtraction -- like division, too many corner cases
 - clean up error handling -- throw less often, less complex if/else statements.
 
-# 3.0.3
+## 3.0.3
 - update linter and fix analysis 
 
-# 3.0.2
+## 3.0.2
 - fix circleci build
 
-# 3.0.1
+## 3.0.1
 - minor analysis cleanup (dead code)
 
-# 3.0.0
+## 3.0.0
 - upgrade deps & null safety
 - more error handling
 
-# 2.0.1
+## 2.0.1
 - downgrade petitparser
 
-# 2.0.0
+## 2.0.0
 - library upgrades including sdk >2.7.0
 
-# 1.4.2
+## 1.4.2
 - use unmodifiable view return types
 
-# 1.4.1
+## 1.4.1
 - fix return types of stats objects
 
-# 1.4.0
+## 1.4.0
 - replace use of stats library w/ implementation of welford's algorithm.
   see http://alias-i.com/lingpipe/docs/api/com/aliasi/stats/OnlineNormalEstimator.html
 - make DiceParser.rollN an async generator returning stream of results
 
-# 1.3.6
+## 1.3.6
 - allow lowercase for `-H`, `-L`, `C>`, `C<`
 
-# 1.3.5
+## 1.3.5
 - back off petitparser dependency -- back off to 2.2.1,
   so that we don't have dependency on Dart 2.3.0
   (current stable flutter is 2.3.0-dev)
 
-# 1.3.4
+## 1.3.4
 - make code more idiomatic
 
-# 1.3.3
+## 1.3.3
 - make log fields non-public
 
-# 1.3.2
+## 1.3.2
 - upgrade mockito dep
 
-# 1.3.0
+## 1.3.0
 - add drop equals/less-than/greater-than
 - add cap/clamp
 - add counting operation
 - add exploding dice
 
-# 1.2.2
+## 1.2.2
 - more logging and error handling cleanup
 
-# 1.2.1
+## 1.2.1
 - more logging and error handling cleanup
 
-# 1.2.0
+## 1.2.0
 - add dice stats to the parser
 - logging & error handling cleanup
 
-# 1.1.2
+## 1.1.2
 - more tests and cleanup examples
 
-# 1.1.1
+## 1.1.1
 - fix typo in readme
 
-# 1.1.0
+## 1.1.0
 - add drop high/low parsing
 
-# 1.0.2
+## 1.0.2
 - fix readme example
 
-# 1.0.1
+## 1.0.1
 - fix readme issues
 
-# 1.0.0
+## 1.0.0
 - bump min dart SDK to 2.2.2
 - cleanup parser code
 - cleanup analysis problems
@@ -318,37 +331,36 @@ traverse the graph.
 - handle missing A or X in AdX
 - flesh out API docs
 
-# 0.2.2
+## 0.2.2
 - reformat
 
-# 0.2.1
+## 0.2.1
 - upgrade some dependencies
 
-# 0.2.0
+## 0.2.0
 - upgrade to dart 2
 
-# 0.1.2
+## 0.1.2
 
 - move args to dev_dependency, since it's just for the example
 
-# 0.1.1
+## 0.1.1
 
 - added contributing/code-of-conduct docs
 
-# 0.1.0
+## 0.1.0
 
 - change DiceRoller to output information about individual rolls, instead of just returning the sum.
 
-# 0.0.6
+## 0.0.6
 
 - remove dependency on quiver, since not heavily using it
 
-# 0.0.5
+## 0.0.5
 
 - various fixes as I figure out what I'm doing with Dart
 - empty/null checking with quiver.strings
 
-# 0.0.1
+## 0.0.1
 
 - Initial version, created by Steve Christensen
-
