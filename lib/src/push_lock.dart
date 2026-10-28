@@ -12,7 +12,7 @@ enum PushLock {
   /// `@lock=none`: no die.
   none('none');
 
-  const PushLock(this.tag);
+  new(this.tag);
 
   /// The value of the `@lock=` tag that selects this rule.
   final String tag;

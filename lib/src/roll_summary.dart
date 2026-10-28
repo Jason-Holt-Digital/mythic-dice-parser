@@ -21,7 +21,7 @@ import 'package:mythic_dice_parser/src/rolled_die.dart';
 
 class RollSummary extends Equatable {
   /// Creates a summary from the given [detailedResults] tree.
-  RollSummary({required this.detailedResults, this.pushCount = 0})
+  new({required this.detailedResults, this.pushCount = 0})
     : pushLimit = _pushLimit(detailedResults),
       total = detailedResults.results.sum,
       results = IList(detailedResults.results),

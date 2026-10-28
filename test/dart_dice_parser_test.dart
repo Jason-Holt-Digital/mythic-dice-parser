@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mythic_dice_parser/mythic_dice_parser.dart';
 import 'package:test/test.dart';
 
-class MockRandom extends Mock implements Random {}
+class MockRandom extends Mock implements Random;
 
 void main() {
   late Random staticMockRandom;

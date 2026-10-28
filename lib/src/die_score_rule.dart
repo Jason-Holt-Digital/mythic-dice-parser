@@ -12,7 +12,7 @@ import 'package:mythic_dice_parser/src/rolled_die.dart';
 /// it replaces.
 class DieScoreRule extends Equatable {
   /// Creates a rule that marks matching dice with [countType].
-  const DieScoreRule({
+  const new({
     required this.countType,
     this.comparison = CountComparison.equal,
     this.target,

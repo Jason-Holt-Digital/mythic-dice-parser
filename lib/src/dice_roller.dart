@@ -58,7 +58,7 @@ abstract class DiceRoller {
 /// [PreRolledDiceRollerExhaustedException] is thrown.
 final class PreRolledDiceRollerExhaustedException implements Exception {
   /// Creates the exception with a descriptive [message].
-  const PreRolledDiceRollerExhaustedException(this.message);
+  const new(this.message);
 
   /// The error message.
   final String message;
@@ -70,7 +70,7 @@ final class PreRolledDiceRollerExhaustedException implements Exception {
 /// A [DiceRoller] that consumes pre-rolled values in order.
 final class PreRolledDiceRoller extends DiceRoller {
   /// Creates a roller that yields [values] in sequence.
-  PreRolledDiceRoller(Iterable<int> values) : _values = Queue<int>.of(values);
+  new(Iterable<int> values) : _values = Queue<int>.of(values);
 
   final Queue<int> _values;
 
@@ -152,10 +152,7 @@ final class PreRolledDiceRoller extends DiceRoller {
 /// integrations with 3D dice engines that can produce results on demand.
 final class CallbackDiceRoller extends DiceRoller {
   /// Creates a roller that delegates to the provided callbacks.
-  CallbackDiceRoller({
-    required this.rollCallback,
-    required this.rollValsCallback,
-  });
+  new({required this.rollCallback, required this.rollValsCallback});
 
   /// Callback invoked for standard die rolls.
   final Future<List<int>> Function({
@@ -204,7 +201,7 @@ final class CallbackDiceRoller extends DiceRoller {
 /// A [DiceRoller] backed by a [Random] number generator.
 class RNGRoller extends DiceRoller {
   /// Creates a roller using [random], defaulting to [Random.secure].
-  RNGRoller([Random? random]) : _random = random ?? Random.secure();
+  new([Random? random]) : _random = random ?? Random.secure();
 
   final Random _random;
 
@@ -265,8 +262,7 @@ class RNGRoller extends DiceRoller {
 /// A dice roller for standard polyhedral dice, fudge dice, etc.
 class DiceResultRoller with LoggingMixin {
   /// Constructs a dice roller
-  DiceResultRoller([DiceRoller? r])
-    : _diceRoller = r ?? RNGRoller(Random.secure());
+  new([DiceRoller? r]) : _diceRoller = r ?? RNGRoller(Random.secure());
 
   final DiceRoller _diceRoller;
 

@@ -8,7 +8,7 @@ import 'package:mythic_dice_parser/src/rolled_die.dart';
 /// Sort operation (ascending or descending).
 class SortOp extends Unary {
   /// Creates a sort op.
-  SortOp(super.name, super.left);
+  new(super.name, super.left);
 
   @override
   Future<RollResult> eval() async {
@@ -29,12 +29,7 @@ class SortOp extends Unary {
 /// variation on count -- count how many results from lhs are =,<,> rhs.
 class CountOp extends Binary {
   /// Creates a count op.
-  CountOp(
-    super.name,
-    super.left,
-    super.right, [
-    this.countType = CountType.count,
-  ]) {
+  new(super.name, super.left, super.right, [this.countType = CountType.count]) {
     if (name.startsWith('#s')) {
       countType = CountType.success;
     } else if (name.startsWith('#f')) {
@@ -149,7 +144,7 @@ class CountOp extends Binary {
 /// drop operations -- drop high/low, or drop <,>,= rhs
 class DropOp extends Binary {
   /// Creates a drop op.
-  DropOp(super.name, super.left, super.right);
+  new(super.name, super.left, super.right);
 
   @override
   Future<RollResult> eval() async {
@@ -204,7 +199,7 @@ class DropOp extends Binary {
 /// drop operations -- drop high/low, or drop <,>,= rhs
 class DropHighLowOp extends Binary {
   /// Creates a drop-high/low op.
-  DropHighLowOp(super.name, super.left, super.right);
+  new(super.name, super.left, super.right);
 
   @override
   Future<RollResult> eval() async {
@@ -251,7 +246,7 @@ class DropHighLowOp extends Binary {
 /// clamp results of lhs to >,< rhs.
 class ClampOp extends Binary {
   /// Creates a clamp op.
-  ClampOp(super.name, super.left, super.right);
+  new(super.name, super.left, super.right);
 
   @override
   Future<RollResult> eval() async {
@@ -293,7 +288,7 @@ class ClampOp extends Binary {
 /// Reroll operation (r, ro).
 class RerollDice extends BinaryDice {
   /// Creates a reroll op.
-  RerollDice(
+  new(
     super.name,
     super.left,
     super.right,
@@ -379,7 +374,7 @@ class RerollDice extends BinaryDice {
 /// Compounding dice operation (!!, !!o).
 class CompoundingDice extends BinaryDice {
   /// Creates a compounding dice op.
-  CompoundingDice(
+  new(
     super.name,
     super.left,
     super.right,
@@ -469,7 +464,7 @@ class CompoundingDice extends BinaryDice {
 /// Exploding dice operation (!, !o).
 class ExplodingDice extends BinaryDice {
   /// Creates an exploding dice op.
-  ExplodingDice(
+  new(
     super.name,
     super.left,
     super.right,

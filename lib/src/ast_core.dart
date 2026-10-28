@@ -28,7 +28,7 @@ abstract class DiceOp extends DiceExpression with LoggingMixin {
 /// Base class for unary operations.
 abstract class Unary extends DiceOp {
   /// Creates a unary op with the given [name] and operand [left].
-  Unary(this.name, this.left);
+  new(this.name, this.left);
 
   /// The operator name.
   final String name;
@@ -43,7 +43,7 @@ abstract class Unary extends DiceOp {
 /// Base class for binary operations.
 abstract class Binary extends DiceOp {
   /// Creates a binary op with [name], [left], and [right] operands.
-  Binary(this.name, this.left, this.right);
+  new(this.name, this.left, this.right);
 
   /// The operator name.
   final String name;
@@ -61,7 +61,7 @@ abstract class Binary extends DiceOp {
 /// Comma operator that joins sub-expressions.
 class CommaOp extends Binary {
   /// Creates a comma op.
-  CommaOp(super.name, super.left, super.right);
+  new(super.name, super.left, super.right);
 
   @override
   Future<RollResult> eval() async {
@@ -142,7 +142,7 @@ class CommaOp extends Binary {
 /// Multiply operation (flattens results into a single value).
 class MultiplyOp extends Binary {
   /// Creates a multiply op.
-  MultiplyOp(super.name, super.left, super.right);
+  new(super.name, super.left, super.right);
 
   @override
   Future<RollResult> eval() async => await left() * await right();
@@ -151,7 +151,7 @@ class MultiplyOp extends Binary {
 /// Addition operation.
 class AddOp extends Binary {
   /// Creates an add op.
-  AddOp(super.name, super.left, super.right);
+  new(super.name, super.left, super.right);
 
   @override
   Future<RollResult> eval() async => await left() + await right();
@@ -161,7 +161,7 @@ class AddOp extends Binary {
 class SubOp extends Binary {
   /// Creates a subtract op. Every subtraction inside [right] folds (see
   /// [foldSubtractions]), so a die is subtracted at most once.
-  SubOp(super.name, super.left, super.right) {
+  new(super.name, super.left, super.right) {
     foldSubtractions(right);
   }
 
@@ -218,7 +218,7 @@ DiceExpression foldSubtractions(DiceExpression expression) {
 /// Base class for unary dice operations.
 abstract class UnaryDice extends Unary {
   /// Creates a unary dice op with the given [roller].
-  UnaryDice(super.name, super.left, this.roller);
+  new(super.name, super.left, this.roller);
 
   /// The dice roller used for this operation.
   final DiceResultRoller roller;
@@ -230,7 +230,7 @@ abstract class UnaryDice extends Unary {
 /// Base class for binary dice expressions.
 abstract class BinaryDice extends Binary {
   /// Creates a binary dice op with the given [roller].
-  BinaryDice(super.name, super.left, super.right, this.roller);
+  new(super.name, super.left, super.right, this.roller);
 
   /// The dice roller used for this operation.
   final DiceResultRoller roller;
@@ -240,7 +240,7 @@ abstract class BinaryDice extends Binary {
 /// it must parse as an int, and an empty string will return empty set.
 class SimpleValue extends DiceExpression {
   /// Parses [value] as an integer literal.
-  SimpleValue(this.value)
+  new(this.value)
     : _results = RollResult(
         expression: value,
         opType: OpType.value,
@@ -265,7 +265,7 @@ class SimpleValue extends DiceExpression {
 /// sub-expression is `2d6!`.
 class LabelOp extends Unary {
   /// Creates a label op wrapping [child] with [label].
-  LabelOp(this.label, DiceExpression child) : super('label', child);
+  new(this.label, DiceExpression child) : super('label', child);
 
   /// The group label text.
   final String label;
@@ -300,7 +300,7 @@ class LabelOp extends Unary {
 /// smaller limit.
 class TagOp extends Unary {
   /// Creates a tag op attaching [tags] to the result of [child].
-  TagOp(DiceExpression child, this.tags) : super('tag', child);
+  new(DiceExpression child, this.tags) : super('tag', child);
 
   /// Key-value metadata tags.
   final Map<String, String> tags;
@@ -338,7 +338,7 @@ class TagOp extends Unary {
 /// Aggregate `{expr}` operator that collapses results to a total.
 class AggregateOp extends DiceOp {
   /// Creates an aggregate op wrapping [subexpression].
-  AggregateOp(this.subexpression);
+  new(this.subexpression);
 
   /// The inner expression to aggregate.
   final DiceExpression subexpression;
