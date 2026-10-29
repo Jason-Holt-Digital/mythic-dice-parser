@@ -8,7 +8,7 @@ The package has no environment file or server configuration layer. Its main sett
 | --- | --- | --- |
 | Package | `mythic_dice_parser` 8.3.0 | `pubspec.yaml` |
 | SDK | `^3.8.0` | `pubspec.yaml` |
-| Publishing | GLPub default namespace endpoint | `pubspec.yaml` |
+| Publishing | `publish_to: none`; consumers use a git dependency pinned by `ref` | `pubspec.yaml` |
 | Analyzer | Very Good Analysis, strict casts and raw types | `analysis_options.yaml` |
 | Analyzer exclusions | `example/**` | `analysis_options.yaml` |
 | Local tool pin | Dart 3.7, below the package minimum | `mise.toml` |
@@ -53,7 +53,7 @@ These rules live in `lib/src/parser.dart`, `lib/src/ast_core.dart`, `lib/src/pus
 | Concurrency | `release-please`, `cancel-in-progress: false` | `.github/workflows/release-please.yml` |
 | Credential | Required `RELEASE_PLEASE_TOKEN`; no `GITHUB_TOKEN` fallback | `.github/workflows/release-please.yml` |
 
-The preflight verifies secret presence and repository read access only, not write permissions. `.github/RELEASES.md` specifies Contents, Pull requests, and Issues read/write token access. A matching earlier tag can take precedence over the bootstrap, so inspect the first release PR against the baseline. There is no automated GLPub publisher. See [Automation and publishing](../deployment.md) for the lifecycle and release verification.
+The preflight verifies secret presence and repository read access only, not write permissions. `.github/RELEASES.md` specifies Contents, Pull requests, and Issues read/write token access. A matching earlier tag can take precedence over the bootstrap, so inspect the first release PR against the baseline. Release Please does not publish the package to a registry. See [Automation and publishing](../deployment.md) for the lifecycle and release verification.
 
 ## CI controls
 

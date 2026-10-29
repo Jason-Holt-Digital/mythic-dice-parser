@@ -8,7 +8,21 @@ This repository uses Release Please to manage the parser's version, changelog, a
 - The baseline version is 8.3.0, the current `pubspec.yaml` version. No `v8.2.0` or `v8.3.0` tag exists, so the first release scans from `bootstrap-sha`.
 - Tags use the form `vVERSION`.
 - Release Please updates `pubspec.yaml`, `CHANGELOG.md`, and the manifest.
-- This setup does not add an automatic GLPub publisher.
+- Release Please does not publish the package. `pubspec.yaml` sets `publish_to: none`, and the package is not on any package registry.
+
+## How consumers get a release
+
+Consumers depend on the package through git, pinned to a commit:
+
+```yaml
+dependencies:
+  mythic_dice_parser:
+    git:
+      url: https://github.com/Jason-Holt-Digital/mythic-dice-parser.git
+      ref: <commit sha>
+```
+
+To pick up a release, set `ref` to the commit that the release's `v` tag points to, then run `dart pub get` or `flutter pub get` in the consuming project.
 
 ## Set up the token
 

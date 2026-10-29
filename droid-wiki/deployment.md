@@ -1,6 +1,6 @@
 # Automation and publishing
 
-This repository ships a Dart library, not a deployed service. `pubspec.yaml` configures GLPub publishing; the seven workflows under `.github/workflows/` run validation, wiki refresh, four native Factory automations, and Release Please.
+This repository ships a Dart library, not a deployed service. `pubspec.yaml` sets `publish_to: none`, so the package is not published to a registry; consumers depend on it through git. The seven workflows under `.github/workflows/` run validation, wiki refresh, four native Factory automations, and Release Please.
 
 ## Dart validation
 
@@ -35,11 +35,20 @@ The credential preflight fails if the secret is absent, then uses `gh api --sile
 
 `fix:` and `feat:` commits trigger releases. Breaking changes use `!` after the type or a `BREAKING CHANGE:` footer; squash titles must follow the same convention. `chore:` alone does not trigger a release. Verify the setup with a real qualifying change: inspect the release PR and its checks, merge it when ready, and confirm the GitHub release and `v` tag. A green no-op run is insufficient; do not create dummy releases.
 
-### GLPub publication boundary
+### How consumers get a release
 
-`pubspec.yaml` sets `publish_to: https://glpub.dev/api/p/default/pub`. No checked-in workflow automates `dart pub publish`; Release Please does not add a GLPub publisher.
+`pubspec.yaml` sets `publish_to: none`. The package is not published to any package registry, and no workflow runs `dart pub publish`.
 
-Treat package publication and its credentials as a separate, explicitly authorized operation. Updating a version, passing CI, or creating a GitHub release does not publish the package. Follow `.github/RELEASES.md` for release operations and `CHANGELOG.md` for compatibility changes, especially the 8.3.0 count grammar.
+Consumers declare the package as a git dependency pinned to a commit:
+
+```yaml
+mythic_dice_parser:
+  git:
+    url: https://github.com/Jason-Holt-Digital/mythic-dice-parser.git
+    ref: <commit sha>
+```
+
+Release Please still bumps the version and creates the `vVERSION` tag. A consumer picks up a release by setting `ref` to the commit that tag points to and running `pub get`. Follow `.github/RELEASES.md` for release operations and `CHANGELOG.md` for compatibility changes, especially the 8.3.0 count grammar.
 
 ## Wiki refresh
 
@@ -79,4 +88,4 @@ See [Input boundaries](security.md) for trust boundaries and [Configuration](ref
 | `.github/workflows/release-please.yml` | Main-only release PRs, releases, and credential preflight |
 | `release-please-config.json`, `.release-please-manifest.json` | Dart release strategy, bootstrap, tags, and baseline |
 | `.github/RELEASES.md` | Token setup, commit conventions, and release verification |
-| `pubspec.yaml` | Package identity and publishing destination |
+| `pubspec.yaml` | Package identity; `publish_to: none` |

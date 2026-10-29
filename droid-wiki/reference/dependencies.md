@@ -28,6 +28,6 @@ There are no Flutter, database, HTTP client, or physics-engine dependencies in t
 
 `.github/workflows/dart.yml` installs the Dart SDK, activates the coverage package globally, and uploads coverage through Codecov. Coverage is a CI-installed tool, not a declared direct dependency.
 
-Factory automation, wiki publishing, and Release Please use GitHub Actions rather than Dart dependencies. The native Factory workflows pin action revisions. `.github/workflows/release-please.yml` pins `googleapis/release-please-action` to `45996ed1f6d02564a971a2fa1b5860e934307cf7` (v5.0.0); its Dart strategy does not add a Dart package dependency or a GLPub publisher. See [Automation and publishing](../deployment.md).
+Factory automation, wiki publishing, and Release Please use GitHub Actions rather than Dart dependencies. The native Factory workflows pin action revisions. `.github/workflows/release-please.yml` pins `googleapis/release-please-action` to `45996ed1f6d02564a971a2fa1b5860e934307cf7` (v5.0.0); its Dart strategy does not add a Dart package dependency or a package publisher. See [Automation and publishing](../deployment.md).
 
 No package freshness or vulnerability scan ran for this wiki. To investigate dependency changes, resolve them with the supported SDK and rerun the [test workflow](../how-to-contribute/testing.md), rather than interpreting broad constraints as currently installed versions.

@@ -22,7 +22,17 @@ dart run example/main.dart -r 42 '2d6+4'
 
 The seed repeats the roll. There is no build step or server to start, and local examples and VM tests need no environment variables, credentials, databases, or services.
 
-`pubspec.yaml` declares the package as `mythic_dice_parser` and publishes to `https://glpub.dev/api/p/default/pub`. Configure access to that registry if your consuming project needs it. This repository does not document a registry authentication setup.
+`pubspec.yaml` declares the package as `mythic_dice_parser` with `publish_to: none`; it is not on any package registry. To use it from another project, add a git dependency pinned to a commit:
+
+```yaml
+dependencies:
+  mythic_dice_parser:
+    git:
+      url: https://github.com/Jason-Holt-Digital/mythic-dice-parser.git
+      ref: <commit sha>
+```
+
+The repository is public, so this needs no credentials. To move to a newer release, change `ref` to the commit of that release's `v` tag. See [Automation and publishing](../deployment.md).
 
 Do not rely on the Dart 3.7 pin in `mise.toml`: it is below the package's SDK minimum. The CI workflow `.github/workflows/dart.yml` installs the latest stable SDK instead.
 

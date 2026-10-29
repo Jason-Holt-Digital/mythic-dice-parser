@@ -43,7 +43,7 @@ dart run --enable-asserts example/main.dart -n 10 -o pretty '(3d6 + 3d6! + 3d6!!
 
 Review the diff for unrelated formatting, dependency, and generated-file changes. Describe any intentional incompatibility, especially [count precedence](../systems/parser.md) or [push behavior](../features/push.md), and report missing local checks honestly.
 
-For release-worthy work, follow `.github/RELEASES.md`: use `fix:` or `feat:` in commits and the final squash title. Mark breaking changes with `!` after the type or a `BREAKING CHANGE:` footer. `chore:` alone does not trigger a release. Release Please manages the release PR, version, changelog, and `vVERSION` tag on `main`; it does not publish to GLPub.
+For release-worthy work, follow `.github/RELEASES.md`: use `fix:` or `feat:` in commits and the final squash title. Mark breaking changes with `!` after the type or a `BREAKING CHANGE:` footer. `chore:` alone does not trigger a release. Release Please manages the release PR, version, changelog, and `vVERSION` tag on `main`; it does not publish the package to a registry. Consumers pick up a release by bumping the `ref` of their git dependency.
 
 The checked-in CI sequence also collects coverage; see [Testing](testing.md). Workflow triggers, Factory automation, and release boundaries live in [Automation and publishing](../deployment.md), rather than being duplicated here.
 

@@ -43,6 +43,6 @@ Conductor's setup runs `dart pub upgrade --no-precompile`; its default run task 
 
 ## Automation boundary
 
-The seven checked-in workflows comprise Dart validation, wiki refresh, four gated native Factory workflows, and Release Please. Release Please uses the Dart strategy, starts from an 8.3.0 manifest baseline, and requires `RELEASE_PLEASE_TOKEN` without a built-in-token fallback. Its preflight checks only that the secret exists and can read the repository, not write permissions. It does not automate GLPub publication. Consult [Automation and publishing](../deployment.md) for bootstrap and release verification.
+The seven checked-in workflows comprise Dart validation, wiki refresh, four gated native Factory workflows, and Release Please. Release Please uses the Dart strategy, starts from an 8.3.0 manifest baseline, and requires `RELEASE_PLEASE_TOKEN` without a built-in-token fallback. Its preflight checks only that the secret exists and can read the repository, not write permissions. It does not publish the package; `pubspec.yaml` sets `publish_to: none`. Consult [Automation and publishing](../deployment.md) for bootstrap and release verification.
 
 No Dart SDK was available during this wiki generation. Documentation/link checks were possible; formatter, analyzer, VM/Chrome tests, and examples were not executed. The commands above are sourced from configuration, not reported as passing runs.
