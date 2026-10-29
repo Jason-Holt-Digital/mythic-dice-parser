@@ -7,7 +7,7 @@
 - **Package name:** `mythic_dice_parser`
 - **Version:** 8.2.0
 - **SDK requirement:** Dart >=3.13.0
-- **Published on:** GLPub (`https://glpub.dev/api/p/default/pub`)
+- **Distribution:** Not published to a package registry (`publish_to: none`). Consumers depend on a commit through git: `git: {url: https://github.com/Jason-Holt-Digital/mythic-dice-parser.git, ref: <commit sha>}`, and pick up a release by bumping `ref`.
 
 ## Build & Development Commands
 

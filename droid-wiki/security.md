@@ -46,6 +46,6 @@ GitHub workflows receive untrusted issue, PR, and log text. The native Factory a
 
 `.github/workflows/release-please.yml` is restricted to `main` and requires `RELEASE_PLEASE_TOKEN`, with no built-in-token fallback. `.github/RELEASES.md` specifies repository-scoped Contents, Pull requests, and Issues read/write access. The workflow's `contents: read` setting does not change the supplied token's permissions. The preflight checks only secret presence and repository read access; it does not verify write permissions or successful release creation.
 
-Release Please does not use Factory or an AI service, and it does not publish to GLPub. Keep token setup and package publication separately authorized, and never print credentials. No actual credential values or configured permissions were inspected for this wiki.
+Release Please does not use Factory or an AI service, and it does not publish the package anywhere; `pubspec.yaml` sets `publish_to: none`, and consumers fetch the public repository through git. Never print credentials. No actual credential values or configured permissions were inspected for this wiki.
 
 This page documents observed boundaries, not the result of a dedicated security audit. For safe extension points, see [Rollers](systems/rollers.md) and [Patterns and conventions](how-to-contribute/patterns-and-conventions.md).
