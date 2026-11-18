@@ -1,5 +1,17 @@
 # Changelog
 
+## [9.1.0](https://github.com/Jason-Holt-Digital/mythic-dice-parser/compare/v9.0.0...v9.1.0) (2026-11-18)
+
+
+### Features
+
+* add Code Walkthrough automation ([#32](https://github.com/Jason-Holt-Digital/mythic-dice-parser/issues/32)) ([92b7b50](https://github.com/Jason-Holt-Digital/mythic-dice-parser/commit/92b7b50222c7278e55c069c8d5b62f1378fca75b))
+
+
+### Bug Fixes
+
+* **parser:** reject invalid and over-limit dice counts with FormatException ([#34](https://github.com/Jason-Holt-Digital/mythic-dice-parser/issues/34)) ([4cb36c3](https://github.com/Jason-Holt-Digital/mythic-dice-parser/commit/4cb36c37c48761fb395daf4a06f11045f530408e))
+
 ## [9.0.0](https://github.com/Jason-Holt-Digital/mythic-dice-parser/compare/v8.3.0...v9.0.0) (2026-10-28)
 
 
