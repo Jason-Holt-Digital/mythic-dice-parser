@@ -1,0 +1,48 @@
+name: CI Steward
+
+on:
+  workflow_run:
+    workflows: ["Dart"]
+    types: [completed]
+
+permissions:
+  # Job logs and reruns use the workflow token, not the app token.
+  actions: write
+  # Read is enough while auto_fix is off. Direct fixes need contents: write.
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  ci-steward:
+    # workflow_run runs in the base repository with secrets and write tokens,
+    # so a fork's commit must never be checked out here. Watched workflows may
+    # also run on push, which is not a pull request.
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.head_branch != 'factory/droid-wiki' &&
+      github.event.workflow_run.conclusion != 'success' &&
+      github.event.workflow_run.conclusion != 'cancelled'
+    # Queue rather than cancel: a cancelled run has already spent a unit of
+    # the per-PR budget.
+    concurrency:
+      group: ci-steward-${{ github.event.workflow_run.pull_requests[0].number || github.event.workflow_run.head_branch }}
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pull request branch
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0
+
+      # No github_token: the action exchanges the OIDC token for a Factory
+      # Droid App token.
+      - name: Run CI Steward
+        uses: Factory-AI/droid-action@260eac443df653198ed70e9ea9d32980cfabde23 # v13
+        with:
+          factory_api_key: ${{ secrets.FACTORY_API_KEY }}
+          ci_steward: "true"
+          auto_fix: "false"
+          retry_mode: smart
