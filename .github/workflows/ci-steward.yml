@@ -1,0 +1,53 @@
+name: CI Steward
+
+on:
+  workflow_run:
+    workflows: ["Dart"]
+    types: [completed]
+
+permissions:
+  # Job logs and reruns use the workflow token, not the app token.
+  actions: write
+  # Read is enough while auto_fix is off. Direct fixes need contents: write.
+  contents: read
+  # Comments use the app token; the workflow token only reads the PR.
+  pull-requests: read
+  id-token: write
+
+jobs:
+  ci-steward:
+    # workflow_run runs in the base repository with secrets and write tokens,
+    # so a fork's commit must never be checked out here. Watched workflows may
+    # also run on push, which is not a pull request.
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.head_branch != 'factory/droid-wiki' &&
+      (github.event.workflow_run.conclusion == 'failure' ||
+       github.event.workflow_run.conclusion == 'timed_out')
+    # Queue rather than cancel: a cancelled run has already spent a unit of
+    # the per-PR budget. queue: max keeps every pending failure instead of
+    # letting the newest one replace the last.
+    concurrency:
+      group: ci-steward-${{ github.event.workflow_run.pull_requests[0].number || github.event.workflow_run.head_branch }}
+      cancel-in-progress: false
+      queue: max
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout failing commit
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      # No github_token: the action exchanges the OIDC token for a Factory
+      # Droid App token.
+      - name: Run CI Steward
+        uses: Factory-AI/droid-action@260eac443df653198ed70e9ea9d32980cfabde23 # v13
+        with:
+          factory_api_key: ${{ secrets.FACTORY_API_KEY }}
+          ci_steward: "true"
+          auto_fix: "false"
+          retry_mode: smart
