@@ -218,6 +218,20 @@ void main() {
       0,
       expectedResults: [-6, 2, -1, 5],
     );
+
+    test('rejects a negative CSV dice count before rolling values', () async {
+      await expectLater(
+        DiceExpression.create('(0-1)d[1,2,3]').roll(),
+        throwsFormatException,
+      );
+    });
+
+    test('rejects a CSV dice count above the parser maximum', () async {
+      await expectLater(
+        DiceExpression.create('1001d[1,2,3]').roll(),
+        throwsFormatException,
+      );
+    });
   });
 
   group('counting operations', () {
@@ -562,6 +576,59 @@ void main() {
     seededRandTest('simple roll', 'd6', 6);
     seededRandTest('percentile', '1d%', 96);
     seededRandTest('percentile', 'd%', 96);
+    test('rejects a negative percentile dice count', () {
+      expect(
+        () => DiceExpression.create('(0-1)d%').roll(),
+        throwsFormatException,
+      );
+    });
+    test('rejects a percentile dice count above the parser maximum', () async {
+      await expectLater(
+        DiceExpression.create('1001d%').roll(),
+        throwsA(
+          allOf(
+            isA<FormatException>(),
+            isA<DiceCountLimitExceededFormatException>().having(
+              (error) => error.message,
+              'message',
+              'Invalid number of dice (1001)',
+            ),
+          ),
+        ),
+      );
+    });
+    test('uses the typed count failure for every dice form', () async {
+      DiceExpression.registerDieType('fate', [-1, -1, 0, 0, 1, 1]);
+      addTearDown(DiceExpression.clearDieTypes);
+
+      for (final expression in [
+        '1001dF',
+        '1001d[1,2,3]',
+        '1001d6p',
+        '1001d%',
+        '1001D66',
+        '1001dfate',
+        '1001d6',
+      ]) {
+        await expectLater(
+          DiceExpression.create(expression).roll(),
+          throwsA(isA<DiceCountLimitExceededFormatException>()),
+          reason: expression,
+        );
+      }
+    });
+    test('rejects a negative D66 dice count', () async {
+      await expectLater(
+        DiceExpression.create('(0-1)D66').roll(),
+        throwsFormatException,
+      );
+    });
+    test('rejects a D66 dice count above the parser maximum', () async {
+      await expectLater(
+        DiceExpression.create('1001D66').roll(),
+        throwsFormatException,
+      );
+    });
     seededRandTest('D66', '1D66', 62);
     seededRandTest('D66', 'D66', 62);
     seededRandTest('d66 -- 66-sided, not D66', '1d66', 30);
@@ -632,6 +699,18 @@ void main() {
 
     seededRandTest('penetrating dice', '9d6p', 45);
     seededRandTest('penetrating dice', '9d6p4', 50);
+    test(
+      'penetrating dice reject invalid side counts as format errors',
+      () async {
+        for (final expression in ['1d1p', '1d6p1']) {
+          await expectLater(
+            DiceExpression.create(expression).roll(),
+            throwsA(isA<FormatException>()),
+            reason: expression,
+          );
+        }
+      },
+    );
 
     seededRandTest('explode arith result', '(9d6+3)!', 51);
 
@@ -1353,6 +1432,20 @@ void main() {
       final summary = await dice.roll();
       expect(summary.total, equals(0));
       expect(summary.results.length, equals(4));
+    });
+
+    test('rejects a negative named dice count before rolling values', () async {
+      await expectLater(
+        DiceExpression.create('(0-1)dfate').roll(),
+        throwsFormatException,
+      );
+    });
+
+    test('rejects a named dice count above the parser maximum', () async {
+      await expectLater(
+        DiceExpression.create('1001dfate').roll(),
+        throwsFormatException,
+      );
     });
 
     test('registerDieType rejects empty name', () {

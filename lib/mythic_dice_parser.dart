@@ -13,6 +13,7 @@
 /// ```
 library;
 
+export 'src/dice_count_limit_exceeded_format_exception.dart';
 export 'src/dice_expression.dart';
 export 'src/dice_roller.dart';
 export 'src/die_score_rule.dart';
