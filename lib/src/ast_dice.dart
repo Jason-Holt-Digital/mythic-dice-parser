@@ -1,10 +1,24 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:mythic_dice_parser/src/ast_core.dart';
+import 'package:mythic_dice_parser/src/dice_count_limit_exceeded_format_exception.dart';
 import 'package:mythic_dice_parser/src/dice_roller.dart';
 import 'package:mythic_dice_parser/src/enums.dart';
 import 'package:mythic_dice_parser/src/roll_result.dart';
 import 'package:mythic_dice_parser/src/rolled_die.dart';
 import 'package:petitparser/parser.dart';
+
+void _validateDiceCount(int count, {required Object? source, int? offset}) {
+  if (count < DiceRoller.minDice) {
+    throw FormatException('Invalid number of dice ($count)', source, offset);
+  }
+  if (count > DiceRoller.maxDice) {
+    throw DiceCountLimitExceededFormatException(
+      count: count,
+      source: source,
+      offset: offset,
+    );
+  }
+}
 
 /// roll fudge dice
 class FudgeDice extends UnaryDice {
@@ -16,14 +30,11 @@ class FudgeDice extends UnaryDice {
     final lhs = await left();
     final ndice = lhs.totalOrDefault(() => 1);
 
-    // redundant w/ RangeError checks in the DiceRoller. But we can construct better error messages here.
-    if (ndice < DiceRoller.minDice || ndice > DiceRoller.maxDice) {
-      throw FormatException(
-        'Invalid number of dice ($ndice)',
-        toString(),
-        left.toString().length,
-      );
-    }
+    _validateDiceCount(
+      ndice,
+      source: toString(),
+      offset: left.toString().length,
+    );
     final roll = await roller.rollFudge(ndice);
     return RollResult.fromRollResult(
       roll,
@@ -49,6 +60,12 @@ class CSVDice extends UnaryDice {
   Future<RollResult> eval() async {
     final lhs = await left();
     final ndice = lhs.totalOrDefault(() => 1);
+
+    _validateDiceCount(
+      ndice,
+      source: toString(),
+      offset: left.toString().length,
+    );
 
     final roll = await roller.rollVals(
       ndice,
@@ -94,6 +111,26 @@ class PenetratingDice extends UnaryDice {
   Future<RollResult> eval() async {
     final lhs = await left();
     final ndice = lhs.totalOrDefault(() => 1);
+
+    _validateDiceCount(
+      ndice,
+      source: toString(),
+      offset: left.toString().length,
+    );
+    if (nsides < DiceRoller.minSides || nsides > DiceRoller.maxSides) {
+      throw FormatException(
+        'Invalid number of sides ($nsides)',
+        toString(),
+        left.toString().length + name.length + 1,
+      );
+    }
+    if (nsidesPenetration < DiceRoller.minSides ||
+        nsidesPenetration > DiceRoller.maxSides) {
+      throw FormatException(
+        'Invalid number of sides ($nsidesPenetration)',
+        toString(),
+      );
+    }
 
     final roll = await roller.roll(ndice, nsides);
 
@@ -158,6 +195,11 @@ class PercentDice extends UnaryDice {
   Future<RollResult> eval() async {
     final lhs = await left();
     final ndice = lhs.totalOrDefault(() => 1);
+    _validateDiceCount(
+      ndice,
+      source: toString(),
+      offset: left.toString().length,
+    );
     final roll = await roller.roll(ndice, 100);
     return RollResult.fromRollResult(
       roll,
@@ -177,6 +219,13 @@ class D66Dice extends UnaryDice {
   Future<RollResult> eval() async {
     final lhs = await left();
     final ndice = lhs.totalOrDefault(() => 1);
+
+    _validateDiceCount(
+      ndice,
+      source: toString(),
+      offset: left.toString().length,
+    );
+
     final roll = await roller.rollD66(ndice);
     return RollResult.fromRollResult(
       roll,
@@ -188,9 +237,6 @@ class D66Dice extends UnaryDice {
 }
 
 /// Roll dice with faces from a named die type registry.
-/// NOTE: `super.roller` is a `DiceResultRoller` (not `DiceRoller`), matching
-/// the `UnaryDice` constructor signature. The parser passes its `roller`
-/// variable which is already a `DiceResultRoller`.
 class NamedDice extends UnaryDice {
   /// Creates a named dice op for the registered die type [dieName].
   new(super.name, super.left, super.roller, this.dieName, this.faces);
@@ -208,6 +254,12 @@ class NamedDice extends UnaryDice {
   Future<RollResult> eval() async {
     final lhs = await left();
     final ndice = lhs.totalOrDefault(() => 1);
+
+    _validateDiceCount(
+      ndice,
+      source: toString(),
+      offset: left.toString().length,
+    );
 
     final roll = await roller.rollVals(ndice, faces);
 
@@ -235,14 +287,11 @@ class StdDice extends BinaryDice {
     final ndice = lhs.totalOrDefault(() => 1);
     final nsides = rhs.totalOrDefault(() => 1);
 
-    // redundant w/ RangeError checks in the DiceRoller. But we can construct better error messages here.
-    if (ndice < DiceRoller.minDice || ndice > DiceRoller.maxDice) {
-      throw FormatException(
-        'Invalid number of dice ($ndice)',
-        toString(),
-        left.toString().length,
-      );
-    }
+    _validateDiceCount(
+      ndice,
+      source: toString(),
+      offset: left.toString().length,
+    );
     if (nsides < DiceRoller.minSides || nsides > DiceRoller.maxSides) {
       throw FormatException(
         'Invalid number of sides ($nsides)',
